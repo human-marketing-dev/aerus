@@ -55,7 +55,7 @@ export default function Directos() {
           <div>Rutas directas activas</div>
         </div>
         <div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+          <div className="routes-tables" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
             <div className="table">
               {col1.map((r, i) => (
                 <div className="row" key={i}>

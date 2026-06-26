@@ -1743,3 +1743,245 @@ img { display: block; }
 @media (max-width: 640px) {
   .reviews-grid { grid-template-columns: 1fr; }
 }
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — Tablet 900px
+   ══════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .section-headline { font-size: clamp(36px, 5.5vw, 60px); }
+
+  /* Tarifas */
+  .tarifas .header { grid-template-columns: 1fr; gap: 24px; }
+  .tarifas .panel { grid-template-columns: 1fr; }
+  .tarifas .panel .visual { min-height: 320px; }
+  .tarifas .panel .visual .bigname { font-size: 72px; }
+
+  /* Brand Banner */
+  .brand-banner { height: 140px; }
+
+  /* Routes Map */
+  .routes-map { grid-template-columns: 1fr; }
+  .routes-map .rm-map { min-height: 380px; }
+  .routes-map .rm-copy-inner { padding: 80px 40px; }
+
+  /* Espera */
+  .espera .header { grid-template-columns: 1fr; gap: 32px; }
+  .espera .timeline { grid-template-columns: 1fr; }
+  .espera .step + .step {
+    border-left: 0;
+    padding-left: 0;
+    border-top: 1px solid rgba(255,255,255,0.10);
+    padding-top: 40px;
+  }
+  .espera .timeline .dotrail { display: none; }
+
+  /* Servicios */
+  .servicios .grid { grid-template-columns: repeat(2, 1fr); }
+
+  /* Pagos */
+  .pagos .header { grid-template-columns: 1fr; gap: 24px; }
+  .pagos .logos-cards { grid-template-columns: repeat(4, 1fr); }
+  .pagos .logos-cash  { grid-template-columns: repeat(4, 1fr); }
+
+  /* Newsletter */
+  .cta-newsletter .inner { grid-template-columns: 1fr; gap: 48px; }
+  .cta-newsletter h2 { font-size: 60px; }
+
+  /* Footer */
+  .footer .top { grid-template-columns: 1fr 1fr; gap: 36px; }
+  .footer .contacts { grid-template-columns: 1fr; gap: 24px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile 640px
+   ══════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  /* Global */
+  .section-pad { padding: 72px 24px; }
+  .section-pad-sm { padding: 48px 24px; }
+  .section-headline { font-size: clamp(30px, 7.5vw, 46px); }
+  .section-intro { font-size: 15px; }
+
+  /* Notif bar */
+  .notif { font-size: 10px; padding: 0 16px; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .notif .dot { display: none; }
+
+  /* Nav — keep only logo centered */
+  .nav { justify-content: center; padding: 0 16px; }
+  .nav-group.nav-left { display: none; }
+  .nav-group.nav-right { display: none; }
+
+  /* Hero */
+  .hero-inner { padding: 32px 24px 56px; }
+  .hero .route-codes { font-size: clamp(34px, 9vw, 54px); gap: 16px; }
+  .hero .route-codes .arrow-line { width: 40px; }
+  .hero .route-cities { gap: 12px; }
+  .hero .price-row { flex-wrap: wrap; gap: 12px; }
+  .hero .price-row .perks { display: none; }
+  .hero .slider-controls { max-width: 100%; }
+
+  /* Booking bridge — demasiado complejo para mobile */
+  .booking-bridge { display: none; }
+
+  /* Brand Banner */
+  .brand-banner { height: 88px; }
+
+  /* Tarifas */
+  .tarifas .tab-bar { width: 100%; border-radius: 4px; flex-wrap: nowrap; }
+  .tarifas .tab-bar button { flex: 1; padding: 12px 8px; font-size: 9.5px; gap: 5px; letter-spacing: 0.06em; min-width: 0; }
+  .tarifas .panel .visual { padding: 28px; }
+  .tarifas .panel .visual .bigname { font-size: 52px; }
+  .tarifas .panel .visual .price-amt { font-size: 48px; }
+  .tarifas .panel .features { padding: 28px; }
+  .tarifas .panel .features .cta-row { flex-direction: column; }
+  .tarifas .panel .features .cta-row .btn { width: 100%; justify-content: center; }
+
+  /* Experiencia */
+  .exp-photo { min-height: 300px; }
+  .exp-content { padding: 56px 24px; gap: 28px; }
+  .exp-big { font-size: 36px; }
+
+  /* Routes Map */
+  .routes-map .rm-copy-inner { padding: 64px 24px; }
+  .routes-map .rm-map { min-height: 280px; }
+  .routes-map .rm-stats { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .routes-map .rm-stat .n { font-size: 36px; }
+
+  /* Espera */
+  .espera .step .big { font-size: 40px; }
+  .espera .note { margin-top: 40px; }
+
+  /* Directos */
+  .directos .grid { grid-template-columns: 1fr; }
+  .directos .left { position: static; }
+  .directos .left .logo-wrap { font-size: 48px; }
+  .directos .left .count { font-size: 72px; }
+
+  /* Servicios */
+  .servicios .grid { grid-template-columns: 1fr; }
+  .servicio { min-height: auto; }
+
+  /* Pagos */
+  .pagos .logos-cards { grid-template-columns: repeat(3, 1fr); }
+  .pagos .logos-cash  { grid-template-columns: repeat(3, 1fr); }
+  .pagos .footer-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+
+  /* Newsletter */
+  .cta-newsletter h2 { font-size: 48px; }
+  .cta-newsletter .visual { display: none; }
+  .cta-newsletter form { flex-wrap: wrap; }
+  .cta-newsletter button[type="submit"] { width: 100%; justify-content: center; }
+  .cta-newsletter .perks { flex-direction: column; gap: 12px; }
+
+  /* Footer */
+  .footer { padding: 64px 24px 32px; }
+  .footer .top { grid-template-columns: 1fr; gap: 40px; }
+  .footer .bottom { flex-direction: column; align-items: flex-start; }
+  .footer .bottom .address { text-align: left; max-width: 100%; }
+
+  /* Booking widget — vertical stack on mobile */
+  .booking-bridge {
+    display: block;
+    margin: 0;
+    padding: 12px 16px 20px;
+    position: relative;
+    z-index: 10;
+  }
+  .booking-h-tabs { overflow-x: auto; scrollbar-width: none; padding: 0 8px; }
+  .booking-h-tabs::-webkit-scrollbar { display: none; }
+  .booking-h-tabs-right { display: none; }
+  .booking-h-row { flex-direction: column; }
+  .booking-h-sep { display: none; }
+  .booking-h-swap { display: none; }
+  .booking-h-field { border-bottom: 1px solid rgba(12,38,38,0.07); min-height: 60px; }
+  .booking-h-submit { width: 100%; justify-content: center; padding: 18px; }
+
+  /* Brand banner — font fits in one line */
+  .brand-banner .bb-text { font-size: clamp(26px, 6.5vw, 42px); }
+  .brand-banner { height: 76px; }
+
+  /* Reviews — horizontal scroll snap */
+  .reviews-grid {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 14px;
+    padding: 0 24px 16px;
+    margin: 0 -24px;
+    scrollbar-width: none;
+  }
+  .reviews-grid::-webkit-scrollbar { display: none; }
+  .rev-card {
+    flex: 0 0 82vw;
+    scroll-snap-align: start;
+  }
+
+  /* Directos — single column compact table */
+  .directos .routes-tables { grid-template-columns: 1fr !important; gap: 0 !important; }
+  .directos-routes-wrap { max-height: 400px; overflow-y: auto; position: relative; }
+  .directos .table .row { font-size: 13px; padding: 10px 0; gap: 8px; }
+  .directos .table .row .arr svg { width: 14px; height: 14px; }
+  .directos .left .count { font-size: 64px; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   HERO ENTRY ANIMATIONS (on load, above the fold)
+   ══════════════════════════════════════════════════════════ */
+@keyframes aerus-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes aerus-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.hero .badge        { animation: aerus-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both; }
+.hero .route-codes  { animation: aerus-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.22s both; }
+.hero .route-cities { animation: aerus-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.32s both; }
+.hero .price-row    { animation: aerus-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.40s both; }
+.hero .new-route-tag,
+.hero .slider-controls { animation: aerus-up 0.7s cubic-bezier(0.16,1,0.3,1) 0.50s both; }
+
+/* ═══════════════════════════════════════════════════════════
+   SCROLL-TRIGGERED REVEAL
+   ══════════════════════════════════════════════════════════ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity  0.65s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Stagger in grid containers */
+.servicios .grid .servicio:nth-child(2).reveal { transition-delay: 0.08s; }
+.servicios .grid .servicio:nth-child(3).reveal { transition-delay: 0.16s; }
+.servicios .grid .servicio:nth-child(4).reveal { transition-delay: 0.24s; }
+.reviews-grid .rev-card:nth-child(2).reveal    { transition-delay: 0.10s; }
+.reviews-grid .rev-card:nth-child(3).reveal    { transition-delay: 0.20s; }
+.footer .top > *:nth-child(2).reveal           { transition-delay: 0.06s; }
+.footer .top > *:nth-child(3).reveal           { transition-delay: 0.12s; }
+.footer .top > *:nth-child(4).reveal           { transition-delay: 0.18s; }
+.footer .top > *:nth-child(5).reveal           { transition-delay: 0.24s; }
+.footer .contacts .item:nth-child(2).reveal    { transition-delay: 0.10s; }
+.footer .contacts .item:nth-child(3).reveal    { transition-delay: 0.20s; }
+.exp-content.reveal                            { transition-delay: 0.15s; }
+.tarifas .panel .features.reveal               { transition-delay: 0.12s; }
+.espera .header > *:nth-child(2).reveal        { transition-delay: 0.12s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .hero .badge, .hero .route-codes,
+  .hero .route-cities, .hero .price-row,
+  .hero .new-route-tag, .hero .slider-controls {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
