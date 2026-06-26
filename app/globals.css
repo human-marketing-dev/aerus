@@ -1496,6 +1496,17 @@ img { display: block; }
   background: var(--aerus-deep-forest);
   overflow: hidden;
 }
+.exp-photo::before {
+  content: '';
+  position: absolute;
+  top: -5%; bottom: -5%;
+  left: 35%; right: -5%;
+  background: url('/texturas-verde-oscuro-aerus.webp') center / cover no-repeat;
+  transform: scaleX(-1);
+  opacity: 1;
+  pointer-events: none;
+  z-index: 2;
+}
 .exp-photo img {
   width: 100%; height: 100%;
   object-fit: cover;
@@ -1507,7 +1518,7 @@ img { display: block; }
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to right, transparent 60%, var(--aerus-deep-forest) 100%);
+  background: linear-gradient(to bottom, transparent 60%, rgba(12,38,38,0.5) 100%);
   pointer-events: none;
 }
 .exp-photo-caption {
@@ -1537,7 +1548,10 @@ img { display: block; }
   flex-direction: column;
   justify-content: center;
   gap: 40px;
+  position: relative;
+  overflow: hidden;
 }
+.exp-content > * { position: relative; z-index: 1; }
 .exp-top {
   display: flex;
   justify-content: space-between;
