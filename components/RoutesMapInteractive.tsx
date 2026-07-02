@@ -1,121 +1,248 @@
 'use client'
 import { useState } from 'react'
+import { ComposableMap, Geographies, Geography, useMapContext } from 'react-simple-maps'
+import type { City } from '@/lib/routes'
 
-interface City {
-  x: number
-  y: number
-  label: string
-  hub?: boolean
-  ldx: number
-  ldy: number
-  anchor: 'start' | 'middle' | 'end'
-}
-
-// Cities where VivaAerobus and Aerus share routes
+// TODO: move to a 'codeshare' column in the ciudades sheet if needed later
 const VIVA = new Set(['Monterrey', 'CDMX', 'Veracruz', 'Villahermosa'])
 
-const CITIES: Record<string, City> = {
-  'CDMX':              { x: 354, y: 458, label: 'CDMX',             hub: true, ldx: 0,   ldy: 17,  anchor: 'middle' },
-  'Ciudad Victoria':   { x: 353, y: 271, label: 'Cd. Victoria',                ldx: 10,  ldy: 0,   anchor: 'start'  },
-  'Ciudad Ixtepec':    { x: 536, y: 583, label: 'Cd. Ixtepec',                ldx: 0,   ldy: -11, anchor: 'middle' },
-  'Tampico':           { x: 411, y: 335, label: 'Tampico',                      ldx: 10,  ldy: 0,   anchor: 'start'  },
-  'Ciudad del Carmen': { x: 683, y: 492, label: 'Cd. del Carmen',              ldx: 10,  ldy: 0,   anchor: 'start'  },
-  'Minatitlán':        { x: 560, y: 520, label: 'Minatitlán',                  ldx: 0,   ldy: -11, anchor: 'middle' },
-  'Monterrey':         { x: 301, y: 187, label: 'Monterrey',         hub: true, ldx: -10, ldy: 0,   anchor: 'end'    },
-  'Aguascalientes':    { x: 212, y: 352, label: 'Aguascalientes',              ldx: -10, ldy: 0,   anchor: 'end'    },
-  'Brownsville':       { x: 428, y: 178, label: 'Brownsville TX',              ldx: 10,  ldy: 0,   anchor: 'start'  },
-  'Durango':           { x: 105, y: 259, label: 'Durango',                      ldx: -10, ldy: 0,   anchor: 'end'    },
-  'McAllen':           { x: 395, y: 165, label: 'McAllen TX',                  ldx: 0,   ldy: -11, anchor: 'middle' },
-  'Laredo':            { x: 337, y: 108, label: 'Laredo TX',                   ldx: -10, ldy: 0,   anchor: 'end'    },
-  'Piedras Negras':    { x: 292, y: 56,  label: 'Piedras Negras',              ldx: 10,  ldy: 0,   anchor: 'start'  },
-  'San Luis Potosí':   { x: 271, y: 340, label: 'S.L. Potosí',                ldx: -10, ldy: 0,   anchor: 'end'    },
-  'Morelia':           { x: 262, y: 446, label: 'Morelia',                      ldx: -10, ldy: 0,   anchor: 'end'    },
-  'Uruapan':           { x: 222, y: 459, label: 'Uruapan',                      ldx: -10, ldy: 15,  anchor: 'end'    },
-  'Veracruz':          { x: 489, y: 469, label: 'Veracruz',          hub: true, ldx: 10,  ldy: 0,   anchor: 'start'  },
-  'Villahermosa':      { x: 634, y: 520, label: 'Villahermosa',                ldx: 0,   ldy: 15,  anchor: 'middle' },
-  'Mérida':            { x: 782, y: 391, label: 'Mérida',                       ldx: 10,  ldy: 0,   anchor: 'start'  },
-}
+// ── Map viewport ─────────────────────────────────────────────────────────────
+// Adjust MAP_CENTER and MAP_SCALE to reframe the viewport.
+// MAP_CENTER is [lon, lat] — the geographic point that appears at dead center.
+// MAP_SCALE controls zoom: higher = more zoomed in.
+const MAP_CENTER: [number, number] = [-100, 24]
+const MAP_SCALE  = 1450
+const MAP_WIDTH  = 900
+const MAP_HEIGHT = 620
 
-const ROUTES: [string, string][] = [
-  ['CDMX', 'Ciudad Victoria'],
-  ['CDMX', 'Ciudad Ixtepec'],
-  ['CDMX', 'Tampico'],
-  ['Ciudad del Carmen', 'Minatitlán'],
-  ['Ciudad del Carmen', 'Veracruz'],
-  ['Minatitlán', 'Veracruz'],
-  ['Minatitlán', 'Villahermosa'],
-  ['Monterrey', 'Aguascalientes'],
-  ['Monterrey', 'Brownsville'],
-  ['Monterrey', 'Durango'],
-  ['Monterrey', 'McAllen'],
-  ['Monterrey', 'Laredo'],
-  ['Monterrey', 'Piedras Negras'],
-  ['Monterrey', 'San Luis Potosí'],
-  ['Monterrey', 'Tampico'],
-  ['Morelia', 'CDMX'],
-  ['Morelia', 'Uruapan'],
-  ['Veracruz', 'CDMX'],
-  ['Veracruz', 'Tampico'],
-  ['Veracruz', 'Villahermosa'],
-  ['Villahermosa', 'Mérida'],
-]
+// SVG x-coordinate to start clipping from the left.
+// Hides small oceanic islands west of Baja California (e.g. Guadalupe Island).
+const MAP_CLIP_LEFT = 40
 
-// Simplified polygon of Mexico's land area within the SVG coordinate space.
-// Coordinate system: x = (107 - lon°W) / 20 * 900 ; y = (30 - lat°N) / 15 * 650
-// Goes clockwise: US border (top) → Gulf Coast (right) → Yucatan → South border → Pacific coast (left)
-const MEXICO_OUTLINE = [
-  // Northern border / US-Mexico border (Rio Grande) going east
-  [0, 0], [27, 10], [113, 22], [185, 17],
-  [292, 56], [337, 108], [390, 165], [428, 178],
-  // Gulf Coast going south
-  [428, 240], [411, 335], [437, 390], [455, 433],
-  [489, 469], [531, 498], [567, 516],
-  // Campeche / Yucatan west coast
-  [683, 492], [734, 477], [743, 433], [783, 391],
-  // Northern Yucatan coast going NE (clips at right edge near Cancún)
-  [819, 368], [856, 372], [896, 381],
-  [900, 381], [900, 420],
-  // East / Caribbean coast of Yucatan going south
-  [878, 425], [878, 455], [842, 498],
-  // Southern border (Guatemala / Belize) going west
-  [810, 520], [743, 563], [675, 585], [630, 600],
-  [540, 607], [450, 600], [383, 607],
-  // Pacific coast going northwest
-  [338, 585], [260, 555], [180, 515],
-  [122, 472], [81, 407], [68, 347], [27, 295],
-  // Left edge going up to start (Sierra Madre / Sonora coast off-screen)
-  [0, 250],
-].map(([x, y]) => `${x},${y}`).join(' ')
+// US states visible in the viewport (rest are filtered out at render time)
+const US_BORDER_STATES = new Set(['Texas', 'New Mexico', 'Arizona', 'California'])
 
-function getConnections(city: string): string[] {
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+// Round to 4 decimal places so server and client produce identical SVG attribute
+// strings. d3-geo can return slightly different float64 values across environments
+// (Node.js vs browser JIT), causing React hydration mismatches.
+const R = (n: number) => Math.round(n * 1e4) / 1e4
+
+function getConnections(city: string, routes: [string, string][]): string[] {
   const set = new Set<string>()
-  for (const [a, b] of ROUTES) {
+  for (const [a, b] of routes) {
     if (a === city) set.add(b)
     else if (b === city) set.add(a)
   }
   return [...set]
 }
 
-function arcPath(from: string, to: string): string {
-  const c1 = CITIES[from]
-  const c2 = CITIES[to]
-  const dx = c2.x - c1.x
-  const dy = c2.y - c1.y
+// Quadratic Bézier arc in SVG coordinates — same curvature logic as before
+function projectedArc(x1: number, y1: number, x2: number, y2: number): string {
+  const dx = x2 - x1, dy = y2 - y1
   const dist = Math.sqrt(dx * dx + dy * dy)
-  const mx = (c1.x + c2.x) / 2
-  const my = (c1.y + c2.y) / 2
+  if (dist === 0) return ''
+  const mx = (x1 + x2) / 2, my = (y1 + y2) / 2
   const curve = dist * 0.2
-  const px = (-dy / dist) * curve
-  const py = (dx / dist) * curve
-  return `M ${c1.x} ${c1.y} Q ${Math.round(mx + px)} ${Math.round(my + py)} ${c2.x} ${c2.y}`
+  const bx = (-dy / dist) * curve
+  const by = (dx / dist) * curve
+  return `M ${x1} ${y1} Q ${Math.round(mx + bx)} ${Math.round(my + by)} ${x2} ${y2}`
 }
 
-export default function RoutesMapInteractive() {
+// ── Sub-components (must render inside <ComposableMap>) ───────────────────────
+
+interface RoutesLayerProps {
+  routes: [string, string][]
+  cities: Record<string, City>
+  routeClass: (a: string, b: string) => string
+}
+
+function RoutesLayer({ routes, cities, routeClass }: RoutesLayerProps) {
+  const { projection } = useMapContext()
+  return (
+    <>
+      {routes.map(([a, b], i) => {
+        const ca = cities[a], cb = cities[b]
+        if (!ca || !cb) return null
+        const p1 = projection([ca.lon, ca.lat])
+        const p2 = projection([cb.lon, cb.lat])
+        if (!p1 || !p2) return null
+        const d = projectedArc(R(p1[0]), R(p1[1]), R(p2[0]), R(p2[1]))
+        return <path key={i} d={d} className={routeClass(a, b)} />
+      })}
+    </>
+  )
+}
+
+interface CitiesLayerProps {
+  cities: Record<string, City>
+  nodeState: (name: string) => string
+  toggleCity: (name: string) => void
+  setHoveredCity: (name: string | null) => void
+}
+
+function CitiesLayer({ cities, nodeState, toggleCity, setHoveredCity }: CitiesLayerProps) {
+  const { projection } = useMapContext()
+  return (
+    <>
+      {Object.entries(cities).map(([name, city]) => {
+        const p = projection([city.lon, city.lat])
+        if (!p) return null
+        const [cx, cy] = [R(p[0]), R(p[1])]
+        const r = city.hub ? 7 : 5
+        const isViva = VIVA.has(name)
+        const state = nodeState(name)
+        return (
+          <g key={name} className={`rmi-node ${state}${isViva ? ' rmi-node--viva' : ''}`}>
+            {city.hub && (
+              <circle cx={cx} cy={cy} r={r + 8} className="rmi-pulse" pointerEvents="none" />
+            )}
+            {isViva && (
+              <circle cx={cx} cy={cy} r={r + 5} className="rmi-viva-ring" pointerEvents="none" />
+            )}
+            <circle cx={cx} cy={cy} r={r + 4} className="rmi-halo" pointerEvents="none" />
+            <circle cx={cx} cy={cy} r={r} className="rmi-dot" pointerEvents="none" />
+            <text
+              x={cx + city.ldx}
+              y={cy + city.ldy}
+              textAnchor={city.anchor}
+              dominantBaseline="middle"
+              className="rmi-label"
+              pointerEvents="none"
+            >
+              {city.label}
+            </text>
+            {/* Transparent hit zone — sole event target on desktop; hidden via CSS on mobile */}
+            <circle
+              cx={cx} cy={cy} r={22}
+              fill="transparent" stroke="none"
+              className="rmi-hit-zone"
+              style={{ cursor: 'pointer' }}
+              onClick={() => toggleCity(name)}
+              onMouseEnter={() => setHoveredCity(name)}
+              onMouseLeave={() => setHoveredCity(null)}
+            />
+          </g>
+        )
+      })}
+    </>
+  )
+}
+
+// ── Destination list — accordion + chips (mobile only, hidden on desktop via CSS) ──
+
+interface DestinationListProps {
+  cities: Record<string, City>
+  routes: [string, string][]
+}
+
+function DestinationList({ cities, routes }: DestinationListProps) {
+  const [open, setOpen] = useState<Set<string>>(new Set())
+
+  function toggle(id: string) {
+    setOpen(prev => {
+      const next = new Set(prev)
+      next.has(id) ? next.delete(id) : next.add(id)
+      return next
+    })
+  }
+
+  // Hub rows: derived from cities data — never hardcoded
+  const hubKeys = Object.entries(cities)
+    .filter(([, c]) => c.hub)
+    .map(([k]) => k)
+    .sort((a, b) => cities[a].label.localeCompare(cities[b].label, 'es'))
+  const hubSet = new Set(hubKeys)
+
+  // "Otras rutas": routes where NEITHER endpoint is a hub
+  // (hub↔non-hub routes already appear inside each hub's chip list)
+  const otrasRoutes = routes.filter(([a, b]) => !hubSet.has(a) && !hubSet.has(b))
+  const otrasOpen = open.has('__otras__')
+
+  return (
+    <div className="rmi-destinations">
+      <p className="rmi-destinations-label">Vuelos directos por ciudad</p>
+
+      {hubKeys.map(hub => {
+        const conns = getConnections(hub, routes)
+        if (conns.length === 0) return null
+        const isOpen = open.has(hub)
+        return (
+          <div key={hub} className="rmi-dest-row">
+            <button className="rmi-dest-trigger" aria-expanded={isOpen} onClick={() => toggle(hub)}>
+              <span className="rmi-dest-trigger-left">
+                <span className="rmi-dest-hub-dot" aria-hidden="true" />
+                <span className="rmi-dest-name">{cities[hub].label}</span>
+                {VIVA.has(hub) && <span className="rmi-viva-tag" aria-label="Codeshare VivaAerobus">V</span>}
+              </span>
+              <span className="rmi-dest-meta" aria-hidden="true">
+                <span className="rmi-dest-count">{conns.length}</span>
+                <span className="rmi-dest-chevron">›</span>
+              </span>
+            </button>
+            {isOpen && (
+              <div className="rmi-dest-chips">
+                {conns.map(c => (
+                  <span key={c} className={`rmi-dest-chip${VIVA.has(c) ? ' rmi-dest-chip--viva' : ''}`}>
+                    {cities[c]?.label ?? c}
+                    {VIVA.has(c) && <span className="rmi-viva-tag" aria-label="Codeshare VivaAerobus">V</span>}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })}
+
+      {otrasRoutes.length > 0 && (
+        <div className="rmi-dest-row">
+          <button className="rmi-dest-trigger" aria-expanded={otrasOpen} onClick={() => toggle('__otras__')}>
+            <span className="rmi-dest-trigger-left">
+              <span className="rmi-dest-name rmi-dest-name--otras">Otras rutas</span>
+            </span>
+            <span className="rmi-dest-meta" aria-hidden="true">
+              <span className="rmi-dest-count">{otrasRoutes.length}</span>
+              <span className="rmi-dest-chevron">›</span>
+            </span>
+          </button>
+          {otrasOpen && (
+            <div className="rmi-dest-chips">
+              {otrasRoutes.map(([a, b], i) => {
+                const isViva = VIVA.has(a) || VIVA.has(b)
+                return (
+                  <span key={i} className={`rmi-dest-chip${isViva ? ' rmi-dest-chip--viva' : ''}`}>
+                    {cities[a]?.label ?? a} – {cities[b]?.label ?? b}
+                    {isViva && <span className="rmi-viva-tag" aria-label="Codeshare VivaAerobus">V</span>}
+                  </span>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ── Main component ────────────────────────────────────────────────────────────
+
+interface Props {
+  cities: Record<string, City>
+  routes: [string, string][]
+}
+
+export default function RoutesMapInteractive({ cities, routes }: Props) {
   const [activeCity, setActiveCity] = useState<string | null>(null)
   const [hoveredCity, setHoveredCity] = useState<string | null>(null)
 
   const focusCity = hoveredCity || activeCity
-  const connections = focusCity ? getConnections(focusCity) : []
+  const connections = focusCity ? getConnections(focusCity, routes) : []
+
+  const totalRoutes = routes.length
+  const totalDestinos = new Set(routes.flat()).size
+  // TODO: derive from data once the Sheet has a way to flag international cities
+  const totalInternacionales = 4
 
   function toggleCity(name: string) {
     setActiveCity(prev => (prev === name ? null : name))
@@ -147,9 +274,9 @@ export default function RoutesMapInteractive() {
           </p>
 
           <div className="rmi-stats">
-            <div><span className="rmi-n">21</span><span className="rmi-l">Rutas directas</span></div>
-            <div><span className="rmi-n">19</span><span className="rmi-l">Destinos</span></div>
-            <div><span className="rmi-n">4</span><span className="rmi-l">Internacionales</span></div>
+            <div><span className="rmi-n">{totalRoutes}</span><span className="rmi-l">Rutas directas</span></div>
+            <div><span className="rmi-n">{totalDestinos}</span><span className="rmi-l">Destinos</span></div>
+            <div><span className="rmi-n">{totalInternacionales}</span><span className="rmi-l">Internacionales</span></div>
           </div>
 
           <div className="rmi-legend">
@@ -179,7 +306,7 @@ export default function RoutesMapInteractive() {
           {focusCity && (
             <div className="rmi-overlay">
               <div className="rmi-overlay-city">
-                {CITIES[focusCity]?.label ?? focusCity}
+                {cities[focusCity]?.label ?? focusCity}
                 {VIVA.has(focusCity) && <span className="rmi-viva-badge">+ VivaAerobus</span>}
               </div>
               <div className="rmi-overlay-label">Vuelos directos</div>
@@ -187,7 +314,7 @@ export default function RoutesMapInteractive() {
                 {connections.map(c => (
                   <li key={c}>
                     <span className="rmi-arr">→</span>
-                    {CITIES[c]?.label ?? c}
+                    {cities[c]?.label ?? c}
                     {VIVA.has(c) && <span className="rmi-viva-tag">V</span>}
                   </li>
                 ))}
@@ -199,77 +326,71 @@ export default function RoutesMapInteractive() {
               )}
             </div>
           )}
-          <svg
-            viewBox="0 0 900 650"
+
+          {/*
+            MAP_CENTER and MAP_SCALE are the two knobs to adjust framing.
+            - center: [lon, lat] of the geographic point at SVG center
+            - scale: zoom level (increase to zoom in, decrease to zoom out)
+          */}
+          <ComposableMap
+            width={MAP_WIDTH}
+            height={MAP_HEIGHT}
+            projection="geoMercator"
+            projectionConfig={{ center: MAP_CENTER, scale: MAP_SCALE }}
             className="rmi-svg"
-            xmlns="http://www.w3.org/2000/svg"
-            aria-label="Mapa interactivo de rutas Aerus"
           >
-            {/* Mexico land silhouette */}
-            <polygon
-              points={MEXICO_OUTLINE}
-              fill="rgba(174,248,33,0.05)"
-              stroke="rgba(174,248,33,0.2)"
-              strokeWidth="1.5"
-              strokeLinejoin="round"
-            />
+            <defs>
+              {/* Clip rect that starts MAP_CLIP_LEFT px in from the left edge,
+                  hiding small oceanic islands west of Baja California. */}
+              <clipPath id="rmi-bounds">
+                <rect x={MAP_CLIP_LEFT} y={0} width={MAP_WIDTH - MAP_CLIP_LEFT} height={MAP_HEIGHT} />
+              </clipPath>
+            </defs>
 
-            {/* Route arcs */}
-            {ROUTES.map(([a, b], i) => (
-              <path
-                key={`r-${i}`}
-                d={arcPath(a, b)}
-                className={routeClass(a, b)}
-              />
-            ))}
-
-            {/* City nodes */}
-            {Object.entries(CITIES).map(([name, city]) => {
-              const r = city.hub ? 7 : 5
-              const isViva = VIVA.has(name)
-              const state = nodeState(name)
-              return (
-                <g key={name} className={`rmi-node ${state}${isViva ? ' rmi-node--viva' : ''}`}>
-                  {/* Pulse ring for hub cities */}
-                  {city.hub && (
-                    <circle cx={city.x} cy={city.y} r={r + 8} className="rmi-pulse" pointerEvents="none" />
-                  )}
-                  {/* VivaAerobus codeshare ring */}
-                  {isViva && (
-                    <circle cx={city.x} cy={city.y} r={r + 5} className="rmi-viva-ring" pointerEvents="none" />
-                  )}
-                  {/* Hover halo */}
-                  <circle cx={city.x} cy={city.y} r={r + 4} className="rmi-halo" pointerEvents="none" />
-                  {/* Main dot */}
-                  <circle cx={city.x} cy={city.y} r={r} className="rmi-dot" pointerEvents="none" />
-                  {/* Label */}
-                  <text
-                    x={city.x + city.ldx}
-                    y={city.y + city.ldy}
-                    textAnchor={city.anchor}
-                    dominantBaseline="middle"
-                    className="rmi-label"
-                    pointerEvents="none"
-                  >
-                    {city.label}
-                  </text>
-                  {/* Transparent hit zone — sole event target, prevents child flicker */}
-                  <circle
-                    cx={city.x}
-                    cy={city.y}
-                    r={22}
-                    fill="transparent"
-                    stroke="none"
-                    style={{ cursor: 'pointer' }}
-                    onClick={() => toggleCity(name)}
-                    onMouseEnter={() => setHoveredCity(name)}
-                    onMouseLeave={() => setHoveredCity(null)}
+            <g clipPath="url(#rmi-bounds)">
+              {/* Mexican state outlines */}
+              <Geographies geography="/maps/mexico-states.json">
+                {({ geographies }) => geographies.map(geo => (
+                  <Geography
+                    key={geo.rsmKey}
+                    geography={geo}
+                    className="rmi-state-mx"
+                    tabIndex={-1}
+                    style={{ default: { outline: 'none' }, hover: { outline: 'none' }, pressed: { outline: 'none' } }}
                   />
-                </g>
-              )
-            })}
-          </svg>
+                ))}
+              </Geographies>
+
+              {/* Southern US states (Texas, NM, AZ, CA) */}
+              <Geographies geography="/maps/us-states.json">
+                {({ geographies }) => geographies
+                  .filter(geo => US_BORDER_STATES.has(geo.properties.name as string))
+                  .map(geo => (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      className="rmi-state-us"
+                      tabIndex={-1}
+                      style={{ default: { outline: 'none' }, hover: { outline: 'none' }, pressed: { outline: 'none' } }}
+                    />
+                  ))}
+              </Geographies>
+
+              {/* Route arcs — projected via useMapContext() */}
+              <RoutesLayer routes={routes} cities={cities} routeClass={routeClass} />
+
+              {/* City nodes — projected via useMapContext() */}
+              <CitiesLayer
+                cities={cities}
+                nodeState={nodeState}
+                toggleCity={toggleCity}
+                setHoveredCity={setHoveredCity}
+              />
+            </g>
+          </ComposableMap>
         </div>
+
+        <DestinationList cities={cities} routes={routes} />
       </div>
     </section>
   )

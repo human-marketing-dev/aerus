@@ -12,8 +12,18 @@ import Servicios from '@/components/Servicios'
 import Pagos from '@/components/Pagos'
 import Newsletter from '@/components/Newsletter'
 import Footer from '@/components/Footer'
+import { getCities, getRoutes } from '@/lib/routes'
 
-export default function Page() {
+// Revalidate this page every hour so route/city changes in the Sheet propagate
+export const revalidate = 3600
+
+export default async function Page() {
+  const [cities, allRoutes] = await Promise.all([getCities(), getRoutes()])
+
+  // Drop route rows where either city has a typo / isn't in the ciudades sheet
+  const validCities = new Set(Object.keys(cities))
+  const routes = allRoutes.filter(([a, b]) => validCities.has(a) && validCities.has(b))
+
   return (
     <>
       <Nav/>
@@ -22,7 +32,7 @@ export default function Page() {
       <BrandBanner/>
       <Tarifas/>
       <RoutesMap/>
-      <RoutesMapInteractive/>
+      <RoutesMapInteractive cities={cities} routes={routes}/>
       <Reviews/>
       <Espera/>
       <Directos/>

@@ -1496,17 +1496,6 @@ img { display: block; }
   background: var(--aerus-deep-forest);
   overflow: hidden;
 }
-.exp-photo::before {
-  content: '';
-  position: absolute;
-  top: -5%; bottom: -5%;
-  left: 35%; right: -5%;
-  background: url('/texturas-verde-oscuro-aerus.webp') center / cover no-repeat;
-  transform: scaleX(-1);
-  opacity: 1;
-  pointer-events: none;
-  z-index: 2;
-}
 .exp-photo img {
   width: 100%; height: 100%;
   object-fit: cover;
@@ -1518,7 +1507,9 @@ img { display: block; }
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, transparent 60%, rgba(12,38,38,0.5) 100%);
+  background:
+    linear-gradient(to bottom, transparent 45%, rgba(12,38,38,0.85) 100%),
+    linear-gradient(to right,  transparent 40%, rgb(12,38,38) 100%);
   pointer-events: none;
 }
 .exp-photo-caption {
@@ -2004,15 +1995,15 @@ img { display: block; }
 .rmi {
   background: var(--aerus-deep-forest);
   color: var(--aerus-white);
+  padding: 80px 64px;
 }
 
 .rmi-inner {
   max-width: 1440px;
   margin: 0 auto;
-  padding: 100px 64px;
   display: grid;
   grid-template-columns: 360px 1fr;
-  gap: 64px;
+  gap: 48px;
   align-items: start;
 }
 
@@ -2040,8 +2031,9 @@ img { display: block; }
 
 .rmi-stats {
   display: flex;
-  flex-direction: column;
-  gap: 20px;
+  flex-direction: row;
+  gap: 24px;
+  flex-wrap: wrap;
   margin-bottom: 48px;
 }
 .rmi-n {
@@ -2143,6 +2135,20 @@ img { display: block; }
   width: 100%;
   height: auto;
   display: block;
+}
+
+/* State fills — Mexico and southern US */
+.rmi-state-mx {
+  fill: rgba(174, 248, 33, 0.05);
+  stroke: rgba(174, 248, 33, 0.10);
+  stroke-width: 0.7;
+  outline: none;
+}
+.rmi-state-us {
+  fill: rgba(174, 248, 33, 0.02);
+  stroke: rgba(174, 248, 33, 0.07);
+  stroke-width: 0.7;
+  outline: none;
 }
 
 /* Route arcs */
@@ -2254,20 +2260,625 @@ img { display: block; }
   flex-shrink: 0;
 }
 
+/* Destination list — always in DOM (SSR/SEO), shown only on mobile */
+/* Breakpoint: 767px = mobile. Change here to adjust across all rmi mobile rules. */
+.rmi-destinations { display: none; }
+
 /* Responsive */
 @media (max-width: 1024px) {
-  .rmi-inner { grid-template-columns: 300px 1fr; gap: 40px; padding: 80px 40px; }
+  .rmi { padding: 80px 32px; }
+  .rmi-inner { grid-template-columns: 340px 1fr; gap: 40px; }
 }
-@media (max-width: 768px) {
-  .rmi-inner {
-    grid-template-columns: 1fr;
-    padding: 60px 24px;
-    gap: 32px;
+@media (max-width: 767px) {
+  .rmi { padding: 48px 20px; }
+  .rmi-inner { grid-template-columns: 1fr; gap: 28px; }
+  .rmi-stats { flex-direction: row; gap: 28px; flex-wrap: wrap; }
+  .rmi-cta { padding-top: 24px; }
+
+  /* Disable touch interaction — map is static visual on mobile */
+  .rmi-hit-zone { display: none; }
+
+  /* Destination list — accordion */
+  .rmi-destinations {
+    display: block;
+    border-top: 1px solid rgba(174,248,33,0.12);
+    padding-top: 20px;
   }
-  .rmi-stats { flex-direction: row; gap: 28px; }
-  .rmi-cta { padding-top: 32px; }
+  .rmi-destinations-label {
+    font: 500 10px/1 var(--font-display);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin: 0 0 12px;
+  }
+
+  /* Accordion row */
+  .rmi-dest-row { border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .rmi-dest-row:last-child { border-bottom: none; }
+
+  /* Trigger button — full-width, no browser chrome */
+  .rmi-dest-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 11px 0;
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .rmi-dest-trigger-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  .rmi-dest-hub-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--aerus-spring-green);
+    flex-shrink: 0;
+  }
+  .rmi-dest-name {
+    font: 600 13px/1 var(--font-display);
+    color: var(--aerus-spring-green);
+  }
+  .rmi-dest-name--otras {
+    color: rgba(255,255,255,0.65);
+    font-weight: 500;
+  }
+  .rmi-dest-meta {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    color: rgba(255,255,255,0.3);
+  }
+  .rmi-dest-count { font: 500 11px/1 var(--font-display); }
+  .rmi-dest-chevron {
+    display: inline-block;
+    font-size: 15px;
+    line-height: 1;
+    transition: transform 0.18s ease;
+  }
+  .rmi-dest-trigger[aria-expanded="true"] .rmi-dest-chevron {
+    transform: rotate(90deg);
+  }
+
+  /* Chips panel */
+  .rmi-dest-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 4px 0 12px;
+  }
+  .rmi-dest-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    border-radius: 100px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.10);
+    font: 400 11px/1.2 var(--font-display);
+    color: rgba(255,255,255,0.75);
+  }
+  .rmi-dest-chip--viva {
+    border-color: rgba(255,122,64,0.30);
+    background: rgba(255,122,64,0.06);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .rmi-pulse { animation: none; }
+}
+
+/* ─── Destino individual (/destinos/[destino]/) ────────────────────────── */
+.destino-hero {
+  background: var(--aerus-deep-forest);
+  color: var(--aerus-white);
+  padding: 96px 64px 80px;
+  position: relative;
+  overflow: hidden;
+}
+.destino-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+.destino-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(12,38,38,0.55) 0%, rgba(12,38,38,0.90) 100%),
+    linear-gradient(to right, rgba(12,38,38,0.75) 0%, transparent 60%);
+}
+.destino-hero-inner {
+  position: relative;
+  z-index: 1;
+}
+.destino-hero-badges {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.destino-badge-intl {
+  display: inline-block;
+  font: 700 10px/1 var(--font-display);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--aerus-deep-forest);
+  background: var(--aerus-sky);
+  border-radius: 3px;
+  padding: 3px 6px;
+}
+.destino-hero-sub {
+  font: 400 16px/1.5 var(--font-display);
+  color: rgba(255,255,255,0.60);
+  margin: 16px 0 0;
+  max-width: 600px;
+}
+.destino-breadcrumb {
+  font: 400 13px/1 var(--font-display);
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 24px;
+}
+.destino-breadcrumb a {
+  color: rgba(255,255,255,0.45);
+  text-decoration: none;
+}
+.destino-breadcrumb a:hover { color: var(--aerus-spring-green); }
+.destino-h1 {
+  font: 700 52px/1.05 var(--font-display);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.destino-body {
+  background: #f6f6f4;
+  padding: 56px 64px 96px;
+}
+.destino-layout {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 48px;
+  align-items: start;
+}
+.destino-content {
+  min-height: 300px;
+}
+.destino-placeholder {
+  font: 400 16px/1.6 var(--font-display);
+  color: rgba(12,38,38,0.45);
+  padding: 48px;
+  border: 2px dashed rgba(12,38,38,0.12);
+  border-radius: 12px;
+  text-align: center;
+  margin: 0;
+}
+
+.destino-routes-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.07), 0 6px 20px rgba(0,0,0,0.06);
+  position: sticky;
+  top: 24px;
+}
+.destino-routes-title {
+  font: 600 16px/1.3 var(--font-display);
+  color: var(--aerus-deep-forest);
+  margin: 0 0 20px;
+}
+.destino-routes-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.destino-route-item { display: contents; }
+.destino-route-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border-radius: 8px;
+  font: 400 14px/1.2 var(--font-display);
+  color: var(--aerus-deep-forest);
+  text-decoration: none;
+  transition: background 0.14s ease;
+}
+.destino-route-link:hover { background: rgba(12,38,38,0.05); }
+.destino-route-arr {
+  color: var(--aerus-spring-green);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+.destino-cta { border-top: 1px solid rgba(12,38,38,0.08); padding-top: 20px; }
+.destino-cta .btn { width: 100%; justify-content: center; }
+
+/* Content sections within .destino-content */
+.destino-section {
+  padding-bottom: 40px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid rgba(12,38,38,0.08);
+}
+.destino-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+.destino-section-heading {
+  font: 600 18px/1.3 var(--font-display);
+  color: var(--aerus-deep-forest);
+  margin: 0 0 20px;
+}
+.destino-desc {
+  font: 400 16px/1.7 var(--font-body);
+  color: var(--fg-muted);
+  margin: 0;
+  max-width: 640px;
+}
+
+/* Route chips — interlinked city pills */
+.destino-routes-chips {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.destino-route-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 100px;
+  font: 500 14px/1 var(--font-display);
+  background: rgba(12,38,38,0.05);
+  border: 1px solid rgba(12,38,38,0.10);
+  color: var(--aerus-deep-forest);
+  text-decoration: none;
+  transition: background 0.16s ease, border-color 0.16s ease;
+}
+a.destino-route-chip:hover {
+  background: var(--aerus-spring-green);
+  border-color: var(--aerus-spring-green);
+  color: var(--aerus-deep-forest);
+}
+.destino-route-chip--plain {
+  color: rgba(12,38,38,0.45);
+  border-color: rgba(12,38,38,0.06);
+}
+.destino-route-chip-arr {
+  color: var(--aerus-spring-green);
+  font-size: 15px;
+  line-height: 1;
+}
+a.destino-route-chip:hover .destino-route-chip-arr {
+  color: var(--aerus-deep-forest);
+}
+
+/* Airport placeholder */
+.destino-airport-placeholder {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  border-radius: 10px;
+  background: rgba(12,38,38,0.03);
+  border: 1.5px dashed rgba(12,38,38,0.12);
+}
+.destino-airport-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+  opacity: 0.35;
+}
+.destino-airport-placeholder p {
+  font: 400 14px/1.5 var(--font-display);
+  color: rgba(12,38,38,0.40);
+  margin: 0;
+}
+
+/* FAQ block */
+.destino-faq {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.destino-faq-item {
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(12,38,38,0.07);
+}
+.destino-faq-item:first-child { padding-top: 0; }
+.destino-faq-item:last-child { border-bottom: none; padding-bottom: 0; }
+.destino-faq-q {
+  font: 600 15px/1.4 var(--font-display);
+  color: var(--aerus-deep-forest);
+  margin: 0 0 8px;
+}
+.destino-faq-a {
+  font: 400 14px/1.6 var(--font-body);
+  color: var(--fg-muted);
+  margin: 0;
+}
+
+/* Sidebar card extras */
+.destino-sidebar-stat {
+  font: 700 28px/1 var(--font-display);
+  color: var(--aerus-deep-forest);
+  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+}
+.destino-sidebar-label {
+  font: 400 14px/1.4 var(--font-display);
+  color: rgba(12,38,38,0.55);
+  margin: 0 0 24px;
+}
+
+/* Responsive */
+@media (max-width: 1180px) {
+  .destino-hero { padding: 80px 32px 64px; }
+  .destino-body { padding: 48px 32px 80px; }
+}
+@media (max-width: 900px) {
+  .destino-layout { grid-template-columns: 1fr; gap: 32px; }
+  .destino-routes-card { position: static; }
+}
+@media (max-width: 767px) {
+  .destino-hero { padding: 64px 20px 48px; }
+  .destino-h1 { font-size: 36px; }
+  .destino-body { padding: 40px 20px 56px; }
+  .destino-hero-sub { font-size: 14px; }
+}
+
+/* ─── Destinos index — hero stats ─────────────────────────────────────── */
+.destinos-hero {
+  background: var(--aerus-deep-forest);
+  color: var(--aerus-white);
+  padding: 100px 64px 80px;
+}
+.destinos-intro {
+  color: rgba(255,255,255,0.60) !important;
+  margin-top: 20px;
+}
+.destinos-hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 36px;
+  flex-wrap: wrap;
+}
+.destinos-stat {
+  font: 400 14px/1 var(--font-display);
+  color: rgba(255,255,255,0.55);
+  padding-right: 20px;
+}
+.destinos-stat strong {
+  font-weight: 700;
+  color: var(--aerus-white);
+  margin-right: 4px;
+}
+.destinos-stat-sep {
+  width: 1px;
+  height: 14px;
+  background: rgba(255,255,255,0.20);
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+/* ─── Hub featured section ─────────────────────────────────────────────── */
+.destinos-hubs-section {
+  background: #0e2d2d;
+  padding: 72px 64px 80px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+.destinos-sub-eyebrow {
+  color: var(--aerus-spring-green);
+  margin-bottom: 32px;
+}
+.destinos-hubs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Hub card */
+.dest-hub-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.07);
+  text-decoration: none;
+  color: var(--aerus-white);
+  transition: border-color 0.20s ease, background 0.20s ease, transform 0.20s ease;
+}
+.dest-hub-card:hover {
+  border-color: var(--aerus-spring-green);
+  background: rgba(255,255,255,0.07);
+  transform: translateY(-2px);
+}
+.dest-hub-card-visual {
+  height: 220px;
+  background-color: #163232;
+  background-image: linear-gradient(160deg, #1e4444 0%, #0c2626 100%);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.dest-hub-card-iata {
+  position: absolute;
+  bottom: 16px;
+  left: 20px;
+  font: 700 34px/1 var(--font-display);
+  letter-spacing: -0.02em;
+  color: var(--aerus-spring-green);
+  pointer-events: none;
+}
+.dest-hub-card-body {
+  padding: 20px 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+.dest-hub-badge {
+  display: inline-block;
+  font: 700 10px/1 var(--font-display);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--aerus-deep-forest);
+  background: var(--aerus-spring-green);
+  border-radius: 3px;
+  padding: 3px 6px;
+  width: fit-content;
+  margin-bottom: 4px;
+}
+.dest-hub-card-name {
+  font: 600 22px/1.1 var(--font-display);
+  letter-spacing: -0.01em;
+}
+.dest-hub-card-routes {
+  font: 400 13px/1.4 var(--font-display);
+  color: rgba(255,255,255,0.45);
+}
+.dest-hub-card-cta {
+  margin-top: 14px;
+  font: 600 11px/1 var(--font-display);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--aerus-spring-green);
+}
+
+/* ─── All destinations grid section ────────────────────────────────────── */
+.destinos-all-section {
+  background: var(--aerus-cloud);
+  padding: 72px 64px 96px;
+}
+.destinos-all-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+.destinos-all-header .eyebrow { margin-bottom: 0; }
+.destinos-all-count {
+  font: 400 13px/1 var(--font-display);
+  color: var(--fg-muted);
+  margin: 0;
+}
+.destinos-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+/* Destination card */
+.dest-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--aerus-white);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 0.18s ease, transform 0.18s ease;
+}
+.dest-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.11);
+  transform: translateY(-2px);
+}
+.dest-card-img {
+  height: 160px;
+  background-color: var(--aerus-deep-forest);
+  background-image: linear-gradient(135deg, var(--aerus-deep-forest) 0%, #1a4a4a 100%);
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.dest-card-iata {
+  position: absolute;
+  bottom: 12px;
+  left: 14px;
+  font: 700 20px/1 var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--aerus-spring-green);
+  pointer-events: none;
+}
+.dest-badge-intl {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font: 600 9px/1 var(--font-display);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--aerus-deep-forest);
+  background: var(--aerus-sky);
+  border-radius: 3px;
+  padding: 4px 7px;
+  pointer-events: none;
+}
+.dest-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 16px 16px 18px;
+}
+.dest-card-hub {
+  display: inline-block;
+  font: 700 10px/1 var(--font-display);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--aerus-deep-forest);
+  background: var(--aerus-spring-green);
+  border-radius: 3px;
+  padding: 3px 6px;
+  width: fit-content;
+  margin-bottom: 4px;
+}
+.dest-card-name {
+  font: 600 16px/1.2 var(--font-display);
+  color: var(--aerus-deep-forest);
+}
+.dest-card-count {
+  font: 400 12px/1 var(--font-display);
+  color: rgba(12,38,38,0.45);
+}
+
+/* ─── Destinos responsive ───────────────────────────────────────────────── */
+@media (max-width: 1180px) {
+  .destinos-hubs-section { padding: 64px 32px 72px; }
+  .destinos-all-section { padding: 64px 32px 80px; }
+  .destinos-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 900px) {
+  .destinos-hubs-grid { grid-template-columns: repeat(2, 1fr); }
+  .dest-hub-card:last-child { grid-column: span 1; }
+}
+@media (max-width: 767px) {
+  .destinos-hero { padding: 72px 20px 56px; }
+  .destinos-hubs-section { padding: 48px 20px 56px; }
+  .destinos-all-section { padding: 48px 20px 64px; }
+  .destinos-hubs-grid { grid-template-columns: 1fr; gap: 14px; }
+  .dest-hub-card-visual { height: 180px; }
+  .dest-hub-card-iata { font-size: 26px; }
+  .destinos-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .dest-card-img { height: 130px; }
+}
+@media (max-width: 480px) {
+  .destinos-grid { grid-template-columns: 1fr; }
 }
