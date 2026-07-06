@@ -1,19 +1,22 @@
 'use client'
-import { useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Icon } from './icons'
 
 export default function Nav() {
-  const [active, setActive] = useState('vuelos')
+  const pathname = usePathname()
+  const active = (href: string) =>
+    pathname === href || pathname.startsWith(href) ? 'active' : ''
 
   const left = [
-    { id: 'vuelos', label: 'Vuelos' },
-    { id: 'destinos', label: 'Destinos' },
-    { id: 'tarifas', label: 'Tarifas' },
+    { href: '/destinos/', label: 'Destinos' },
+    { href: '/rutas/', label: 'Rutas' },
+    { href: '/corporativo/', label: 'Corporativo' },
   ]
   const right = [
-    { id: 'experiencia', label: 'Experiencia' },
-    { id: 'servicios', label: 'Servicios' },
-    { id: 'ayuda', label: 'Ayuda' },
+    { href: '/ayuda/', label: 'Ayuda' },
+    { href: '/mi-vuelo/', label: 'Mi vuelo' },
+    { href: '/check-in/', label: 'Check-in' },
   ]
 
   return (
@@ -30,26 +33,28 @@ export default function Nav() {
       <nav className="nav">
         <div className="nav-group nav-left">
           {left.map(i => (
-            <a key={i.id} href={`#${i.id}`} className={active === i.id ? 'active' : ''} onClick={() => setActive(i.id)}>
+            <Link key={i.href} href={i.href} className={active(i.href)}>
               {i.label}
-            </a>
+            </Link>
           ))}
         </div>
 
-        <a href="#" className="brand">
+        <Link href="/" className="brand">
           <img src="/logo-lockup-inverse.svg" alt="Aerus"/>
-        </a>
+        </Link>
 
         <div className="nav-group nav-right">
           {right.map(i => (
-            <a key={i.id} href={`#${i.id}`} className={active === i.id ? 'active' : ''} onClick={() => setActive(i.id)}>
+            <Link key={i.href} href={i.href} className={active(i.href)}>
               {i.label}
-            </a>
+            </Link>
           ))}
           <div className="nav-vr"/>
           <button className="icon-btn" aria-label="Buscar"><Icon name="search" size={15}/></button>
           <button className="lang"><Icon name="globe" size={13}/> ES · MXN</button>
-          <button className="login"><Icon name="user" size={14}/> Mi cuenta</button>
+          <Link href="/reservar/" className="login">
+            <Icon name="plane-takeoff" size={14}/> Reservar
+          </Link>
         </div>
       </nav>
     </>

@@ -1,8 +1,9 @@
+import Link from 'next/link'
 import { Icon } from './icons'
 
 export default function Footer() {
   return (
-    <footer className="footer" id="ayuda">
+    <footer className="footer">
       <div className="container">
         <div className="top">
           <div className="brand">
@@ -15,40 +16,53 @@ export default function Footer() {
             </div>
           </div>
           <div>
-            <h5>Mi reservación</h5>
+            <h5>Volar</h5>
             <ul>
-              <li><a href="#">Consulta tu reservación</a></li>
-              <li><a href="#">Web check-in</a></li>
-              <li><a href="#">Cambios y cancelaciones</a></li>
-              <li><a href="#">Estatus de vuelo</a></li>
+              <li><Link href="/reservar/">Reservar vuelo</Link></li>
+              <li><Link href="/reservar/tarifas/">Tarifas y familias</Link></li>
+              <li><Link href="/check-in/">Web check-in</Link></li>
+              <li><Link href="/mi-vuelo/">Mi vuelo</Link></li>
+              <li><Link href="/mi-vuelo/">Cambios y cancelaciones</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h5>Destinos y rutas</h5>
+            <ul>
+              <li><Link href="/destinos/">Destinos</Link></li>
+              <li><Link href="/rutas/">Rutas</Link></li>
+              <li><Link href="/rutas/conexiones-viva-aerobus/">Conexiones Viva Aerobus</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h5>Corporativo</h5>
+            <ul>
+              <li><Link href="/corporativo/">Corporativo</Link></li>
+              <li><Link href="/corporativo/charter/">Aerus Charter</Link></li>
+              <li><Link href="/corporativo/flight-pass/">Aerus Flight Pass</Link></li>
+              <li><Link href="/corporativo/empresas/">Soluciones para empresas</Link></li>
+            </ul>
+          </div>
+          <div>
+            <h5>La aerolínea</h5>
+            <ul>
+              <li><Link href="/experiencia/">Experiencia Aerus</Link></li>
+              <li><Link href="/nosotros/">Nosotros</Link></li>
+              <li><Link href="/nosotros/prensa/">Sala de prensa</Link></li>
+              <li><Link href="/mro/">MRO</Link></li>
+              <li><Link href="/mro/capacidades/">Capacidades y certificaciones</Link></li>
             </ul>
           </div>
           <div>
             <h5>Ayuda</h5>
             <ul>
-              <li><a href="#">Preguntas frecuentes</a></li>
-              <li><a href="#">Facturación</a></li>
-              <li><a href="#">Legales</a></li>
-              <li><a href="#">Aviso de privacidad</a></li>
-            </ul>
-          </div>
-          <div>
-            <h5>Nosotros</h5>
-            <ul>
-              <li><a href="#">Aerus MRO</a></li>
-              <li><a href="#">Blog</a></li>
-              <li><a href="#">Alianzas</a></li>
-              <li><a href="#">Sala de prensa</a></li>
-              <li><a href="#">Bolsa de trabajo</a></li>
-            </ul>
-          </div>
-          <div>
-            <h5>Atención a clientes</h5>
-            <ul>
-              <li><a href="#">Centro de ayuda</a></li>
-              <li><a href="#">Programa Aerus Vital</a></li>
-              <li><a href="#">Personas con discapacidad</a></li>
-              <li><a href="#">Grupos y empresas</a></li>
+              <li><Link href="/ayuda/">Centro de ayuda</Link></li>
+              <li><Link href="/ayuda/faq/">Preguntas frecuentes</Link></li>
+              <li><Link href="/ayuda/documentos-para-viajar/">Documentos para viajar</Link></li>
+              <li><Link href="/ayuda/equipaje/">Equipaje</Link></li>
+              <li><Link href="/ayuda/requerimientos-especiales/">Requerimientos especiales</Link></li>
+              <li><Link href="/ayuda/viajar-con-mascota/">Viajar con mascota</Link></li>
+              <li><Link href="/ayuda/facturacion/">Facturación</Link></li>
+              <li><Link href="/ayuda/contacto/">Contacto</Link></li>
             </ul>
           </div>
         </div>
