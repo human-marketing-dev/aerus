@@ -49,6 +49,7 @@ export function Icon({ name, size = 18, stroke = 1.5, className = '' }: IconProp
     case 'support': return <svg {...props}><path d="M21 12a9 9 0 1 0-18 0v6a3 3 0 0 0 3 3h1v-9H4M21 12v6a3 3 0 0 1-3 3h-1v-9h4"/></svg>
     case 'credit-card': return <svg {...props}><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
     case 'cash': return <svg {...props}><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+    case 'x-twitter': return <svg {...props}><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L.517 2.25H8.02l4.264 5.636L18.244 2.25Zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor" stroke="none"/></svg>
     case 'x-deco': return (
       <svg width={size} height={size} viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" className={className}>
         <path d="M20 20 L80 80 M80 20 L20 80"/>
