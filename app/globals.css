@@ -4092,8 +4092,8 @@ a.destino-route-chip:hover .destino-route-chip-arr {
 .sitemap-item { display: flex; flex-direction: column; gap: 2px; }
 .sitemap-link {
   display: flex;
-  align-items: baseline;
-  gap: 12px;
+  align-items: center;
+  gap: 10px;
   padding: 9px 12px;
   border-radius: 6px;
   text-decoration: none;
@@ -4130,5 +4130,38 @@ a.destino-route-chip:hover .destino-route-chip-arr {
   margin-left: 20px;
 }
 .sitemap-grandchildren .sitemap-link { font-size: 12px; color: rgba(12,38,38,0.65); }
+/* Sitemap — status dots */
+.sitemap-link-label { flex: 1 1 auto; min-width: 0; }
+.sitemap-dot {
+  flex-shrink: 0;
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.sitemap-dot--gris     { background: #cbd5e1; }
+.sitemap-dot--amarillo { background: #f59e0b; }
+.sitemap-dot--naranja  { background: #f97316; }
+.sitemap-dot--azul     { background: #3b82f6; }
+.sitemap-dot--verde    { background: #22c55e; }
+/* Sitemap — legend */
+.sitemap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  padding: 14px 16px;
+  margin-bottom: 40px;
+  background: var(--aerus-white);
+  border: 1px solid rgba(12,38,38,0.10);
+  border-radius: 10px;
+}
+.sitemap-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font: 400 12px/1 var(--font-display);
+  color: rgba(12,38,38,0.55);
+}
 @media (max-width: 1180px) { .sitemap-hero { padding: 80px 32px 56px; } .sitemap-body { padding: 56px 32px 72px; } }
 @media (max-width: 767px)  { .sitemap-hero { padding: 64px 20px 48px; } .sitemap-body { padding: 40px 20px 56px; } .sitemap-link-url { display: none; } }

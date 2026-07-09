@@ -9,10 +9,21 @@ export const metadata: Metadata = {
   robots: { index: false },
 }
 
+type Status = 'verde' | 'azul' | 'naranja' | 'amarillo' | 'gris'
+
 type SitemapEntry = {
   label: string
   href: string
+  status?: Status
   children?: SitemapEntry[]
+}
+
+const STATUS_LABELS: Record<Status, string> = {
+  gris:     'Por definir',
+  amarillo: 'Info lista',
+  naranja:  'En construcción',
+  azul:     'Construida',
+  verde:    'Aprobada',
 }
 
 export default function MapaDelSitioPage() {
@@ -22,17 +33,18 @@ export default function MapaDelSitioPage() {
     {
       title: 'Tareas principales',
       entries: [
-        { label: 'Inicio', href: '/' },
+        { label: 'Inicio', href: '/', status: 'azul' },
         {
           label: 'Reservar',
           href: '/reservar/',
+          status: 'gris',
           children: [
-            { label: 'Tarifas y familias', href: '/reservar/tarifas/' },
-            { label: 'Métodos de pago', href: '/reservar/metodos-de-pago/' },
+            { label: 'Tarifas y familias', href: '/reservar/tarifas/', status: 'gris' },
+            { label: 'Métodos de pago', href: '/reservar/metodos-de-pago/', status: 'gris' },
           ],
         },
-        { label: 'Check-in', href: '/check-in/' },
-        { label: 'Mi vuelo', href: '/mi-vuelo/' },
+        { label: 'Check-in', href: '/check-in/', status: 'gris' },
+        { label: 'Mi vuelo', href: '/mi-vuelo/', status: 'gris' },
       ],
     },
     {
@@ -41,9 +53,11 @@ export default function MapaDelSitioPage() {
         {
           label: 'Destinos (índice)',
           href: '/destinos/',
+          status: 'naranja',
           children: destinos.map(d => ({
             label: d.nombre,
             href: `/destinos/${d.slug}/`,
+            status: 'naranja' as Status,
           })),
         },
       ],
@@ -54,15 +68,16 @@ export default function MapaDelSitioPage() {
         {
           label: 'Rutas (índice)',
           href: '/rutas/',
+          status: 'naranja',
           children: [
-            { label: 'Monterrey – Brownsville', href: '/rutas/monterrey-brownsville/' },
-            { label: 'Monterrey – Laredo', href: '/rutas/monterrey-laredo/' },
-            { label: 'Monterrey – McAllen', href: '/rutas/monterrey-mcallen/' },
-            { label: 'Monterrey – Durango', href: '/rutas/monterrey-durango/' },
-            { label: 'Cancún – Cozumel', href: '/rutas/cancun-cozumel/' },
-            { label: 'Cancún – Chetumal', href: '/rutas/cancun-chetumal/' },
-            { label: 'Veracruz – Villahermosa', href: '/rutas/veracruz-villahermosa/' },
-            { label: 'Conexiones Viva Aerobus', href: '/rutas/conexiones-viva-aerobus/' },
+            { label: 'Monterrey – Brownsville', href: '/rutas/monterrey-brownsville/', status: 'naranja' },
+            { label: 'Monterrey – Laredo', href: '/rutas/monterrey-laredo/', status: 'naranja' },
+            { label: 'Monterrey – McAllen', href: '/rutas/monterrey-mcallen/', status: 'naranja' },
+            { label: 'Monterrey – Durango', href: '/rutas/monterrey-durango/', status: 'naranja' },
+            { label: 'Cancún – Cozumel', href: '/rutas/cancun-cozumel/', status: 'naranja' },
+            { label: 'Cancún – Chetumal', href: '/rutas/cancun-chetumal/', status: 'naranja' },
+            { label: 'Veracruz – Villahermosa', href: '/rutas/veracruz-villahermosa/', status: 'naranja' },
+            { label: 'Conexiones Viva Aerobus', href: '/rutas/conexiones-viva-aerobus/', status: 'naranja' },
           ],
         },
       ],
@@ -73,22 +88,25 @@ export default function MapaDelSitioPage() {
         {
           label: 'Corporativo',
           href: '/corporativo/',
+          status: 'amarillo',
           children: [
             {
               label: 'Aerus Charter',
               href: '/corporativo/charter/',
+              status: 'amarillo',
               children: [
-                { label: 'Cotizar charter', href: '/corporativo/charter/cotizar/' },
+                { label: 'Cotizar charter', href: '/corporativo/charter/cotizar/', status: 'gris' },
               ],
             },
             {
               label: 'Aerus Flight Pass',
               href: '/corporativo/flight-pass/',
+              status: 'amarillo',
               children: [
-                { label: 'Contacto Flight Pass', href: '/corporativo/flight-pass/contacto/' },
+                { label: 'Contacto Flight Pass', href: '/corporativo/flight-pass/contacto/', status: 'gris' },
               ],
             },
-            { label: 'Soluciones para empresas', href: '/corporativo/empresas/' },
+            { label: 'Soluciones para empresas', href: '/corporativo/empresas/', status: 'gris' },
           ],
         },
       ],
@@ -99,12 +117,13 @@ export default function MapaDelSitioPage() {
         {
           label: 'Experiencia Aerus',
           href: '/experiencia/',
+          status: 'gris',
           children: [
-            { label: 'Espera minutos, no horas', href: '/experiencia/proceso-agil/' },
-            { label: 'La flota', href: '/experiencia/flota/' },
-            { label: 'Asistencia de viaje', href: '/experiencia/asistencia-de-viaje/' },
-            { label: 'Seguro de cancelación', href: '/experiencia/seguro-de-cancelacion/' },
-            { label: 'Vuelos para grupos', href: '/experiencia/grupos/' },
+            { label: 'Espera minutos, no horas', href: '/experiencia/proceso-agil/', status: 'gris' },
+            { label: 'La flota', href: '/experiencia/flota/', status: 'gris' },
+            { label: 'Asistencia de viaje', href: '/experiencia/asistencia-de-viaje/', status: 'gris' },
+            { label: 'Seguro de cancelación', href: '/experiencia/seguro-de-cancelacion/', status: 'gris' },
+            { label: 'Vuelos para grupos', href: '/experiencia/grupos/', status: 'gris' },
           ],
         },
       ],
@@ -115,8 +134,9 @@ export default function MapaDelSitioPage() {
         {
           label: 'Nosotros',
           href: '/nosotros/',
+          status: 'gris',
           children: [
-            { label: 'Sala de prensa', href: '/nosotros/prensa/' },
+            { label: 'Sala de prensa', href: '/nosotros/prensa/', status: 'gris' },
           ],
         },
       ],
@@ -127,13 +147,14 @@ export default function MapaDelSitioPage() {
         {
           label: 'MRO',
           href: '/mro/',
+          status: 'amarillo',
           children: [
-            { label: 'Capacidades y certificaciones', href: '/mro/capacidades/' },
-            { label: 'Motores PT6A', href: '/mro/motores-pt6a/' },
-            { label: 'Hélices', href: '/mro/helices/' },
-            { label: 'Accesorios y planeadores', href: '/mro/accesorios-planeadores/' },
-            { label: 'Radios e instrumentos', href: '/mro/radios-instrumentos/' },
-            { label: 'Solicitar cotización', href: '/mro/cotizacion/' },
+            { label: 'Capacidades y certificaciones', href: '/mro/capacidades/', status: 'gris' },
+            { label: 'Motores PT6A', href: '/mro/motores-pt6a/', status: 'gris' },
+            { label: 'Hélices', href: '/mro/helices/', status: 'gris' },
+            { label: 'Accesorios y planeadores', href: '/mro/accesorios-planeadores/', status: 'gris' },
+            { label: 'Radios e instrumentos', href: '/mro/radios-instrumentos/', status: 'gris' },
+            { label: 'Solicitar cotización', href: '/mro/cotizacion/', status: 'gris' },
           ],
         },
       ],
@@ -144,15 +165,16 @@ export default function MapaDelSitioPage() {
         {
           label: 'Centro de ayuda',
           href: '/ayuda/',
+          status: 'azul',
           children: [
-            { label: 'Preguntas frecuentes', href: '/ayuda/faq/' },
-            { label: 'Documentos para viajar', href: '/ayuda/documentos-para-viajar/' },
-            { label: 'Equipaje', href: '/ayuda/equipaje/' },
-            { label: 'Tiempos de llegada al aeropuerto', href: '/ayuda/tiempos-aeropuerto/' },
-            { label: 'Requerimientos especiales', href: '/ayuda/requerimientos-especiales/' },
-            { label: 'Viajar con mascota', href: '/ayuda/viajar-con-mascota/' },
-            { label: 'Facturación', href: '/ayuda/facturacion/' },
-            { label: 'Contacto', href: '/ayuda/contacto/' },
+            { label: 'Preguntas frecuentes', href: '/ayuda/faq/', status: 'azul' },
+            { label: 'Documentos para viajar', href: '/ayuda/documentos-para-viajar/', status: 'azul' },
+            { label: 'Equipaje', href: '/ayuda/equipaje/', status: 'azul' },
+            { label: 'Tiempos de llegada al aeropuerto', href: '/ayuda/tiempos-aeropuerto/', status: 'azul' },
+            { label: 'Requerimientos especiales', href: '/ayuda/requerimientos-especiales/', status: 'azul' },
+            { label: 'Viajar con mascota', href: '/ayuda/viajar-con-mascota/', status: 'azul' },
+            { label: 'Facturación', href: '/ayuda/facturacion/', status: 'azul' },
+            { label: 'Contacto', href: '/ayuda/contacto/', status: 'azul' },
           ],
         },
       ],
@@ -174,6 +196,16 @@ export default function MapaDelSitioPage() {
 
         <section className="sitemap-body">
           <div className="container sitemap-tree">
+
+            <div className="sitemap-legend" role="note" aria-label="Leyenda de estatus">
+              {(Object.entries(STATUS_LABELS) as [Status, string][]).map(([status, label]) => (
+                <span key={status} className="sitemap-legend-item">
+                  <span className={`sitemap-dot sitemap-dot--${status}`} aria-hidden="true" />
+                  {label}
+                </span>
+              ))}
+            </div>
+
             {sections.map(sec => (
               <div key={sec.title} className="sitemap-section">
                 <p className="sitemap-section-title">{sec.title}</p>
@@ -196,7 +228,14 @@ function EntryItem({ entry, depth = 0 }: { entry: SitemapEntry; depth?: number }
   return (
     <li className="sitemap-item">
       <Link href={entry.href} className="sitemap-link">
-        {entry.label}
+        {entry.status && (
+          <span
+            className={`sitemap-dot sitemap-dot--${entry.status}`}
+            title={STATUS_LABELS[entry.status]}
+            aria-label={STATUS_LABELS[entry.status]}
+          />
+        )}
+        <span className="sitemap-link-label">{entry.label}</span>
         <span className="sitemap-link-url">{entry.href}</span>
       </Link>
       {entry.children && entry.children.length > 0 && (
