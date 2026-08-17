@@ -68,16 +68,16 @@ export default function MapaDelSitioPage() {
         {
           label: 'Rutas (índice)',
           href: '/rutas/',
-          status: 'naranja',
+          status: 'azul',
           children: [
-            { label: 'Monterrey – Brownsville', href: '/rutas/monterrey-brownsville/', status: 'naranja' },
-            { label: 'Monterrey – Laredo', href: '/rutas/monterrey-laredo/', status: 'naranja' },
-            { label: 'Monterrey – McAllen', href: '/rutas/monterrey-mcallen/', status: 'naranja' },
-            { label: 'Monterrey – Durango', href: '/rutas/monterrey-durango/', status: 'naranja' },
-            { label: 'Cancún – Cozumel', href: '/rutas/cancun-cozumel/', status: 'naranja' },
-            { label: 'Cancún – Chetumal', href: '/rutas/cancun-chetumal/', status: 'naranja' },
-            { label: 'Veracruz – Villahermosa', href: '/rutas/veracruz-villahermosa/', status: 'naranja' },
-            { label: 'Conexiones Viva Aerobus', href: '/rutas/conexiones-viva-aerobus/', status: 'naranja' },
+            { label: 'Monterrey – Brownsville', href: '/rutas/monterrey-brownsville/', status: 'azul' },
+            { label: 'Monterrey – Laredo', href: '/rutas/monterrey-laredo/', status: 'azul' },
+            { label: 'Monterrey – McAllen', href: '/rutas/monterrey-mcallen/', status: 'azul' },
+            { label: 'Monterrey – Durango', href: '/rutas/monterrey-durango/', status: 'azul' },
+            { label: 'Cancún – Cozumel', href: '/rutas/cancun-cozumel/', status: 'azul' },
+            { label: 'Cancún – Chetumal', href: '/rutas/cancun-chetumal/', status: 'azul' },
+            { label: 'Veracruz – Villahermosa', href: '/rutas/veracruz-villahermosa/', status: 'azul' },
+            { label: 'Conexiones Viva Aerobus', href: '/rutas/conexiones-viva-aerobus/', status: 'azul' },
           ],
         },
       ],
@@ -88,25 +88,25 @@ export default function MapaDelSitioPage() {
         {
           label: 'Corporativo',
           href: '/corporativo/',
-          status: 'amarillo',
+          status: 'azul',
           children: [
             {
               label: 'Aerus Charter',
               href: '/corporativo/charter/',
-              status: 'amarillo',
+              status: 'azul',
               children: [
-                { label: 'Cotizar charter', href: '/corporativo/charter/cotizar/', status: 'gris' },
+                { label: 'Cotizar charter', href: '/corporativo/charter/cotizar/', status: 'azul' },
               ],
             },
             {
               label: 'Aerus Flight Pass',
               href: '/corporativo/flight-pass/',
-              status: 'amarillo',
+              status: 'azul',
               children: [
-                { label: 'Contacto Flight Pass', href: '/corporativo/flight-pass/contacto/', status: 'gris' },
+                { label: 'Contacto Flight Pass', href: '/corporativo/flight-pass/contacto/', status: 'azul' },
               ],
             },
-            { label: 'Soluciones para empresas', href: '/corporativo/empresas/', status: 'gris' },
+            { label: 'Soluciones para empresas', href: '/corporativo/empresas/', status: 'azul' },
           ],
         },
       ],
@@ -129,14 +129,31 @@ export default function MapaDelSitioPage() {
       ],
     },
     {
+      title: 'Blog',
+      entries: [
+        {
+          label: 'Blog',
+          href: '/blog/',
+          status: 'azul',
+          children: [
+            { label: '¡Con Aerus llega a los mejores lugares caribeños!', href: '/blog/grand-costa-maya/', status: 'azul' },
+            { label: '¡Aerus: Tu guía para unas vacaciones inolvidables!', href: '/blog/cancun-vacaciones-inolvidables/', status: 'azul' },
+            { label: 'El paraíso a solo un vuelo de distancia', href: '/blog/descubre-cozumel/', status: 'azul' },
+            { label: '¿Quiénes somos?', href: '/blog/quienes-somos/', status: 'azul' },
+            { label: 'Más cerca de ti', href: '/blog/nace-aerus/', status: 'azul' },
+          ],
+        },
+      ],
+    },
+    {
       title: 'Nosotros',
       entries: [
         {
           label: 'Nosotros',
           href: '/nosotros/',
-          status: 'gris',
+          status: 'azul',
           children: [
-            { label: 'Sala de prensa', href: '/nosotros/prensa/', status: 'gris' },
+            { label: 'Sala de prensa', href: '/nosotros/prensa/', status: 'azul' },
           ],
         },
       ],
@@ -156,6 +173,26 @@ export default function MapaDelSitioPage() {
             { label: 'Radios e instrumentos', href: '/mro/radios-instrumentos/', status: 'azul' },
             { label: 'Solicitar cotización', href: '/mro/cotizacion/', status: 'azul' },
           ],
+        },
+      ],
+    },
+    {
+      title: 'Legal',
+      entries: [
+        {
+          label: 'Términos y condiciones',
+          href: '/legal/terminos-y-condiciones/',
+          status: 'azul',
+        },
+        {
+          label: 'Aviso de privacidad',
+          href: '/legal/aviso-de-privacidad/',
+          status: 'azul',
+        },
+        {
+          label: 'Política de cookies',
+          href: '/legal/cookies/',
+          status: 'azul',
         },
       ],
     },

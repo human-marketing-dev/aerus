@@ -3,7 +3,6 @@ import Hero from '@/components/Hero'
 import Experiencia from '@/components/Experiencia'
 import Tarifas from '@/components/Tarifas'
 import BrandBanner from '@/components/BrandBanner'
-import RoutesMap from '@/components/RoutesMap'
 import RoutesMapInteractive from '@/components/RoutesMapInteractive'
 import Reviews from '@/components/Reviews'
 import Espera from '@/components/Espera'
@@ -31,7 +30,6 @@ export default async function Page() {
       <Experiencia/>
       <BrandBanner/>
       <Tarifas/>
-      <RoutesMap/>
       <RoutesMapInteractive cities={cities} routes={routes}/>
       <Reviews/>
       <Espera/>

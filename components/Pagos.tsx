@@ -1,44 +1,47 @@
 'use client'
 import { useState } from 'react'
+import Image from 'next/image'
 import { Icon } from './icons'
 
-interface Brand { name: string; display: string; sub?: string; bg: string; fg: string }
+interface Brand {
+  name: string
+  logo: string
+}
 
 const CARDS: Brand[] = [
-  { name: 'Visa',         display: 'VISA',        bg: '#1434CB', fg: '#fff' },
-  { name: 'Mastercard',   display: 'Mastercard',   bg: '#252525', fg: '#fff' },
-  { name: 'AMEX',         display: 'AMEX',         bg: '#2E77BC', fg: '#fff' },
-  { name: 'Carnet',       display: 'CARNET',       bg: '#B30000', fg: '#fff' },
-  { name: 'BBVA',         display: 'BBVA',         bg: '#004A96', fg: '#fff' },
-  { name: 'Citibanamex',  display: 'Citibanamex',  bg: '#003B75', fg: '#fff' },
-  { name: 'Banorte',      display: 'Banorte',      bg: '#C8102E', fg: '#fff' },
-  { name: 'Santander',    display: 'Santander',    bg: '#EC0000', fg: '#fff' },
-  { name: 'BanRegio',     display: 'banregio',     bg: '#00529B', fg: '#fff' },
-  { name: 'Inbursa',      display: 'INBURSA',      bg: '#003082', fg: '#fff' },
-  { name: 'Scotiabank',   display: 'Scotiabank',   bg: '#EC111A', fg: '#fff' },
-  { name: 'HSBC',         display: 'HSBC',         bg: '#DB0011', fg: '#fff' },
-  { name: 'Banco Azteca', display: 'Azteca',       sub: 'banco', bg: '#F7941D', fg: '#fff' },
-  { name: 'Afirme',       display: 'Afirme',       bg: '#005BAA', fg: '#fff' },
-  { name: 'Invex',        display: 'INVEX',        bg: '#1B3F8F', fg: '#fff' },
-  { name: 'SPEI',         display: 'SPEI',         sub: 'transferencia', bg: '#007D59', fg: '#fff' },
+  { name: 'Visa',          logo: '/logos/visa-logo-blanco.webp' },
+  { name: 'Mastercard',    logo: '/logos/mastercard-logo-blanco.webp' },
+  { name: 'American Express', logo: '/logos/american-express-logo-blanco.webp' },
+  { name: 'Carnet',        logo: '/logos/carnet-logo-blanco.webp' },
+  { name: 'BBVA',          logo: '/logos/bbva-logo-blanco.webp' },
+  { name: 'Citibanamex',   logo: '/logos/banamex-logo-blanco.webp' },
+  { name: 'Banorte',       logo: '/logos/banorte-logo-blanco.webp' },
+  { name: 'Santander',     logo: '/logos/santander-logo-blanco.webp' },
+  { name: 'BanRegio',      logo: '/logos/banregio-logo-blanco.webp' },
+  { name: 'Inbursa',       logo: '/logos/inbursa-logo-blanco.webp' },
+  { name: 'Scotiabank',    logo: '/logos/scotiabank-logo-blanco.webp' },
+  { name: 'HSBC',          logo: '/logos/hsbc-logo-blanco.webp' },
+  { name: 'Banco Azteca',  logo: '/logos/banco-azteca-logo-blanco.webp' },
+  { name: 'Afirme',        logo: '/logos/afirme-logo-blanco.webp' },
+  { name: 'Invex',         logo: '/logos/invex-logo-blanco.webp' },
+  { name: 'SPEI',          logo: '/logos/spei-logo-blanco.webp' },
 ]
 
 const CASH: Brand[] = [
-  { name: 'OXXO',                 display: 'OXXO',       bg: '#DA0020', fg: '#fff' },
-  { name: '7-Eleven',             display: '7-Eleven',   bg: '#006400', fg: '#fff' },
-  { name: 'Walmart',              display: 'Walmart',    bg: '#0071CE', fg: '#fff' },
-  { name: "Sam's Club",           display: "Sam's Club", bg: '#003087', fg: '#fff' },
-  { name: 'Farmacias del Ahorro', display: 'del Ahorro', sub: 'farmacias', bg: '#C41230', fg: '#fff' },
-  { name: 'Extra',                display: 'Extra',      bg: '#0057A8', fg: '#fff' },
-  { name: 'Circle K',             display: 'Circle K',   bg: '#CC0000', fg: '#fff' },
-  { name: "Waldo's",              display: "Waldo's",    bg: '#FF6B00', fg: '#fff' },
-  { name: 'Bodega Aurrera',       display: 'Aurrera',    sub: 'bodega', bg: '#004490', fg: '#fff' },
-  { name: 'Tiendas K',            display: 'Tiendas K',  bg: '#B30000', fg: '#fff' },
-  { name: 'PayCash',              display: 'PayCash',    bg: '#00A86B', fg: '#fff' },
-  { name: 'SPEI',                 display: 'SPEI',       sub: 'transferencia', bg: '#007D59', fg: '#fff' },
+  { name: 'OXXO',                  logo: '/logos/oxxo-logo-blanco.webp' },
+  { name: '7-Eleven',              logo: '/logos/7-eleven-logo-blanco.webp' },
+  { name: 'Walmart',               logo: '/logos/walmart-logo-blanco.webp' },
+  { name: "Sam's Club",            logo: '/logos/sams-club-logo-blanco.webp' },
+  { name: 'Farmacias del Ahorro',  logo: '/logos/farmacias-del-ahorro-logo-blanco.webp' },
+  { name: 'Extra',                 logo: '/logos/extra-logo-blanco.webp' },
+  { name: 'Circle K',              logo: '/logos/circle-k-logo-blanco.webp' },
+  { name: "Waldo's",               logo: '/logos/waldos-logo-blanco.webp' },
+  { name: 'Bodega Aurrera',        logo: '/logos/bodega-aurrera-logo-blanco.webp' },
+  { name: 'PayCash',               logo: '/logos/pay-cash-logo-blanco.webp' },
+  { name: 'SPEI',                  logo: '/logos/spei-logo-blanco.webp' },
 ]
 
-const TABS: { id: string; label: string; icon: string; sub: string; brands: Brand[] }[] = [
+const TABS = [
   {
     id: 'cards',
     label: 'Tarjetas',
@@ -82,16 +85,16 @@ export default function Pagos() {
           {current.sub}
         </div>
 
-        <div className={`logos logos-${tab}`}>
+        <div className={`pagos-logos-grid pagos-logos-grid--${tab}`}>
           {current.brands.map(b => (
-            <div
-              key={b.name}
-              className="logo-tile"
-              title={b.name}
-              style={{ background: b.bg, color: b.fg }}
-            >
-              {b.sub && <span className="brand-sub">{b.sub}</span>}
-              <span className="brand-name">{b.display}</span>
+            <div key={b.name} className="pagos-logo-tile" title={b.name}>
+              <Image
+                src={b.logo}
+                alt={b.name}
+                width={280}
+                height={120}
+                style={{ objectFit: 'contain', objectPosition: 'center', maxWidth: '100%', maxHeight: '100%' }}
+              />
             </div>
           ))}
         </div>
