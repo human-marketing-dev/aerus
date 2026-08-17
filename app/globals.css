@@ -4165,3 +4165,241 @@ a.destino-route-chip:hover .destino-route-chip-arr {
 }
 @media (max-width: 1180px) { .sitemap-hero { padding: 80px 32px 56px; } .sitemap-body { padding: 56px 32px 72px; } }
 @media (max-width: 767px)  { .sitemap-hero { padding: 64px 20px 48px; } .sitemap-body { padding: 40px 20px 56px; } .sitemap-link-url { display: none; } }
+
+/* ─── MRO section ───────────────────────────────────────────────────────────── */
+.mro-hero {
+  background: var(--aerus-deep-forest);
+  color: var(--aerus-white);
+  padding: 100px 64px 72px;
+}
+.mro-hero-inner { max-width: 700px; }
+.mro-servicios-section {
+  background: var(--aerus-cloud);
+  padding: 72px 64px 80px;
+}
+.mro-servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.mro-servicio-card {
+  background: var(--aerus-white);
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: transform 0.18s, box-shadow 0.18s;
+  text-decoration: none;
+  color: var(--aerus-deep-forest);
+}
+.mro-servicio-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(12,38,38,0.10); }
+.mro-servicio-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: rgba(12,38,38,0.06);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.mro-servicio-titulo { font: 600 16px/1.3 var(--font-display); margin: 0; }
+.mro-servicio-desc { font: 400 14px/1.55 var(--font-display); color: rgba(12,38,38,0.58); margin: 0; flex: 1; }
+.mro-servicio-arr {
+  display: flex; align-items: center; gap: 4px;
+  font: 500 13px/1 var(--font-display);
+  color: var(--aerus-deep-forest);
+  margin-top: 4px;
+}
+/* MRO credentials strip */
+.mro-creds-strip { background: var(--aerus-deep-forest); padding: 24px 64px; }
+.mro-creds-inner { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
+.mro-creds-label {
+  font: 700 11px/1 var(--font-display);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.45); white-space: nowrap; margin: 0;
+}
+.mro-creds-list { display: flex; gap: 24px; flex-wrap: wrap; }
+.mro-cred-item { font: 400 12px/1 var(--font-display); color: rgba(255,255,255,0.70); }
+/* MRO sub-page body */
+.mro-body { background: var(--aerus-cloud); padding: 72px 64px 96px; }
+/* MRO cert list */
+.mro-cert-list { display: flex; flex-direction: column; gap: 16px; }
+.mro-cert-item {
+  background: var(--aerus-white); border-radius: 10px;
+  padding: 18px 20px; border-left: 3px solid var(--aerus-spring-green);
+}
+.mro-cert-nombre { font: 600 14px/1.3 var(--font-display); color: var(--aerus-deep-forest); margin: 0 0 6px; }
+.mro-cert-desc { font: 400 13px/1.5 var(--font-display); color: rgba(12,38,38,0.60); margin: 0; }
+/* MRO models table */
+.mro-modelos-table { border-radius: 10px; overflow: hidden; border: 1px solid rgba(12,38,38,0.10); }
+.mro-modelos-header {
+  display: grid; grid-template-columns: 1fr 2fr;
+  padding: 10px 16px;
+  background: var(--aerus-deep-forest);
+  font: 700 11px/1 var(--font-display);
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: rgba(255,255,255,0.65); gap: 16px;
+}
+.mro-modelos-row {
+  display: grid; grid-template-columns: 1fr 2fr;
+  padding: 12px 16px; gap: 16px;
+  background: var(--aerus-white);
+  border-bottom: 1px solid rgba(12,38,38,0.07);
+}
+.mro-modelos-row:last-child { border-bottom: none; }
+.mro-modelos-modelo { font: 600 13px/1.3 var(--font-display); color: var(--aerus-deep-forest); }
+.mro-modelos-aplicacion { font: 400 13px/1.4 var(--font-display); color: rgba(12,38,38,0.65); }
+/* MRO sidebar CTA */
+.mro-cta-sidebar {
+  background: var(--aerus-deep-forest);
+  border-radius: 14px; padding: 24px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.mro-cta-sidebar-titulo { font: 600 16px/1.3 var(--font-display); color: var(--aerus-white); margin: 0; }
+.mro-cta-sidebar-desc { font: 400 13px/1.5 var(--font-display); color: rgba(255,255,255,0.65); margin: 0; }
+/* MRO cotización contact card */
+.mro-contact-card {
+  background: var(--aerus-white); border-radius: 14px; padding: 24px;
+  display: flex; flex-direction: column; gap: 12px;
+  border: 1px solid rgba(12,38,38,0.10);
+}
+.mro-contact-card-tag { font: 700 11px/1 var(--font-display); letter-spacing: 0.12em; text-transform: uppercase; color: rgba(12,38,38,0.45); margin: 0; }
+.mro-contact-card-title { font: 600 18px/1.3 var(--font-display); color: var(--aerus-deep-forest); margin: 0; }
+.mro-contact-row {
+  display: flex; align-items: center; gap: 10px;
+  font: 400 14px/1 var(--font-display); color: var(--aerus-deep-forest);
+  text-decoration: none;
+}
+.mro-contact-row:hover { color: var(--aerus-deep-forest); text-decoration: underline; }
+.mro-contact-horario { font: 400 12px/1 var(--font-display); color: rgba(12,38,38,0.50); margin: 0; }
+/* MRO responsive */
+@media (max-width: 1180px) { .mro-hero { padding: 80px 32px 56px; } .mro-servicios-section { padding: 56px 32px 72px; } .mro-body { padding: 56px 32px 72px; } .mro-creds-strip { padding: 20px 32px; } }
+@media (max-width: 900px)  { .mro-servicios-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 767px)  { .mro-hero { padding: 64px 20px 48px; } .mro-servicios-section { padding: 40px 20px 56px; } .mro-body { padding: 40px 20px 56px; } .mro-servicios-grid { grid-template-columns: 1fr; } .mro-creds-strip { padding: 16px 20px; } .mro-creds-inner { gap: 12px; } }
+
+/* ─── Experiencia section ───────────────────────────────────────────────────── */
+.exp-hero {
+  background: var(--aerus-deep-forest);
+  color: var(--aerus-white);
+  padding: 100px 64px 72px;
+}
+.exp-hero-inner { max-width: 700px; }
+.exp-servicios-section { background: var(--aerus-cloud); padding: 72px 64px 80px; }
+.exp-servicios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.exp-servicio-card {
+  background: var(--aerus-white); border-radius: 16px; padding: 28px;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: transform 0.18s, box-shadow 0.18s;
+  text-decoration: none; color: var(--aerus-deep-forest);
+}
+.exp-servicio-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(12,38,38,0.10); }
+.exp-servicio-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  background: rgba(12,38,38,0.06);
+  display: flex; align-items: center; justify-content: center;
+}
+.exp-servicio-titulo { font: 600 16px/1.3 var(--font-display); margin: 0; }
+.exp-servicio-desc { font: 400 14px/1.55 var(--font-display); color: rgba(12,38,38,0.58); margin: 0; flex: 1; }
+.exp-servicio-arr { display: flex; align-items: center; gap: 4px; font: 500 13px/1 var(--font-display); margin-top: 4px; }
+/* Experiencia sub-page body */
+.exp-body { background: var(--aerus-cloud); padding: 72px 64px 96px; }
+/* Proceso ágil — comparison table */
+.exp-comparacion-table { border-radius: 10px; overflow: hidden; border: 1px solid rgba(12,38,38,0.10); }
+.exp-comparacion-header {
+  display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 12px;
+  padding: 10px 16px;
+  background: var(--aerus-deep-forest);
+  font: 700 11px/1 var(--font-display);
+  letter-spacing: 0.10em; text-transform: uppercase;
+  color: rgba(255,255,255,0.65);
+}
+.exp-comparacion-row {
+  display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 12px;
+  padding: 13px 16px;
+  background: var(--aerus-white);
+  border-bottom: 1px solid rgba(12,38,38,0.07);
+  align-items: start;
+}
+.exp-comparacion-row:last-child { border-bottom: none; }
+.exp-comp-aspecto { font: 500 13px/1.4 var(--font-display); color: var(--aerus-deep-forest); }
+.exp-comp-grande { font: 400 13px/1.4 var(--font-display); color: rgba(12,38,38,0.55); }
+.exp-comp-aerus { font: 600 13px/1.4 var(--font-display); color: var(--aerus-deep-forest); }
+/* Proceso ágil — steps grid */
+.exp-pasos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.exp-paso-card {
+  background: var(--aerus-white); border-radius: 14px; padding: 24px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.exp-paso-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(12,38,38,0.06);
+  display: flex; align-items: center; justify-content: center;
+}
+.exp-paso-tiempo { font: 700 11px/1 var(--font-display); letter-spacing: 0.12em; text-transform: uppercase; color: var(--aerus-spring-green); background: var(--aerus-deep-forest); padding: 4px 10px; border-radius: 20px; align-self: flex-start; }
+.exp-paso-titulo { font: 600 15px/1.3 var(--font-display); color: var(--aerus-deep-forest); margin: 0; }
+.exp-paso-desc { font: 400 13px/1.55 var(--font-display); color: rgba(12,38,38,0.60); margin: 0; }
+/* Flota — specs table */
+.exp-specs-table { display: flex; flex-direction: column; border-radius: 10px; overflow: hidden; border: 1px solid rgba(12,38,38,0.10); }
+.exp-spec-row {
+  display: grid; grid-template-columns: 1fr 1.8fr; gap: 16px;
+  padding: 13px 16px;
+  background: var(--aerus-white);
+  border-bottom: 1px solid rgba(12,38,38,0.07);
+}
+.exp-spec-row:last-child { border-bottom: none; }
+.exp-spec-row:nth-child(odd) { background: rgba(12,38,38,0.025); }
+.exp-spec-etiqueta { font: 500 13px/1.4 var(--font-display); color: rgba(12,38,38,0.55); }
+.exp-spec-valor { font: 400 13px/1.4 var(--font-display); color: var(--aerus-deep-forest); }
+/* Flota — ventajas grid */
+.exp-ventajas-grid { display: flex; flex-direction: column; gap: 16px; }
+.exp-ventaja-card {
+  background: var(--aerus-white); border-radius: 12px; padding: 20px;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.exp-ventaja-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(12,38,38,0.06);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.exp-ventaja-titulo { font: 600 15px/1.3 var(--font-display); color: var(--aerus-deep-forest); margin: 0 0 6px; }
+.exp-ventaja-desc { font: 400 13px/1.55 var(--font-display); color: rgba(12,38,38,0.60); margin: 0; }
+/* Asistencia — services grid */
+.exp-asistencia-grid { display: flex; flex-direction: column; gap: 16px; }
+.exp-asistencia-card {
+  background: var(--aerus-white); border-radius: 12px; padding: 20px;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.exp-asistencia-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(12,38,38,0.06);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.exp-asistencia-titulo { font: 600 14px/1.3 var(--font-display); color: var(--aerus-deep-forest); margin: 0 0 6px; }
+.exp-asistencia-desc { font: 400 13px/1.55 var(--font-display); color: rgba(12,38,38,0.60); margin: 0; }
+/* Asistencia — canales list in sidebar */
+.exp-canales-list { display: flex; flex-direction: column; gap: 2px; }
+.exp-canal-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid rgba(12,38,38,0.07);
+  text-decoration: none; color: var(--aerus-deep-forest);
+}
+.exp-canal-row:last-child { border-bottom: none; }
+.exp-canal-label { display: block; font: 600 13px/1.2 var(--font-display); }
+.exp-canal-detalle { display: block; font: 400 12px/1.4 var(--font-display); color: rgba(12,38,38,0.55); margin-top: 2px; }
+/* Grupos — tipos grid */
+.exp-grupos-tipos-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.exp-grupos-tipo-card {
+  background: var(--aerus-white); border-radius: 12px; padding: 22px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.exp-grupos-tipo-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: rgba(12,38,38,0.06);
+  display: flex; align-items: center; justify-content: center;
+}
+.exp-grupos-tipo-titulo { font: 600 15px/1.3 var(--font-display); color: var(--aerus-deep-forest); margin: 0; }
+.exp-grupos-tipo-desc { font: 400 13px/1.55 var(--font-display); color: rgba(12,38,38,0.60); margin: 0; }
+/* Experiencia responsive */
+@media (max-width: 1180px) { .exp-hero { padding: 80px 32px 56px; } .exp-servicios-section { padding: 56px 32px 72px; } .exp-body { padding: 56px 32px 72px; } }
+@media (max-width: 900px)  { .exp-servicios-grid { grid-template-columns: repeat(2, 1fr); } .exp-pasos-grid { grid-template-columns: 1fr; } .exp-grupos-tipos-grid { grid-template-columns: 1fr; } }
+@media (max-width: 767px)  { .exp-hero { padding: 64px 20px 48px; } .exp-servicios-section { padding: 40px 20px 56px; } .exp-body { padding: 40px 20px 56px; } .exp-servicios-grid { grid-template-columns: 1fr; } .exp-comparacion-table { overflow-x: auto; } .exp-comparacion-header, .exp-comparacion-row { min-width: 420px; } }
