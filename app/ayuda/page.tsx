@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { AYUDA_CATEGORIAS } from '@/lib/ayuda-mock'
@@ -82,6 +83,7 @@ export default function AyudaPage() {
           </div>
         </section>
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

@@ -1,5 +1,7 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
+import Image from 'next/image'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Icon } from '@/components/icons'
@@ -15,10 +17,10 @@ type EspecFila = { etiqueta: string; valor: string }
 const SPECS: EspecFila[] = [
   { etiqueta: 'Motor', valor: 'Pratt & Whitney Canada PT6A-114A (675 SHP)' },
   { etiqueta: 'Hélice', valor: 'McCauley 3-blade de paso variable, velocidad constante' },
-  { etiqueta: 'Capacidad', valor: 'Hasta 9 pasajeros (configuración regular Aerus)' },
-  { etiqueta: 'Velocidad de crucero', valor: '182 kts (337 km/h)' },
+  { etiqueta: 'Capacidad', valor: 'Hasta 12 pasajeros (configuración regular Aerus)' },
+  { etiqueta: 'Velocidad de crucero', valor: '185 kts (343 km/h)' },
   { etiqueta: 'Altitud de vuelo', valor: 'Hasta 25,000 ft — por encima de la mayoría del mal tiempo' },
-  { etiqueta: 'Autonomía', valor: '~1,070 nm (~1,980 km) con carga máxima' },
+  { etiqueta: 'Autonomía', valor: '912 nm (1,689 km) con carga máxima' },
   { etiqueta: 'Cabina', valor: 'No presurizada — ideal para rutas regionales de corta distancia' },
   { etiqueta: 'Certificación', valor: 'DGAC México · FAA USA' },
 ]
@@ -46,7 +48,7 @@ const VENTAJAS = [
     icono: 'users',
     titulo: 'Cabina personal',
     descripcion:
-      'Con capacidad para hasta 9 pasajeros, cada vuelo es prácticamente un charter privado. Sin pasillo central, sin filas para el baño, sin bebé llorando tres filas atrás.',
+      'Con capacidad para hasta 12 pasajeros, cada vuelo es prácticamente un charter privado. Sin pasillo central, sin filas para el baño, sin bebé llorando tres filas atrás.',
   },
 ]
 
@@ -80,6 +82,16 @@ export default function FlotaPage() {
             </p>
           </div>
         </section>
+
+        <div className="flota-img-banner">
+          <Image
+            src="/flota-aerus.webp"
+            alt="Flota Aerus — Cessna 208B Grand Caravan EX"
+            fill
+            style={{ objectFit: 'cover', objectPosition: 'center' }}
+            priority
+          />
+        </div>
 
         <section className="exp-body">
           <div className="container">
@@ -153,6 +165,7 @@ export default function FlotaPage() {
           </div>
         </section>
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

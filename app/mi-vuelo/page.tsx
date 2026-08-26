@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = { title: 'Mi vuelo | Aerus' }
@@ -17,6 +18,7 @@ export default function MiVueloPage() {
           </div>
         </section>
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

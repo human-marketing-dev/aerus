@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Icon } from '@/components/icons'
@@ -208,6 +209,7 @@ export default function ContactoPage() {
           </div>
         </section>
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

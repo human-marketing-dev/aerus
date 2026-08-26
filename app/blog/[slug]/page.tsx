@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getPost, getAllPosts, formatFecha, type ContentBlock } from '@/lib/blog-data'
@@ -138,6 +139,7 @@ export default async function BlogPostPage({ params }: Props) {
         </section>
 
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

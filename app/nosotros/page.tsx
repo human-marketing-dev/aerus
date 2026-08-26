@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Icon } from '@/components/icons'
@@ -34,7 +35,7 @@ const VALORES = [
     num: '03',
     titulo: 'Escala',
     acento: 'humana',
-    desc: 'Máximo 9 pasajeros por vuelo. El equipo te conoce, hay alguien en tierra antes de que llegues, el check-in dura minutos. La aviación regional debería sentirse así de personal.',
+    desc: 'Máximo 12 pasajeros por vuelo. El equipo te conoce, hay alguien en tierra antes de que llegues, el check-in dura minutos. La aviación regional debería sentirse así de personal.',
   },
 ]
 
@@ -159,7 +160,7 @@ export default function NosotrosPage() {
               <p className="nos-flota-label">La flota</p>
               <p className="nos-flota-nombre">Cessna Grand Caravan EX</p>
               <p className="nos-flota-specs">
-                Motor PT6A-114A · 675 SHP · 9 pasajeros · 182 kts · 25,000 ft
+                Motor PT6A-114A · 675 SHP · 12 pasajeros · 185 kts · 25,000 ft
               </p>
             </div>
             <Link href="/experiencia/flota/" className="nos-flota-link">
@@ -187,6 +188,7 @@ export default function NosotrosPage() {
         </section>
 
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

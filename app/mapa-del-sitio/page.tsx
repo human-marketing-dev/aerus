@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import { getAllDestinos } from '@/lib/destinos-mock'
 import Link from 'next/link'
 import type { Metadata } from 'next'
@@ -256,6 +257,7 @@ export default function MapaDelSitioPage() {
           </div>
         </section>
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

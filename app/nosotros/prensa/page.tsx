@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Icon } from '@/components/icons'
@@ -16,8 +17,8 @@ const FACT_SHEET = [
   { label: 'Flota',              valor: 'Cessna 208B Grand Caravan EX' },
   { label: 'Motor',              valor: 'Pratt & Whitney Canada PT6A-114A (675 SHP)' },
   { label: 'Hélice',             valor: 'McCauley 3 palas' },
-  { label: 'Capacidad',          valor: '9 pasajeros por vuelo' },
-  { label: 'Velocidad crucero',  valor: '182 nudos (337 km/h)' },
+  { label: 'Capacidad',          valor: '12 pasajeros por vuelo' },
+  { label: 'Velocidad crucero',  valor: '185 nudos (343 km/h)' },
   { label: 'Techo de servicio',  valor: '25,000 pies' },
   { label: 'Rutas directas',     valor: '7 rutas activas' },
   { label: 'Destinos',           valor: '10+ destinos en México y frontera norte' },
@@ -219,6 +220,7 @@ export default function PrensaPage() {
         </section>
 
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { getAllPosts, formatFecha } from '@/lib/blog-data'
@@ -86,6 +87,7 @@ export default function BlogPage() {
         </section>
 
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Icon } from '@/components/icons'
@@ -7,7 +8,7 @@ import { Icon } from '@/components/icons'
 export const metadata: Metadata = {
   title: 'Aerus Charter | Aerus',
   description:
-    'Chárter ejecutivo y grupal con Aerus. Avión exclusivo, horario a tu medida, hasta 9 pasajeros. Para eventos corporativos, delegaciones, equipos deportivos y traslados urgentes.',
+    'Chárter ejecutivo y grupal con Aerus. Avión exclusivo, horario a tu medida, hasta 12 pasajeros. Para eventos corporativos, delegaciones, equipos deportivos y traslados urgentes.',
 }
 
 const USOS = [
@@ -34,7 +35,7 @@ const USOS = [
 ]
 
 const INCLUYE = [
-  'Uso exclusivo de la aeronave para tu grupo (hasta 9 pasajeros)',
+  'Uso exclusivo de la aeronave para tu grupo (hasta 12 pasajeros)',
   'Horario de salida y llegada definido por ti',
   'Salida desde cualquier aeropuerto dentro de la red Aerus',
   'Flexibilidad de equipaje mayor a vuelos regulares',
@@ -83,7 +84,7 @@ export default function CharterPage() {
             </h1>
             <p className="section-intro" style={{ color: 'rgba(255,255,255,0.60)' }}>
               Avión exclusivo para tu grupo o evento. Tú defines el destino, la fecha
-              y el horario. Hasta 9 pasajeros. Vuelo directo, sin escalas, sin horarios ajenos.
+              y el horario. Hasta 12 pasajeros. Vuelo directo, sin escalas, sin horarios ajenos.
             </p>
           </div>
         </section>
@@ -204,6 +205,7 @@ export default function CharterPage() {
         </section>
 
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

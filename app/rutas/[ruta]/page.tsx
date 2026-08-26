@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
@@ -101,7 +102,7 @@ export default async function RutaPage({
             </div>
             <div className="ruta-stat-div" aria-hidden="true" />
             <div className="ruta-stat">
-              <span className="ruta-stat-num">9 pax</span>
+              <span className="ruta-stat-num">12 pax</span>
               <span className="ruta-stat-label">Cessna Grand Caravan EX</span>
             </div>
           </div>
@@ -291,6 +292,7 @@ export default async function RutaPage({
         </section>
 
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

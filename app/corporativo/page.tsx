@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { Icon } from '@/components/icons'
@@ -14,7 +15,7 @@ const SERVICIOS = [
   {
     icono: 'plane',
     titulo: 'Aerus Charter',
-    desc: 'Avión exclusivo para tu grupo o evento. Tú defines el destino, la fecha y el horario. Hasta 9 pasajeros por vuelo.',
+    desc: 'Avión exclusivo para tu grupo o evento. Tú defines el destino, la fecha y el horario. Hasta 12 pasajeros por vuelo.',
     href: '/corporativo/charter/',
     cta: 'Conocer charter',
   },
@@ -38,7 +39,7 @@ const VENTAJAS = [
   { icono: 'clock',   texto: 'Check-in en minutos, no en horas' },
   { icono: 'plane',   texto: 'Vuelos directos sin conexiones' },
   { icono: 'shield',  texto: 'Flota propia con mantenimiento certificado DGAC' },
-  { icono: 'users',   texto: 'Cabina privada de hasta 9 pasajeros' },
+  { icono: 'users',   texto: 'Cabina privada de hasta 12 pasajeros' },
   { icono: 'mail',    texto: 'Facturación directa a razón social' },
   { icono: 'support', texto: 'Atención personalizada antes y durante el vuelo' },
 ]
@@ -118,6 +119,7 @@ export default function CorporativoPage() {
         </section>
 
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )

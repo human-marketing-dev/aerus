@@ -1,5 +1,6 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
+import Newsletter from '@/components/Newsletter'
 import { getAllDestinos, getDestino } from '@/lib/destinos-mock'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -236,6 +237,7 @@ export default async function DestinoPage({
         </section>
 
       </main>
+      <Newsletter/>
       <Footer />
     </>
   )
