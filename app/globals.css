@@ -4195,7 +4195,7 @@ a.destino-route-chip:hover .destino-route-chip-arr {
   color: var(--aerus-white);
   padding: 100px 64px 72px;
 }
-.mro-hero-inner { max-width: 700px; }
+.mro-hero-inner { display: flex; flex-direction: column; }
 .mro-servicios-section {
   background: var(--aerus-cloud);
   padding: 72px 64px 80px;
@@ -4312,7 +4312,7 @@ a.destino-route-chip:hover .destino-route-chip-arr {
   color: var(--aerus-white);
   padding: 100px 64px 72px;
 }
-.exp-hero-inner { max-width: 700px; }
+.exp-hero-inner { display: flex; flex-direction: column; }
 .exp-servicios-section { background: var(--aerus-cloud); padding: 72px 64px 80px; }
 .exp-servicios-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 .exp-servicio-card {
@@ -5819,7 +5819,7 @@ a.destino-route-chip:hover .destino-route-chip-arr {
 /* Hero */
 .blog-hero {
   background: var(--aerus-deep-forest);
-  padding: 80px 48px 64px;
+  padding: 100px 64px 72px;
 }
 .blog-hero-headline {
   font: 300 72px/1 var(--font-display);
@@ -5852,7 +5852,7 @@ a.destino-route-chip:hover .destino-route-chip-arr {
 }
 
 /* Index body */
-.blog-body { padding: 64px 48px 100px; }
+.blog-body { padding: 72px 64px 96px; }
 
 .blog-group { margin-bottom: 64px; }
 .blog-group-label {
@@ -5919,9 +5919,9 @@ a.destino-route-chip:hover .destino-route-chip-arr {
 
 .blog-post-hero {
   background: var(--aerus-deep-forest);
-  padding: 80px 48px 64px;
+  padding: 100px 64px 72px;
 }
-.blog-post-hero-inner { max-width: 780px; }
+.blog-post-hero-inner { max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; align-items: flex-start; }
 .blog-post-titulo {
   font: 300 56px/1.1 var(--font-display);
   color: var(--aerus-white);
@@ -5935,7 +5935,7 @@ a.destino-route-chip:hover .destino-route-chip-arr {
 }
 
 /* Post body layout */
-.blog-post-body { padding: 64px 48px 100px; }
+.blog-post-body { padding: 72px 64px 96px; }
 .blog-post-layout {
   display: grid;
   grid-template-columns: 1fr 300px;
