@@ -19,10 +19,10 @@ const steps = [
   },
   {
     num: '03 · Abordaje',
-    big: '9–12',
-    unit: 'asientos',
+    big: '0',
+    unit: 'filas',
     title: 'Abordaje eficiente',
-    body: 'Contamos con aviones de nueve y doce asientos, nuevos y confortables, lo que permite un abordaje rápido y eficiente. Sin filas eternas, sin espera innecesaria.',
+    body: 'Subes a bordo en minutos, sin filas ni esperas innecesarias. Nuestros aviones son nuevos y confortables, y el abordaje es rápido y directo.',
     cta: 'Conoce nuestra flota',
   },
 ]

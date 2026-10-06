@@ -13,14 +13,14 @@ const SERVICIOS_DATA = [
     icon: 'shield',
     title: 'Asistencia de viaje',
     body: 'Viaja tranquilo y sin preocupaciones con nuestra cobertura especial que te protege en todo momento del viaje.',
-    badge: 'Desde $149 MXN',
+    badge: null,
   },
   {
     num: '03',
     icon: 'circle-check',
     title: 'Seguro de cancelación',
     body: 'Beneficios exclusivos que te respaldan si necesitas cancelar tu vuelo por imprevistos. Incluye reembolso parcial y reprogramación.',
-    badge: 'Desde $999 MXN',
+    badge: null,
   },
   {
     num: '04',

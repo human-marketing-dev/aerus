@@ -2,53 +2,23 @@
 import { useState } from 'react'
 import { Icon } from './icons'
 
-const HERO_ROUTES = [
-  {
-    id: 'nlu-izt',
-    isNew: true,
-    fromCode: 'NLU', toCode: 'IZT',
-    fromCity: 'Aeropuerto Felipe Ángeles', fromSub: 'Ciudad de México',
-    toCity: 'Ixtepec', toSub: 'Oaxaca',
-    duration: '1h 35min', frequency: '5× semana',
-    price: 1890,
-    perks: 'Vuelo directo · Equipaje de mano incluido · Sin escalas',
-  },
-  {
-    id: 'mty-bjx',
-    fromCode: 'MTY', toCode: 'BJX',
-    fromCity: 'Monterrey', fromSub: 'Nuevo León',
-    toCity: 'Guanajuato', toSub: 'El Bajío',
-    duration: '1h 15min', frequency: 'Diario',
-    price: 1450,
-    perks: 'Sin escalas · Conexión en menos de 60 min · 9 frecuencias semanales',
-  },
-  {
-    id: 'cdmx-cun',
-    fromCode: 'MEX', toCode: 'CUN',
-    fromCity: 'Ciudad de México', fromSub: 'AICM',
-    toCity: 'Cancún', toSub: 'Quintana Roo',
-    duration: '2h 10min', frequency: 'Diario',
-    price: 2240,
-    perks: 'Equipaje de mano · Asientos confortables · Vuelo directo',
-  },
-  {
-    id: 'mty-mid',
-    fromCode: 'MTY', toCode: 'MID',
-    fromCity: 'Monterrey', fromSub: 'Nuevo León',
-    toCity: 'Mérida', toSub: 'Yucatán',
-    duration: '1h 55min', frequency: '4× semana',
-    price: 1990,
-    perks: 'Conexión directa · Sin escalas · Tarifa promocional',
-  },
-  {
-    id: 'ver-vsa',
-    fromCode: 'VER', toCode: 'VSA',
-    fromCity: 'Veracruz', fromSub: 'Veracruz',
-    toCity: 'Villahermosa', toSub: 'Tabasco',
-    duration: '55 min', frequency: 'Diario',
-    price: 1240,
-    perks: 'Vuelo express · Sin escalas · Tarifa más baja',
-  },
+// Cada banner trae toda su información (ruta, precio, etc.) dentro de la imagen.
+// Medidas sugeridas: escritorio 1920 × 750 px, móvil 1080 × 1350 px.
+// Deja libre la franja inferior: la barra de reservas se monta encima.
+interface HeroSlide {
+  id: string
+  alt: string           // describe el texto del banner (lectores de pantalla y SEO)
+  image?: string        // p. ej. '/hero/nlu-izt.webp'
+  imageMobile?: string  // p. ej. '/hero/nlu-izt-movil.webp'
+}
+
+// TODO: agregar image / imageMobile y ajustar alt al texto real de cada banner
+const HERO_SLIDES: HeroSlide[] = [
+  { id: 'nlu-izt', alt: 'Nueva ruta Aeropuerto Felipe Ángeles (NLU) – Ixtepec (IZT)' },
+  { id: 'mty-bjx', alt: 'Ruta Monterrey (MTY) – Guanajuato (BJX)' },
+  { id: 'mex-cun', alt: 'Ruta Ciudad de México (MEX) – Cancún (CUN)' },
+  { id: 'mty-mid', alt: 'Ruta Monterrey (MTY) – Mérida (MID)' },
+  { id: 'ver-vsa', alt: 'Ruta Veracruz (VER) – Villahermosa (VSA)' },
 ]
 
 interface BookingBarProps {
@@ -121,68 +91,45 @@ function BookingBar({ trip, setTrip }: BookingBarProps) {
 export default function Hero() {
   const [idx, setIdx] = useState(0)
   const [trip, setTrip] = useState('rt')
-  const r = HERO_ROUTES[idx]
-  const total = HERO_ROUTES.length
+  const total = HERO_SLIDES.length
   const next = () => setIdx((idx + 1) % total)
   const prev = () => setIdx((idx - 1 + total) % total)
 
   return (
     <>
-      <section className="hero" id="vuelos">
-        <div className="texture"/>
-        <div className="hero-inner">
-          <div className="hero-eyebrow-row">
-            {r.isNew && (
-              <span className="new-route-tag">
-                <Icon name="plane" size={12}/> Nueva ruta
-              </span>
+      <section className="hero" id="vuelos" aria-roledescription="carrusel" aria-label="Destacados">
+        {HERO_SLIDES.map((s, i) => (
+          <div
+            key={s.id}
+            className={'hero-slide' + (i === idx ? ' active' : '')}
+            aria-hidden={i !== idx}
+            aria-roledescription="diapositiva"
+            aria-label={`${i + 1} de ${total}`}
+          >
+            {s.image ? (
+              <picture>
+                {s.imageMobile && <source media="(max-width: 640px)" srcSet={s.imageMobile}/>}
+                <img src={s.image} alt={s.alt}/>
+              </picture>
+            ) : (
+              <div className="hero-placeholder" role="img" aria-label={s.alt}>
+                <Icon name="camera" size={22}/>
+                <div className="hero-placeholder-title">Banner {String(i + 1).padStart(2, '0')} · {s.alt}</div>
+                <div className="hero-placeholder-size">Escritorio 1920 × 750 · Móvil 1080 × 1350</div>
+              </div>
             )}
-            <div className="eyebrow-route">{r.frequency} · {r.duration}</div>
           </div>
+        ))}
 
-          <div className="route-codes">
-            <span>{r.fromCode}</span>
-            <span className="arrow-line"/>
-            <span>{r.toCode}</span>
-          </div>
-
-          <div className="route-cities">
-            <div className="city">
-              <div className="label">Sale de</div>
-              <div className="name">
-                {r.fromCity}<br/>
-                <span style={{ opacity: 0.55, fontSize: 14 }}>{r.fromSub}</span>
-              </div>
-            </div>
-            <div className="sep"/>
-            <div className="city">
-              <div className="label">Llega a</div>
-              <div className="name">
-                {r.toCity}<br/>
-                <span style={{ opacity: 0.55, fontSize: 14 }}>{r.toSub}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="price-row">
-            <div>
-              <div className="from">Sencillo desde</div>
-              <div className="price">
-                ${r.price.toLocaleString('es-MX')}
-                <span className="currency"> MXN</span>
-              </div>
-            </div>
-            <div className="perks">{r.perks}</div>
-          </div>
-
+        <div className="hero-controls">
           <div className="slider-controls">
             <div className="pagination">
-              {HERO_ROUTES.map((_, i) => (
+              {HERO_SLIDES.map((_, i) => (
                 <button
                   key={i}
                   className={'dot' + (i === idx ? ' active' : '')}
                   onClick={() => setIdx(i)}
-                  aria-label={`Ruta ${i + 1}`}
+                  aria-label={`Banner ${i + 1}`}
                 />
               ))}
             </div>

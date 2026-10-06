@@ -25,10 +25,6 @@ const REVIEWS = [
   },
 ]
 
-function Stars() {
-  return <div className="rev-stars" aria-label="5 estrellas">★★★★★</div>
-}
-
 export default function Reviews() {
   return (
     <section className="reviews section-pad" id="resenas">
@@ -46,7 +42,6 @@ export default function Reviews() {
             <div key={i} className="rev-card">
               <div className="rev-photo" style={{ background: r.photoColor }} aria-hidden="true"/>
               <div className="rev-card-body">
-              <Stars/>
               <p className="rev-text">"{r.text}"</p>
               <div className="rev-author">
                 <div className="rev-avatar">{r.initials}</div>
@@ -59,16 +54,6 @@ export default function Reviews() {
               </div>
             </div>
           ))}
-        </div>
-
-        <div className="reviews-foot">
-          <div className="reviews-aggregate">
-            <span className="agg-score">5.0</span>
-            <div>
-              <div className="agg-stars">★★★★★</div>
-              <div className="agg-label">Calificación promedio · Reseñas verificadas</div>
-            </div>
-          </div>
         </div>
       </div>
     </section>

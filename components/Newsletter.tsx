@@ -12,16 +12,17 @@ export default function Newsletter() {
         <div>
           <div className="eyebrow" style={{ marginBottom: 32 }}>Boletín Aerus</div>
           <h2>
-            No te pierdas
-            <span className="stroke">una oferta.</span>
+            Mantente al día
+            <span className="stroke">con Aerus.</span>
           </h2>
           <p>
-            Suscríbete y recibe primero nuestras nuevas rutas, tarifas promocionales y experiencias exclusivas para miembros.
+            No te pierdas ninguna novedad. Suscríbete y entérate primero de nuestras nuevas rutas, destinos y noticias.
           </p>
           <form onSubmit={(e) => { e.preventDefault(); setSent(true) }}>
             <input
               type="email"
               placeholder="Tu correo electrónico"
+              aria-label="Tu correo electrónico"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -32,16 +33,15 @@ export default function Newsletter() {
           </form>
           <ul className="perks">
             <li><Icon name="check" size={12} stroke={2.5}/> Nuevas rutas</li>
-            <li><Icon name="check" size={12} stroke={2.5}/> Tarifas promocionales</li>
+            <li><Icon name="check" size={12} stroke={2.5}/> Nuevos destinos</li>
             <li><Icon name="check" size={12} stroke={2.5}/> Sin spam</li>
           </ul>
         </div>
         <div className="visual" aria-hidden="true">
           <div className="conn">
-            <span>Descubre</span>
-            <span className="solid">el futuro.</span>
+            <span>Tu nueva</span>
+            <span className="solid">forma de viajar.</span>
           </div>
-          <div className="meta">Programa Aerus Vital — Próximamente</div>
         </div>
       </div>
     </section>

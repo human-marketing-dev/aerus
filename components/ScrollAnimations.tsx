@@ -20,7 +20,6 @@ const TARGETS = [
   '.exp-photo',
   '.exp-content',
   '.reviews-header',
-  '.reviews-aggregate',
   '.pagos .header',
   '.pagos .logos',
   '.cta-newsletter h2',

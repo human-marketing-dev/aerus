@@ -2,26 +2,27 @@ const STATS = [
   {
     num: '40',
     unit: 'min',
-    label: 'Check-in y abordaje exprés',
+    label: 'Preséntate hasta 40 minutos antes de tu vuelo',
     sub: '1.er lugar en velocidad de embarque en México.',
   },
   {
-    num: '7',
-    unit: '',
-    label: 'Aeronaves — flota más joven',
-    sub: 'Cessna Grand Caravan EX. Solo 2 años de antigüedad promedio.',
+    pre: 'menos de',
+    num: '3',
+    unit: 'años',
+    label: 'Flota Cessna Grand Caravan EX',
+    sub: 'Ideal para el mercado regional. Antigüedad promedio menor a 3 años.',
   },
   {
-    num: '95%',
+    num: 'Destinos exclusivos',
     unit: '',
-    label: 'Rutas exclusivas',
+    label: '',
     sub: 'Destinos donde las aerolíneas grandes no operan.',
   },
   {
-    num: '97.2%',
+    num: '+97%',
     unit: '',
-    label: 'Cumplimiento de vuelos',
-    sub: '+120,000 pasajeros. Tres años consecutivos.',
+    label: 'Puntualidad superior al 97%',
+    sub: 'Sostenida tres años consecutivos.',
   },
 ]
 
@@ -55,18 +56,13 @@ export default function Experiencia() {
           {STATS.map((s, i) => (
             <div key={i} className="exp-stat">
               <div className="exp-big">
+                {s.pre && <span className="exp-unit">{s.pre}</span>}
                 {s.num}<span className="exp-unit">{s.unit}</span>
               </div>
-              <div className="exp-label">{s.label}</div>
+              {s.label && <div className="exp-label">{s.label}</div>}
               <div className="exp-sub">{s.sub}</div>
             </div>
           ))}
-        </div>
-
-        <div className="exp-certs">
-          <span className="cert-tag">AOC · AFAC</span>
-          <span className="cert-tag">Part 129 · FAA</span>
-          <span className="cert-tag">MRO Certificado</span>
         </div>
       </div>
     </section>
