@@ -31,12 +31,12 @@ export default function Experiencia() {
     <section className="experiencia" id="experiencia">
       <div className="exp-photo">
         <img
-          src="/avion-aerus-lado (1).webp"
+          src="/imagen-aerus-home-avion.webp"
           alt="Cessna Grand Caravan EX — Aerus"
         />
         <div className="exp-photo-caption">
           <span className="exp-model">Cessna Grand Caravan EX</span>
-          <span className="exp-reg">XA-RFF · Garmin G1000 NXi · 9–12 asientos</span>
+          <span className="exp-reg">XA-RFF · Garmin G1000 NXi · 12 asientos</span>
         </div>
       </div>
 
