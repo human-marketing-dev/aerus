@@ -50,6 +50,8 @@ export function Icon({ name, size = 18, stroke = 1.5, className = '' }: IconProp
     case 'support': return <svg {...props}><path d="M21 12a9 9 0 1 0-18 0v6a3 3 0 0 0 3 3h1v-9H4M21 12v6a3 3 0 0 1-3 3h-1v-9h4"/></svg>
     case 'credit-card': return <svg {...props}><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
     case 'cash': return <svg {...props}><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+    case 'youtube': return <svg {...props}><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3z" fill="currentColor"/></svg>
+    case 'tiktok': return <svg {...props}><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.09v12.4a2.59 2.59 0 0 1-2.59 2.5 2.6 2.6 0 0 1-2.59-2.6 2.6 2.6 0 0 1 3.37-2.48V9.66a5.68 5.68 0 0 0-.78-.05A5.69 5.69 0 0 0 4.17 15.3 5.69 5.69 0 0 0 9.86 21a5.69 5.69 0 0 0 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3a4.28 4.28 0 0 1-3.25-1.48z" fill="currentColor" stroke="none"/></svg>
     case 'x-twitter': return <svg {...props}><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.747l7.73-8.835L.517 2.25H8.02l4.264 5.636L18.244 2.25Zm-1.161 17.52h1.833L7.084 4.126H5.117z" fill="currentColor" stroke="none"/></svg>
     case 'x-deco': return (
       <svg width={size} height={size} viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2.5" className={className}>

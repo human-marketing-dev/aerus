@@ -1,8 +1,15 @@
+import { LOCALE_TAG, type Lang } from './i18n'
+import { BLOG_POSTS_EN } from './blog-data.en'
+
+export type BlogGroup = 'destinos' | 'aerus'
+
 export type BlogPost = {
   slug: string
   titulo: string
   fecha: string       // ISO date
-  categoria: string
+  /** Clave de categoría independiente del idioma (filtros y clases CSS blog-card-cat--*). */
+  grupo: BlogGroup
+  categoria: string   // etiqueta visible, traducida
   extracto: string
   contenido: ContentBlock[]
 }
@@ -18,6 +25,7 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'grand-costa-maya',
     titulo: '¡Con Aerus llega a los mejores lugares caribeños!',
     fecha: '2023-07-15',
+    grupo: 'destinos',
     categoria: 'Destinos',
     extracto:
       'Grand Costa Maya, en el sur de Quintana Roo, es un paraíso para los amantes de la aventura, la historia y la cultura: Chetumal, Bacalar y Mahahual te esperan.',
@@ -85,6 +93,7 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'cancun-vacaciones-inolvidables',
     titulo: '¡Aerus: Tu guía para unas vacaciones inolvidables!',
     fecha: '2023-06-20',
+    grupo: 'destinos',
     categoria: 'Destinos',
     extracto:
       'Cancún es uno de los destinos más vibrantes del Caribe Mexicano: playas de arena blanca, vida nocturna de talla mundial y una infraestructura turística de primer nivel.',
@@ -111,6 +120,7 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'descubre-cozumel',
     titulo: 'El paraíso a solo un vuelo de distancia con Aerus',
     fecha: '2023-08-10',
+    grupo: 'destinos',
     categoria: 'Destinos',
     extracto:
       'A tan solo unos minutos desde Cancún, Cozumel te espera con aguas cristalinas, arrecifes de fama mundial y la tranquilidad que solo una isla puede ofrecer.',
@@ -141,6 +151,7 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'quienes-somos',
     titulo: '¿Quiénes somos?',
     fecha: '2023-03-01',
+    grupo: 'aerus',
     categoria: 'Aerus',
     extracto:
       'Aerus es la aerolínea regional mexicana que inicia operaciones en el noreste de México en el primer trimestre de 2023. Conoce nuestra historia y nuestros planes de expansión.',
@@ -167,6 +178,7 @@ export const BLOG_POSTS: BlogPost[] = [
     slug: 'nace-aerus',
     titulo: 'Más cerca de ti',
     fecha: '2023-01-20',
+    grupo: 'aerus',
     categoria: 'Aerus',
     extracto:
       'Nace la aerolínea Aerus: con 32 años de experiencia como taxi aéreo, conectará las regiones de México sin transporte aéreo. Las primeras rutas: Tamaulipas, Veracruz y Texas.',
@@ -213,18 +225,20 @@ export const BLOG_POSTS: BlogPost[] = [
   },
 ]
 
-export function getAllPosts(): BlogPost[] {
-  return [...BLOG_POSTS].sort(
+const POSTS_BY_LANG: Record<Lang, BlogPost[]> = { es: BLOG_POSTS, en: BLOG_POSTS_EN }
+
+export function getAllPosts(lang: Lang = 'es'): BlogPost[] {
+  return [...POSTS_BY_LANG[lang]].sort(
     (a, b) => new Date(b.fecha).getTime() - new Date(a.fecha).getTime()
   )
 }
 
-export function getPost(slug: string): BlogPost | null {
-  return BLOG_POSTS.find(p => p.slug === slug) ?? null
+export function getPost(slug: string, lang: Lang = 'es'): BlogPost | null {
+  return POSTS_BY_LANG[lang].find(p => p.slug === slug) ?? null
 }
 
-export function formatFecha(iso: string): string {
-  return new Date(iso).toLocaleDateString('es-MX', {
+export function formatFecha(iso: string, lang: Lang = 'es'): string {
+  return new Date(iso).toLocaleDateString(LOCALE_TAG[lang], {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

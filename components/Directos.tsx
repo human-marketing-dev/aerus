@@ -1,30 +1,41 @@
+import Link from 'next/link'
 import { Icon } from './icons'
+import { lp, type Lang } from '@/lib/i18n'
 
 const DIRECT_ROUTES: [string, string][] = [
   ['CDMX', 'Ciudad Victoria'],
-  ['CDMX', 'Ciudad Ixtepec'],
   ['CDMX', 'Tampico'],
-  ['Ciudad del Carmen', 'Minatitlán'],
-  ['Ciudad del Carmen', 'Veracruz'],
-  ['Minatitlán', 'Veracruz'],
-  ['Minatitlán', 'Villahermosa'],
   ['Monterrey', 'Aguascalientes'],
   ['Monterrey', 'Brownsville'],
   ['Monterrey', 'Durango'],
   ['Monterrey', 'McAllen'],
-  ['Monterrey', 'Laredo'],
   ['Monterrey', 'Piedras Negras'],
   ['Monterrey', 'San Luis Potosí'],
   ['Monterrey', 'Tampico'],
-  ['Morelia', 'CDMX'],
-  ['Morelia', 'Uruapan'],
-  ['Veracruz', 'CDMX'],
   ['Veracruz', 'Tampico'],
   ['Veracruz', 'Villahermosa'],
   ['Villahermosa', 'Mérida'],
 ]
+const N = DIRECT_ROUTES.length
 
-export default function Directos() {
+const T = {
+  es: {
+    a: 'Destinos', b: 'Directos',
+    blurb: `${N} conexiones directas, sin escalas innecesarias. Llega antes, descansa más y vive el destino — no la sala de espera.`,
+    active: 'Rutas directas activas',
+    cta: 'Encuentra tu vuelo directo',
+  },
+  en: {
+    a: 'Direct', b: 'Flights',
+    blurb: `${N} direct connections, no unnecessary layovers. Arrive sooner, rest more and enjoy your destination — not the departure lounge.`,
+    active: 'Active direct routes',
+    cta: 'Find your direct flight',
+  },
+}
+
+
+export default function Directos({ lang }: { lang: Lang }) {
+  const t = T[lang]
   const half = Math.ceil(DIRECT_ROUTES.length / 2)
   const col1 = DIRECT_ROUTES.slice(0, half)
   const col2 = DIRECT_ROUTES.slice(half)
@@ -44,15 +55,13 @@ export default function Directos() {
           <div className="plate">
             <Icon name="plane-takeoff" size={28}/>
             <div className="text">
-              <span className="a">Destinos</span>
-              <span className="b">Directos</span>
+              <span className="a">{t.a}</span>
+              <span className="b">{t.b}</span>
             </div>
           </div>
-          <div className="blurb">
-            21 conexiones directas, sin escalas innecesarias. Llega antes, descansa más y vive el destino — no la sala de espera.
-          </div>
-          <div className="count">21</div>
-          <div>Rutas directas activas</div>
+          <div className="blurb">{t.blurb}</div>
+          <div className="count">{N}</div>
+          <div>{t.active}</div>
         </div>
         <div>
           <div className="routes-tables" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
@@ -76,9 +85,9 @@ export default function Directos() {
             </div>
           </div>
           <div style={{ marginTop: 40, display: 'flex', gap: 12 }}>
-            <button className="btn" style={{ background: 'var(--aerus-deep-forest)', color: 'var(--aerus-spring-green)' }}>
-              Encuentra tu vuelo directo <span className="ar"></span>
-            </button>
+            <Link href={lp(lang, '/rutas/')} className="btn" style={{ background: 'var(--aerus-deep-forest)', color: 'var(--aerus-spring-green)' }}>
+              {t.cta} <span className="ar"></span>
+            </Link>
           </div>
         </div>
       </div>

@@ -1,3 +1,6 @@
+import type { Lang } from './i18n'
+import { FAQ_CATEGORIAS_EN } from './faq-mock.en'
+
 export interface FaqItem {
   pregunta: string
   respuesta: string
@@ -25,7 +28,7 @@ export const FAQ_CATEGORIAS: FaqCategoria[] = [
       {
         pregunta: '¿Cómo recibo mi boleto después de comprar?',
         respuesta:
-          'Tu boleto electrónico (e-ticket) se envía de inmediato al correo que registraste durante la compra. Revisa tu carpeta de spam si no lo encuentras en los primeros minutos. También puedes consultarlo en Mi Vuelo con tu número de reservación.',
+          'Tu boleto electrónico (e-ticket) se envía de inmediato al correo que registraste durante la compra. Revisa tu carpeta de spam si no lo encuentras en los primeros minutos. También puedes consultarlo en Mi Reserva con tu número de reservación.',
       },
     ],
   },
@@ -35,7 +38,7 @@ export const FAQ_CATEGORIAS: FaqCategoria[] = [
       {
         pregunta: '¿Puedo cambiar la fecha de mi vuelo?',
         respuesta:
-          'Sí, puedes cambiar la fecha de tu vuelo con al menos 24 horas de anticipación. El cambio está sujeto a disponibilidad y puede aplicar una diferencia de tarifa según la fecha nueva que elijas. Gestiona tu cambio en Mi Vuelo o comunícate con nosotros.',
+          'Sí, puedes cambiar la fecha de tu vuelo con al menos 24 horas de anticipación. El cambio está sujeto a disponibilidad y puede aplicar una diferencia de tarifa según la fecha nueva que elijas. Gestiona tu cambio en Mi Reserva o comunícate con nosotros.',
       },
       {
         pregunta: '¿Qué pasa si cancelo mi vuelo?',
@@ -105,3 +108,8 @@ export const FAQ_CATEGORIAS: FaqCategoria[] = [
     ],
   },
 ]
+
+/** Categorías de preguntas frecuentes en el idioma pedido. */
+export function getFaqCategorias(lang: Lang = 'es'): FaqCategoria[] {
+  return lang === 'en' ? FAQ_CATEGORIAS_EN : FAQ_CATEGORIAS
+}

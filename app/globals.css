@@ -108,10 +108,18 @@
   --dur-fast: 140ms;
   --dur-base: 220ms;
   --dur-slow: 420ms;
+
+  /* Layout del header / hero / buscador */
+  --nav-h: 76px;
+  --booking-sticky-bottom: 32px;   /* separación del buscador con el borde inferior de la pantalla */
 }
+@media (max-width: 640px) { :root { --nav-h: 64px; } }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; background: var(--aerus-white); color: var(--aerus-deep-forest); overflow-x: hidden; font-family: var(--font-body); font-size: var(--fs-body); line-height: var(--lh-body); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+/* clip en vez de hidden: hidden convierte al body en contenedor de scroll y rompe position: sticky
+   (header y buscador). hidden queda de respaldo para navegadores sin soporte de clip. */
+html, body { overflow-x: hidden; overflow-x: clip; }
 a { color: inherit; text-decoration: none; cursor: pointer; }
 button { font-family: inherit; cursor: pointer; }
 img { display: block; }
@@ -144,7 +152,15 @@ img { display: block; }
   flex-shrink: 0;
 }
 
+.notif-anchor {
+  position: relative;
+  height: 0;
+  z-index: 40;
+}
 .notif {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  box-shadow: 0 6px 16px rgba(12, 38, 38, 0.18);
   background: var(--aerus-spring-green);
   color: var(--aerus-deep-forest);
   text-align: center;
@@ -152,7 +168,6 @@ img { display: block; }
   font: 500 11px/1.2 var(--font-display);
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  position: relative;
   overflow: hidden;
 }
 .notif strong { font-weight: 700; }
@@ -183,7 +198,7 @@ img { display: block; }
   color: var(--aerus-white);
   display: flex;
   align-items: stretch;
-  height: 60px;
+  height: var(--nav-h);
   padding: 0 32px;
   position: sticky;
   top: 0;
@@ -198,7 +213,7 @@ img { display: block; }
   border-left: 1px solid rgba(255,255,255,0.08);
   border-right: 1px solid rgba(255,255,255,0.08);
 }
-.nav .brand img { height: 48px; }
+.nav .brand img { height: 56px; }
 .nav-group {
   flex: 1;
   display: flex;
@@ -263,6 +278,9 @@ img { display: block; }
   flex-shrink: 0;
 }
 .nav .lang:hover { opacity: 1; }
+.nav .lang span { opacity: 0.55; }
+.nav .lang span.on { opacity: 1; font-weight: 700; color: var(--aerus-spring-green); }
+.nav .lang-mobile { display: none; }
 .nav .login {
   font: 600 10.5px/1 var(--font-display);
   letter-spacing: 0.12em;
@@ -281,8 +299,10 @@ img { display: block; }
 @media (max-width: 1180px) {
   .nav { padding: 0 16px; }
   .nav .brand { padding: 0 24px; }
-  .nav .lang { display: none; }
   .nav-group a { padding: 0 12px; font-size: 10px; letter-spacing: 0.12em; }
+}
+@media (max-width: 640px) {
+  .nav .brand img { height: 48px; }
 }
 @media (max-width: 900px) {
   .nav-group.nav-left a:nth-child(n+3) { display: none; }
@@ -308,9 +328,14 @@ img { display: block; }
 .hero-slide.active { opacity: 1; visibility: visible; transition: opacity 0.6s ease; }
 .hero-slide picture,
 .hero-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Todo el banner es clicable cuando tiene href; los controles quedan encima */
+.hero-slide-link { position: absolute; inset: 0; z-index: 1; }
+.hero-controls .slider-controls > * { pointer-events: auto; }
 @media (prefers-reduced-motion: reduce) { .hero-slide, .hero-slide.active { transition: none; } }
 @media (max-width: 640px) {
   .hero { aspect-ratio: 1080 / 1350; min-height: 0; }
+  /* Banner sin versión móvil: se muestra completo en 16:9 para no cortar el texto */
+  .hero.hero--wide-mobile { aspect-ratio: 16 / 9; }
   .hero-placeholder { padding-bottom: 72px; }
 }
 
@@ -341,6 +366,7 @@ img { display: block; }
 .hero-controls {
   position: absolute; left: 0; right: 0; bottom: 92px;
   z-index: 2;
+  pointer-events: none; /* deja pasar el clic al banner; los botones lo reactivan */
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 64px;
@@ -388,6 +414,68 @@ img { display: block; }
 }
 @media (max-width: 760px) {
   .booking-bridge { padding: 0 16px; margin: -32px auto -32px; }
+}
+
+/* Buscador Kiusys (iframe). En escritorio el alto lo reporta el propio widget
+   (components/BookingWidget.tsx); --booking-iframe-h es solo el alto inicial / de móvil. */
+.booking-iframe-wrap {
+  --booking-iframe-h: 150px;
+  position: relative;
+  /* Sin fondo ni sombra propios: el widget de Kiusys ya trae su recuadro */
+  background: transparent;
+  overflow: hidden;
+}
+/* Ya medido: el calendario puede sobresalir de la tarjeta */
+.booking-iframe-wrap.is-measured { overflow: visible; }
+/* Escritorio: el widget queda centrado sobre la unión hero / "Por qué volar" sin ocupar
+   espacio (el offset = -alto/2 lo calcula BookingWidget; 75px es el valor inicial). */
+.booking-bridge--widget,
+.booking-bridge.booking-bridge--widget {
+  margin-top: var(--booking-bridge-offset, -75px);
+  margin-bottom: var(--booking-bridge-offset, -75px);
+}
+/* Móvil: el widget va en flujo entre las dos secciones, con su mismo fondo para que no haya corte */
+@media (max-width: 767px) {
+  .booking-bridge.booking-bridge--widget {
+    display: block;
+    margin: 0 auto;
+    padding: 16px;
+    background: var(--aerus-deep-forest);
+    max-width: none;
+  }
+}
+/* Hero a pantalla completa con el buscador pegado abajo: al cargar el buscador queda
+   visible en la parte baja de la pantalla y, al hacer scroll, se acomoda centrado sobre la
+   unión hero / siguiente sección (posición natural del bloque, ver offset arriba). */
+@media (min-width: 768px) {
+  .hero.hero--full {
+    aspect-ratio: auto;
+    height: calc(100svh - var(--nav-h));
+    min-height: 520px;
+  }
+  .booking-bridge.booking-bridge--widget {
+    position: sticky;
+    bottom: var(--booking-sticky-bottom);
+  }
+  /* Flechas y paginación siempre por encima del buscador (su alto lo publica BookingWidget) */
+  .hero.hero--full .hero-controls {
+    bottom: calc(var(--booking-sticky-bottom) + var(--booking-widget-h, 150px) + 24px);
+  }
+}
+
+/* Modal del widget a pantalla completa: subir todo el bloque por encima del header (z 50) */
+.booking-bridge:has(.booking-iframe-wrap.is-overlay) { z-index: 1000; }
+.booking-iframe {
+  display: block;
+  width: 100%;
+  height: var(--booking-iframe-h);
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color-scheme: light;
+}
+@media (max-width: 767px) {
+  .booking-iframe-wrap { --booking-iframe-h: 520px; }
 }
 
 .booking-h {
@@ -709,9 +797,10 @@ img { display: block; }
   position: relative;
   overflow: hidden;
   height: 200px;
-  background: linear-gradient(to right, var(--aerus-spring-green) 50%, var(--aerus-deep-forest) 50%);
+  background: var(--aerus-spring-green);
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 .brand-banner .bb-text {
   position: absolute;
@@ -722,16 +811,11 @@ img { display: block; }
   color: transparent;
   user-select: none;
 }
-/* La frase se parte en el cambio de color: «FOR» | «MA» */
-.brand-banner .bb-on-green {
-  right: 50%;
-  padding-right: 0.06em;
+/* Banner de un solo color: frase completa en contorno verde bosque, centrada y sin recorte */
+.brand-banner .bb-text {
+  position: static;
+  font-size: clamp(28px, 5.8vw, 116px);
   -webkit-text-stroke: 2px var(--aerus-deep-forest);
-}
-.brand-banner .bb-on-dark {
-  left: 50%;
-  padding-left: 0.06em;
-  -webkit-text-stroke: 2px var(--aerus-spring-green);
 }
 
 .routes-map {
@@ -915,13 +999,23 @@ img { display: block; }
 }
 .directos .x {
   position: absolute;
-  width: 56px; height: 56px;
+  width: var(--dx-size); height: var(--dx-size);
   color: var(--aerus-deep-forest);
+  pointer-events: none;
 }
-.directos .x.tl { top: 80px; left: 80px; }
-.directos .x.bl { bottom: 80px; left: 80px; }
-.directos .x.tr { top: 80px; right: 80px; }
-.directos .x.br { bottom: 80px; right: 80px; }
+/* Las X se alinean con los márgenes del contenido del sitio (padding lateral de la sección
+   + centrado del .container de 1440px en pantallas anchas) y van en el padding vertical,
+   por encima / debajo del contenido para no encimarse. */
+.directos {
+  --dx-pad: 64px;
+  --dx-size: 48px;
+  /* el trazo de la X ocupa del 20% al 80% de su SVG: se compensa ese aire */
+  --dx-edge: calc(var(--dx-pad) + max(0px, (100% - 1440px - 2 * var(--dx-pad)) / 2) - var(--dx-size) * 0.2);
+}
+.directos .x.tl { top: 36px; left: var(--dx-edge); }
+.directos .x.bl { bottom: 36px; left: var(--dx-edge); }
+.directos .x.tr { top: 36px; right: var(--dx-edge); }
+.directos .x.br { bottom: 36px; right: var(--dx-edge); }
 .directos .grid {
   display: grid;
   grid-template-columns: 1fr 1.8fr;
@@ -931,11 +1025,10 @@ img { display: block; }
 }
 @media (max-width: 1180px) {
   .directos .grid { grid-template-columns: 1fr 2fr; gap: 32px; }
-  .directos .x.tl, .directos .x.bl, .directos .x.tr, .directos .x.br { width: 40px; height: 40px; }
-  .directos .x.tl, .directos .x.tr { top: 40px; }
-  .directos .x.bl, .directos .x.br { bottom: 40px; }
-  .directos .x.tl, .directos .x.bl { left: 32px; }
-  .directos .x.tr, .directos .x.br { right: 32px; }
+  /* section-pad aquí es 96px 32px */
+  .directos { --dx-pad: 32px; --dx-size: 40px; }
+  .directos .x.tl, .directos .x.tr { top: 28px; }
+  .directos .x.bl, .directos .x.br { bottom: 28px; }
 }
 .directos .left {
   position: sticky; top: 120px;
@@ -1113,76 +1206,50 @@ img { display: block; }
 .pagos .header .eyebrow { color: var(--aerus-spring-green); }
 .pagos .header .section-headline { color: var(--aerus-white); margin: 0; }
 .pagos .header .section-headline .em { color: var(--aerus-spring-green); }
-.pagos .tabs {
-  display: flex; gap: 4px;
-  padding: 4px;
-  background: rgba(255,255,255,0.06);
-  border-radius: 999px;
-  width: fit-content;
+/* Dos sliders de logos (marquee) — uno por categoría, mismo tamaño de tile */
+.pagos-rows { display: flex; flex-direction: column; gap: 40px; }
+.pagos-row-head {
+  display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+  margin-bottom: 16px;
 }
-.pagos .tabs button {
-  background: transparent; border: 0;
-  padding: 12px 22px;
-  font: 500 12px/1 var(--font-display);
-  letter-spacing: 0.10em; text-transform: uppercase;
-  color: var(--aerus-white); opacity: 0.65;
-  border-radius: 999px;
+.pagos-row-title {
   display: inline-flex; align-items: center; gap: 10px;
+  font: 600 12px/1 var(--font-display);
+  letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--aerus-spring-green);
+  margin: 0;
 }
-.pagos .tabs button.active {
-  background: var(--aerus-spring-green);
-  color: var(--aerus-deep-forest);
-  opacity: 1;
-}
-.pagos .logos {
-  display: grid;
-  gap: 10px;
-}
-.pagos .logos-cards { grid-template-columns: repeat(8, 1fr); }
-.pagos .logos-cash  { grid-template-columns: repeat(6, 1fr); }
-.pagos .logo-tile {
-  border-radius: 6px;
-  height: 72px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  padding: 10px 8px;
-  text-align: center;
-  transition: transform .18s var(--ease-standard), opacity .18s;
+.pagos-row-sub { font: 400 14px/1.5 var(--font-body); color: rgba(255,255,255,0.6); margin: 0; }
+.pagos-marquee {
   overflow: hidden;
-  position: relative;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
 }
-.pagos .logo-tile:hover { transform: translateY(-2px); opacity: 0.92; }
-.pagos .logo-tile .brand-name {
-  font: 700 12px/1 var(--font-display);
-  letter-spacing: 0.04em;
-  white-space: nowrap;
-}
-.pagos .logo-tile .brand-sub {
-  font: 500 9px/1 var(--font-display);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  opacity: 0.7;
-  margin-top: 3px;
-}
-/* Logo grid with real images */
-.pagos-logos-grid {
-  display: grid;
-  gap: 12px;
-}
-.pagos-logos-grid--cards { grid-template-columns: repeat(4, 1fr); }
-.pagos-logos-grid--cash  { grid-template-columns: repeat(5, 1fr); }
-.pagos-logo-tile {
-  height: 120px;
+.pagos-track {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  width: max-content;
+  animation: pagos-scroll var(--pagos-dur, 50s) linear infinite;
+}
+.pagos-marquee--reverse .pagos-track { animation-direction: reverse; }
+.pagos-marquee:hover .pagos-track,
+.pagos-marquee:focus-within .pagos-track { animation-play-state: paused; }
+@keyframes pagos-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.pagos-logo-tile {
+  flex: 0 0 auto;
+  width: 260px; height: 130px;
+  margin-right: 12px;
+  padding: 14px 18px;
+  display: flex; align-items: center; justify-content: center;
   opacity: 0.85;
   transition: opacity .18s;
 }
 .pagos-logo-tile:hover { opacity: 1; }
+.pagos-logo-tile img { width: 100%; height: 100%; object-fit: contain; }
+@media (prefers-reduced-motion: reduce) {
+  .pagos-marquee { -webkit-mask-image: none; mask-image: none; }
+  .pagos-track { animation: none; width: auto; flex-wrap: wrap; justify-content: center; row-gap: 12px; }
+  .pagos-track [aria-hidden="true"] { display: none; }
+}
 
 .pagos .footer-row {
   margin-top: 40px;
@@ -1332,7 +1399,7 @@ img { display: block; }
   opacity: 0.65; max-width: 280px;
   margin: 0 0 28px;
 }
-.footer .top .brand .socials { display: flex; gap: 10px; }
+.footer .top .brand .socials { display: flex; flex-wrap: wrap; gap: 10px; }
 .footer .top .brand .socials a {
   width: 38px; height: 38px;
   border: 1px solid rgba(255,255,255,0.18);
@@ -1557,103 +1624,6 @@ img { display: block; }
   .exp-content { padding: 60px 40px; }
 }
 
-/* ── Reviews ── */
-.reviews {
-  background: var(--aerus-cloud);
-  color: var(--aerus-deep-forest);
-}
-.reviews-header { margin-bottom: 56px; }
-.reviews-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-}
-.rev-card {
-  background: var(--aerus-white);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-.rev-photo {
-  width: 100%;
-  aspect-ratio: 16/9;
-  position: relative;
-  flex-shrink: 0;
-}
-/* CSS person silhouette */
-.rev-photo::before {
-  content: "";
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: rgba(12,38,38,0.18);
-}
-.rev-photo::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px; height: 36px;
-  border-radius: 50% 50% 0 0;
-  background: rgba(12,38,38,0.14);
-}
-.rev-card-body {
-  padding: 24px 28px 28px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-.rev-text {
-  font: 400 14px/1.6 var(--font-body);
-  color: var(--aerus-deep-forest);
-  opacity: 0.78;
-  flex: 1;
-  margin-bottom: 24px;
-}
-.rev-author {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding-top: 20px;
-  border-top: 1px solid var(--border);
-}
-.rev-avatar {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: var(--aerus-deep-forest);
-  color: var(--aerus-spring-green);
-  display: grid; place-items: center;
-  font: 600 13px/1 var(--font-display);
-  flex-shrink: 0;
-}
-.rev-name {
-  font: 600 14px/1.2 var(--font-display);
-  color: var(--aerus-deep-forest);
-}
-.rev-meta {
-  font: 400 11.5px/1.3 var(--font-body);
-  color: var(--forest-500);
-  margin-top: 2px;
-}
-.rev-route {
-  font: 500 10px/1 var(--font-display);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--aerus-spring-green);
-  margin-top: 5px;
-}
-@media (max-width: 1000px) {
-  .reviews-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 640px) {
-  .reviews-grid { grid-template-columns: 1fr; }
-}
 
 /* ═══════════════════════════════════════════════════════════
    RESPONSIVE — Tablet 900px
@@ -1691,10 +1661,6 @@ img { display: block; }
 
   /* Pagos */
   .pagos .header { grid-template-columns: 1fr; gap: 24px; }
-  .pagos .logos-cards { grid-template-columns: repeat(4, 1fr); }
-  .pagos .logos-cash  { grid-template-columns: repeat(4, 1fr); }
-  .pagos-logos-grid--cards { grid-template-columns: repeat(4, 1fr); }
-  .pagos-logos-grid--cash  { grid-template-columns: repeat(4, 1fr); }
 
   /* Newsletter */
   .cta-newsletter .inner { grid-template-columns: 1fr; gap: 48px; }
@@ -1725,6 +1691,7 @@ img { display: block; }
   .nav { justify-content: center; padding: 0 16px; }
   .nav-group.nav-left { display: none; }
   .nav-group.nav-right { display: none; }
+  .nav .lang-mobile { display: inline-flex; position: absolute; top: 0; bottom: 0; right: 12px; }
 
   /* Hero */
   .hero-controls { padding: 0 24px; bottom: 24px; }
@@ -1772,10 +1739,8 @@ img { display: block; }
   .servicio { min-height: auto; }
 
   /* Pagos */
-  .pagos .logos-cards { grid-template-columns: repeat(3, 1fr); }
-  .pagos .logos-cash  { grid-template-columns: repeat(3, 1fr); }
-  .pagos-logos-grid--cards { grid-template-columns: repeat(3, 1fr); }
-  .pagos-logos-grid--cash  { grid-template-columns: repeat(3, 1fr); }
+  .pagos-logo-tile { width: 180px; height: 92px; padding: 10px 12px; margin-right: 8px; }
+  .pagos-rows { gap: 32px; }
   .pagos .footer-row { flex-direction: column; align-items: flex-start; gap: 12px; }
 
   /* Newsletter */
@@ -1809,25 +1774,8 @@ img { display: block; }
   .booking-h-submit { width: 100%; justify-content: center; padding: 18px; }
 
   /* Brand banner — font fits in one line */
-  .brand-banner .bb-text { font-size: clamp(26px, 6.5vw, 42px); }
+  .brand-banner .bb-text { font-size: clamp(20px, 5.6vw, 42px); -webkit-text-stroke-width: 1.5px; }
   .brand-banner { height: 76px; }
-
-  /* Reviews — horizontal scroll snap */
-  .reviews-grid {
-    display: flex;
-    overflow-x: scroll;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    gap: 14px;
-    padding: 0 24px 16px;
-    margin: 0 -24px;
-    scrollbar-width: none;
-  }
-  .reviews-grid::-webkit-scrollbar { display: none; }
-  .rev-card {
-    flex: 0 0 82vw;
-    scroll-snap-align: start;
-  }
 
   /* Directos — single column compact table */
   .directos .routes-tables { grid-template-columns: 1fr !important; gap: 0 !important; }
@@ -1835,6 +1783,10 @@ img { display: block; }
   .directos .table .row { font-size: 13px; padding: 10px 0; gap: 8px; }
   .directos .table .row .arr svg { width: 14px; height: 14px; }
   .directos .left .count { font-size: 64px; }
+  /* section-pad aquí es 72px 24px */
+  .directos { --dx-pad: 24px; --dx-size: 28px; }
+  .directos .x.tl, .directos .x.tr { top: 22px; }
+  .directos .x.bl, .directos .x.br { bottom: 22px; }
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -1870,8 +1822,6 @@ img { display: block; }
 .servicios .grid .servicio:nth-child(2).reveal { transition-delay: 0.08s; }
 .servicios .grid .servicio:nth-child(3).reveal { transition-delay: 0.16s; }
 .servicios .grid .servicio:nth-child(4).reveal { transition-delay: 0.24s; }
-.reviews-grid .rev-card:nth-child(2).reveal    { transition-delay: 0.10s; }
-.reviews-grid .rev-card:nth-child(3).reveal    { transition-delay: 0.20s; }
 .footer .top > *:nth-child(2).reveal           { transition-delay: 0.06s; }
 .footer .top > *:nth-child(3).reveal           { transition-delay: 0.12s; }
 .footer .top > *:nth-child(4).reveal           { transition-delay: 0.18s; }
@@ -3255,6 +3205,11 @@ img { display: block; }
 .rmi-label {
   font: 500 10.5px/1 var(--font-display);
   fill: rgba(255,255,255,0.65);
+  /* contorno del color del fondo: la etiqueta se lee limpia aunque una ruta pase por debajo */
+  paint-order: stroke;
+  stroke: var(--aerus-deep-forest);
+  stroke-width: 3px;
+  stroke-linejoin: round;
   pointer-events: none;
   transition: fill 0.2s, font-weight 0.2s;
 }
@@ -3263,7 +3218,7 @@ img { display: block; }
 .rmi-node--connected .rmi-label  { fill: var(--aerus-white); }
 .rmi-node--dim .rmi-label        { fill: rgba(255,255,255,0.2); }
 
-/* VivaAerobus codeshare ring */
+/* Viva codeshare ring */
 .rmi-viva-ring {
   fill: none;
   stroke: #FF7A40;
@@ -5266,7 +5221,7 @@ a.destino-route-chip:hover .destino-route-chip-arr {
   .ruta-body { padding: 40px 20px 64px; }
 }
 
-/* ── Conexiones Viva Aerobus (/rutas/conexiones-viva-aerobus) ─────────────── */
+/* ── Alianza con Viva (/rutas/conexiones-viva-aerobus) ─────────────── */
 .viva-hero {
   background: var(--aerus-deep-forest);
   padding: 80px 64px 72px;

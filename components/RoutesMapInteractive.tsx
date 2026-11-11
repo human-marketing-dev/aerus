@@ -1,7 +1,40 @@
 'use client'
 import { useState } from 'react'
 import { ComposableMap, Geographies, Geography, useMapContext } from 'react-simple-maps'
-import type { City } from '@/lib/routes'
+import type { City } from '@/lib/red-de-rutas'
+import Link from 'next/link'
+import { lp, LOCALE_TAG, type Lang } from '@/lib/i18n'
+
+const T = {
+  es: {
+    byCity: 'Vuelos directos por ciudad',
+    others: 'Otras rutas',
+    eyebrow: 'Red Interactiva',
+    headline: ['Explora tu próxima ', 'conexión.'],
+    intro: 'Toca cualquier destino para ver todas sus rutas directas.',
+    statRoutes: 'Rutas directas',
+    statDest: 'Destinos',
+    statIntl: 'Internacionales',
+    legendViva: 'Codeshare Viva + Aerus',
+    legendExclusive: 'Destino exclusivo Aerus',
+    allRoutes: 'Ver todas las rutas',
+    direct: 'Vuelos directos',
+  },
+  en: {
+    byCity: 'Direct flights by city',
+    others: 'Other routes',
+    eyebrow: 'Interactive network',
+    headline: ['Explore your next ', 'connection.'],
+    intro: 'Tap any destination to see all of its direct routes.',
+    statRoutes: 'Direct routes',
+    statDest: 'Destinations',
+    statIntl: 'International',
+    legendViva: 'Viva + Aerus codeshare',
+    legendExclusive: 'Aerus-exclusive destination',
+    allRoutes: 'See all routes',
+    direct: 'Direct flights',
+  },
+}
 
 // TODO: move to a 'codeshare' column in the ciudades sheet if needed later
 const VIVA = new Set(['Monterrey', 'CDMX', 'Veracruz', 'Villahermosa'])
@@ -133,11 +166,13 @@ function CitiesLayer({ cities, nodeState, toggleCity, setHoveredCity }: CitiesLa
 // ── Destination list — accordion + chips (mobile only, hidden on desktop via CSS) ──
 
 interface DestinationListProps {
+  lang: Lang
   cities: Record<string, City>
   routes: [string, string][]
 }
 
-function DestinationList({ cities, routes }: DestinationListProps) {
+function DestinationList({ lang, cities, routes }: DestinationListProps) {
+  const t = T[lang]
   const [open, setOpen] = useState<Set<string>>(new Set())
 
   function toggle(id: string) {
@@ -152,7 +187,7 @@ function DestinationList({ cities, routes }: DestinationListProps) {
   const hubKeys = Object.entries(cities)
     .filter(([, c]) => c.hub)
     .map(([k]) => k)
-    .sort((a, b) => cities[a].label.localeCompare(cities[b].label, 'es'))
+    .sort((a, b) => cities[a].label.localeCompare(cities[b].label, LOCALE_TAG[lang]))
   const hubSet = new Set(hubKeys)
 
   // "Otras rutas": routes where NEITHER endpoint is a hub
@@ -162,7 +197,7 @@ function DestinationList({ cities, routes }: DestinationListProps) {
 
   return (
     <div className="rmi-destinations">
-      <p className="rmi-destinations-label">Vuelos directos por ciudad</p>
+      <p className="rmi-destinations-label">{t.byCity}</p>
 
       {hubKeys.map(hub => {
         const conns = getConnections(hub, routes)
@@ -174,7 +209,7 @@ function DestinationList({ cities, routes }: DestinationListProps) {
               <span className="rmi-dest-trigger-left">
                 <span className="rmi-dest-hub-dot" aria-hidden="true" />
                 <span className="rmi-dest-name">{cities[hub].label}</span>
-                {VIVA.has(hub) && <span className="rmi-viva-tag" aria-label="Codeshare VivaAerobus">V</span>}
+                {VIVA.has(hub) && <span className="rmi-viva-tag" aria-label="Codeshare Viva">V</span>}
               </span>
               <span className="rmi-dest-meta" aria-hidden="true">
                 <span className="rmi-dest-count">{conns.length}</span>
@@ -186,7 +221,7 @@ function DestinationList({ cities, routes }: DestinationListProps) {
                 {conns.map(c => (
                   <span key={c} className={`rmi-dest-chip${VIVA.has(c) ? ' rmi-dest-chip--viva' : ''}`}>
                     {cities[c]?.label ?? c}
-                    {VIVA.has(c) && <span className="rmi-viva-tag" aria-label="Codeshare VivaAerobus">V</span>}
+                    {VIVA.has(c) && <span className="rmi-viva-tag" aria-label="Codeshare Viva">V</span>}
                   </span>
                 ))}
               </div>
@@ -199,7 +234,7 @@ function DestinationList({ cities, routes }: DestinationListProps) {
         <div className="rmi-dest-row">
           <button className="rmi-dest-trigger" aria-expanded={otrasOpen} onClick={() => toggle('__otras__')}>
             <span className="rmi-dest-trigger-left">
-              <span className="rmi-dest-name rmi-dest-name--otras">Otras rutas</span>
+              <span className="rmi-dest-name rmi-dest-name--otras">{t.others}</span>
             </span>
             <span className="rmi-dest-meta" aria-hidden="true">
               <span className="rmi-dest-count">{otrasRoutes.length}</span>
@@ -213,7 +248,7 @@ function DestinationList({ cities, routes }: DestinationListProps) {
                 return (
                   <span key={i} className={`rmi-dest-chip${isViva ? ' rmi-dest-chip--viva' : ''}`}>
                     {cities[a]?.label ?? a} – {cities[b]?.label ?? b}
-                    {isViva && <span className="rmi-viva-tag" aria-label="Codeshare VivaAerobus">V</span>}
+                    {isViva && <span className="rmi-viva-tag" aria-label="Codeshare Viva">V</span>}
                   </span>
                 )
               })}
@@ -228,11 +263,13 @@ function DestinationList({ cities, routes }: DestinationListProps) {
 // ── Main component ────────────────────────────────────────────────────────────
 
 interface Props {
+  lang: Lang
   cities: Record<string, City>
   routes: [string, string][]
 }
 
-export default function RoutesMapInteractive({ cities, routes }: Props) {
+export default function RoutesMapInteractive({ lang, cities, routes }: Props) {
+  const t = T[lang]
   const [activeCity, setActiveCity] = useState<string | null>(null)
   const [hoveredCity, setHoveredCity] = useState<string | null>(null)
 
@@ -241,8 +278,7 @@ export default function RoutesMapInteractive({ cities, routes }: Props) {
 
   const totalRoutes = routes.length
   const totalDestinos = new Set(routes.flat()).size
-  // TODO: derive from data once the Sheet has a way to flag international cities
-  const totalInternacionales = 4
+  const totalInternacionales = new Set(routes.flat().filter(c => cities[c]?.intl)).size
 
   function toggleCity(name: string) {
     setActiveCity(prev => (prev === name ? null : name))
@@ -265,18 +301,18 @@ export default function RoutesMapInteractive({ cities, routes }: Props) {
     <section className="rmi" id="mapa-interactivo">
       <div className="rmi-inner">
         <div className="rmi-copy">
-          <div className="eyebrow" style={{ color: 'var(--aerus-spring-green)' }}>Red Interactiva</div>
+          <div className="eyebrow" style={{ color: 'var(--aerus-spring-green)' }}>{t.eyebrow}</div>
           <h2 className="section-headline rmi-headline">
-            Explora tu próxima <span className="em">conexión.</span>
+            {t.headline[0]}<span className="em">{t.headline[1]}</span>
           </h2>
           <p className="section-intro rmi-intro">
-            Toca cualquier destino para ver todas sus rutas directas.
+            {t.intro}
           </p>
 
           <div className="rmi-stats">
-            <div><span className="rmi-n">{totalRoutes}</span><span className="rmi-l">Rutas directas</span></div>
-            <div><span className="rmi-n">{totalDestinos}</span><span className="rmi-l">Destinos</span></div>
-            <div><span className="rmi-n">{totalInternacionales}</span><span className="rmi-l">Internacionales</span></div>
+            <div><span className="rmi-n">{totalRoutes}</span><span className="rmi-l">{t.statRoutes}</span></div>
+            <div><span className="rmi-n">{totalDestinos}</span><span className="rmi-l">{t.statDest}</span></div>
+            <div><span className="rmi-n">{totalInternacionales}</span><span className="rmi-l">{t.statIntl}</span></div>
           </div>
 
           <div className="rmi-legend">
@@ -285,20 +321,20 @@ export default function RoutesMapInteractive({ cities, routes }: Props) {
                 <circle cx="8" cy="8" r="4" fill="var(--aerus-spring-green)" />
                 <circle cx="8" cy="8" r="7" fill="none" stroke="#FF7A40" strokeWidth="1.5" />
               </svg>
-              Codeshare VivaAerobus + Aerus
+              {t.legendViva}
             </div>
             <div className="rmi-legend-item">
               <svg width="16" height="16" viewBox="0 0 16 16" style={{ flexShrink: 0 }}>
                 <circle cx="8" cy="8" r="4" fill="var(--aerus-spring-green)" />
               </svg>
-              Destino exclusivo Aerus
+              {t.legendExclusive}
             </div>
           </div>
 
           <div className="rmi-cta">
-            <button className="btn btn-primary">
-              Ver todas las rutas <span className="ar"></span>
-            </button>
+            <Link href={lp(lang, '/rutas/')} className="btn btn-primary">
+              {t.allRoutes} <span className="ar"></span>
+            </Link>
           </div>
         </div>
 
@@ -307,9 +343,9 @@ export default function RoutesMapInteractive({ cities, routes }: Props) {
             <div className="rmi-overlay">
               <div className="rmi-overlay-city">
                 {cities[focusCity]?.label ?? focusCity}
-                {VIVA.has(focusCity) && <span className="rmi-viva-badge">+ VivaAerobus</span>}
+                {VIVA.has(focusCity) && <span className="rmi-viva-badge">+ Viva</span>}
               </div>
-              <div className="rmi-overlay-label">Vuelos directos</div>
+              <div className="rmi-overlay-label">{t.direct}</div>
               <ul className="rmi-overlay-list">
                 {connections.map(c => (
                   <li key={c}>
@@ -321,7 +357,7 @@ export default function RoutesMapInteractive({ cities, routes }: Props) {
               </ul>
               {activeCity && (
                 <button className="rmi-reset" onClick={() => setActiveCity(null)}>
-                  Ver todas las rutas
+                  {t.allRoutes}
                 </button>
               )}
             </div>
@@ -390,7 +426,7 @@ export default function RoutesMapInteractive({ cities, routes }: Props) {
           </ComposableMap>
         </div>
 
-        <DestinationList cities={cities} routes={routes} />
+        <DestinationList lang={lang} cities={cities} routes={routes} />
       </div>
     </section>
   )

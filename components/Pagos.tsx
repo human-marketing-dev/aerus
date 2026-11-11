@@ -1,7 +1,7 @@
-'use client'
-import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Icon } from './icons'
+import { lp, type Lang } from '@/lib/i18n'
 
 interface Brand {
   name: string
@@ -24,7 +24,6 @@ const CARDS: Brand[] = [
   { name: 'Banco Azteca',  logo: '/logos/banco-azteca-logo-blanco.webp' },
   { name: 'Afirme',        logo: '/logos/afirme-logo-blanco.webp' },
   { name: 'Invex',         logo: '/logos/invex-logo-blanco.webp' },
-  { name: 'SPEI',          logo: '/logos/spei-logo-blanco.webp' },
 ]
 
 const CASH: Brand[] = [
@@ -41,74 +40,95 @@ const CASH: Brand[] = [
   { name: 'SPEI',                  logo: '/logos/spei-logo-blanco.webp' },
 ]
 
-const TABS = [
-  {
-    id: 'cards',
-    label: 'Tarjetas',
-    icon: 'credit-card',
-    sub: 'Crédito y débito · 3, 6, 9 y 12 MSI con tarjetas participantes',
-    brands: CARDS,
+const T = {
+  es: {
+    rows: [
+      { id: 'cards', label: 'Tarjetas y bancos', sub: 'Crédito y débito · 3, 6, 9 y 12 MSI con tarjetas participantes' },
+      { id: 'cash', label: 'Efectivo y transferencias', sub: 'Paga en más de 25,000 puntos de servicio en todo México' },
+    ],
+    eyebrow: 'Métodos de pago',
+    headline: ['Paga como tú ', 'prefieras.'],
+    secure: 'Conexión segura · PCI DSS · Certificado SSL · 3D Secure activado.',
+    problem: '¿Problemas con tu pago?',
+    support: 'Atención a clientes 24/7 →',
   },
-  {
-    id: 'cash',
-    label: 'Efectivo y transferencias',
-    icon: 'cash',
-    sub: 'Paga en más de 25,000 puntos de servicio en todo México',
-    brands: CASH,
+  en: {
+    rows: [
+      { id: 'cards', label: 'Cards and banks', sub: 'Credit and debit · 3, 6, 9 and 12 interest-free monthly installments with participating Mexican cards' },
+      { id: 'cash', label: 'Cash and bank transfers', sub: 'Pay at more than 25,000 locations across Mexico' },
+    ],
+    eyebrow: 'Payment methods',
+    headline: ['Pay the way ', 'you prefer.'],
+    secure: 'Secure connection · PCI DSS · SSL certificate · 3D Secure enabled.',
+    problem: 'Having trouble with your payment?',
+    support: '24/7 customer service →',
   },
-]
+}
 
-export default function Pagos() {
-  const [tab, setTab] = useState('cards')
-  const current = TABS.find(t => t.id === tab)!
+const ROWS_META = {
+  cards: { icon: 'credit-card', brands: CARDS, reverse: false },
+  cash:  { icon: 'cash',        brands: CASH,  reverse: true  },
+} as const
 
+function LogoTiles({ brands, hidden }: { brands: readonly Brand[]; hidden?: boolean }) {
+  return (
+    <div style={{ display: 'contents' }} aria-hidden={hidden || undefined}>
+      {brands.map(b => (
+        <div key={b.name} className="pagos-logo-tile" title={hidden ? undefined : b.name}>
+          <Image src={b.logo} alt={hidden ? '' : b.name} width={280} height={120}/>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+export default function Pagos({ lang }: { lang: Lang }) {
+  const t = T[lang]
   return (
     <section className="pagos section-pad">
       <div className="container inner">
         <div className="header">
           <div>
-            <div className="eyebrow">Métodos de pago</div>
+            <div className="eyebrow">{t.eyebrow}</div>
             <h2 className="section-headline" style={{ color: '#fff' }}>
-              Paga como tú <em style={{ fontStyle: 'italic' }}>prefieras.</em>
+              {t.headline[0]}<em style={{ fontStyle: 'italic' }}>{t.headline[1]}</em>
             </h2>
           </div>
-          <div className="tabs">
-            {TABS.map(t => (
-              <button key={t.id} className={tab === t.id ? 'active' : ''} onClick={() => setTab(t.id)}>
-                <Icon name={t.icon} size={14}/> {t.label}
-              </button>
-            ))}
-          </div>
         </div>
 
-        <div style={{ marginBottom: 28, color: 'rgba(255,255,255,0.6)', font: '400 14px/1.5 var(--font-body)' }}>
-          {current.sub}
-        </div>
-
-        <div className={`pagos-logos-grid pagos-logos-grid--${tab}`}>
-          {current.brands.map(b => (
-            <div key={b.name} className="pagos-logo-tile" title={b.name}>
-              <Image
-                src={b.logo}
-                alt={b.name}
-                width={280}
-                height={120}
-                style={{ objectFit: 'contain', objectPosition: 'center', maxWidth: '100%', maxHeight: '100%' }}
-              />
+        <div className="pagos-rows">
+          {t.rows.map(r => {
+            const row = { ...r, ...ROWS_META[r.id as keyof typeof ROWS_META] }
+            return (
+            <div key={row.id}>
+              <div className="pagos-row-head">
+                <h3 className="pagos-row-title"><Icon name={row.icon} size={14}/> {row.label}</h3>
+                <p className="pagos-row-sub">{row.sub}</p>
+              </div>
+              <div className={`pagos-marquee${row.reverse ? ' pagos-marquee--reverse' : ''}`}>
+                {/* La lista va duplicada para que el loop sea continuo; la copia se oculta a lectores de pantalla */}
+                <div
+                  className="pagos-track"
+                  style={{ '--pagos-dur': `${row.brands.length * 4.5}s` } as React.CSSProperties}
+                >
+                  <LogoTiles brands={row.brands}/>
+                  <LogoTiles brands={row.brands} hidden/>
+                </div>
+              </div>
             </div>
-          ))}
+            )
+          })}
         </div>
-
         <div className="footer-row">
           <div className="secure">
             <Icon name="lock" size={14}/>
-            Conexión segura · PCI DSS · Certificado SSL · 3D Secure activado.
+            {t.secure}
           </div>
           <div>
-            ¿Problemas con tu pago?{' '}
-            <a href="#" style={{ color: 'var(--aerus-spring-green)', textDecoration: 'underline' }}>
-              Atención a clientes 24/7 →
-            </a>
+            {t.problem}{' '}
+            <Link href={lp(lang, '/ayuda/contacto/')} style={{ color: 'var(--aerus-spring-green)', textDecoration: 'underline' }}>
+              {t.support}
+            </Link>
           </div>
         </div>
       </div>
