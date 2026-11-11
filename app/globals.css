@@ -3727,6 +3727,17 @@ a.destino-route-chip:hover .destino-route-chip-arr {
   background-position: center;
   position: relative;
 }
+/* Degradado inferior sobre la foto para que el código IATA se lea sobre cualquier imagen */
+.dest-hub-card-visual::after,
+.dest-card-img::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(12,38,38,0.85) 0%, rgba(12,38,38,0.25) 45%, transparent 70%);
+  pointer-events: none;
+}
+.dest-hub-card-iata, .dest-card-iata, .dest-badge-intl { z-index: 1; }
+
 .dest-hub-card-iata {
   position: absolute;
   bottom: 16px;

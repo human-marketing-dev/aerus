@@ -24,7 +24,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'MTY',
     descripcion:
       'Capital industrial del norte de México y hub principal de la red Aerus. Con salidas frecuentes desde el aeropuerto internacional Mariano Escobedo, conecta el noreste con destinos nacionales e internacionales.',
-    imagen: '',
+    imagen: '/destinos/monterrey.jpg',
     hub: true,
     esInternacional: false,
   },
@@ -34,7 +34,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'NLU',
     descripcion:
       'El hub metropolitano de la red conecta la capital del país con los destinos regionales de mayor demanda. Operaciones desde el Aeropuerto Internacional Felipe Ángeles (AIFA).',
-    imagen: '',
+    imagen: '/destinos/cdmx.jpg',
     hub: true,
     esInternacional: false,
   },
@@ -44,7 +44,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'VSA',
     descripcion:
       'Capital de Tabasco, hub de la red Aerus y puerta de entrada al sur-sureste. Conectada con Veracruz y Mérida dentro del corredor del Golfo y la Península de Yucatán.',
-    imagen: '',
+    imagen: '/destinos/villahermosa.jpg',
     hub: true,
     esInternacional: false,
   },
@@ -56,7 +56,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'AGU',
     descripcion:
       'Ciudad en el corazón del Bajío con una creciente industria manufacturera y automotriz. Vuelo directo a Monterrey con conexión hacia la red norteña de Aerus.',
-    imagen: '',
+    imagen: '/destinos/aguascalientes.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -66,7 +66,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'CVM',
     descripcion:
       'Capital de Tamaulipas con una economía basada en agroindustria y manufactura ligera. Vuelo directo a la CDMX con la frecuencia que la región demanda.',
-    imagen: '',
+    imagen: '/destinos/ciudad-victoria.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -76,7 +76,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'DGO',
     descripcion:
       'Ciudad colonial del norte con vocación minera y forestal. Conexión directa con Monterrey para viajeros de negocio y turismo en el estado de Durango.',
-    imagen: '',
+    imagen: '/destinos/durango.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -86,7 +86,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'MID',
     descripcion:
       'Capital de Yucatán y ciudad con una de las economías de mayor crecimiento en el sureste. Conectada con Villahermosa para facilitar los viajes regionales en la Península.',
-    imagen: '',
+    imagen: '/destinos/merida.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -96,7 +96,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'MFE',
     descripcion:
       'Centro comercial y médico del Valle del Río Grande en Texas. Vuelo directo desde Monterrey para pasajeros que cruzan la frontera sur de Estados Unidos.',
-    imagen: '',
+    imagen: '/destinos/mcallen.jpg',
     hub: false,
     esInternacional: true,
   },
@@ -106,7 +106,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'PDS',
     descripcion:
       'Ciudad fronteriza de Coahuila frente a Eagle Pass, Texas. Vuelo directo desde Monterrey para atender la demanda de la industria maquiladora de la región.',
-    imagen: '',
+    imagen: '/destinos/piedras-negras.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -116,7 +116,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'SLP',
     descripcion:
       'Nodo industrial del Bajío con fuerte presencia del sector automotriz y logístico. Conexión directa a Monterrey para viajeros frecuentes del corredor norte-centro.',
-    imagen: '',
+    imagen: '/destinos/san-luis-potosi.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -126,7 +126,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'TAM',
     descripcion:
       'Puerto histórico en la desembocadura del río Pánuco con una economía petrolera consolidada. Vuelos directos a CDMX, Monterrey y Veracruz.',
-    imagen: '',
+    imagen: '/destinos/tampico.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -136,7 +136,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'VER',
     descripcion:
       'Puerto estratégico en el Golfo de México. Vuelos directos a Tampico y Villahermosa para conectar el litoral del Golfo de norte a sur.',
-    imagen: '',
+    imagen: '/destinos/veracruz.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -148,7 +148,7 @@ export const DESTINOS: DestinoData[] = [
     iata: 'BRO',
     descripcion:
       'Ciudad costera en el extremo sur de Texas, frente a Matamoros. Vuelo directo desde Monterrey para pasajeros del corredor fronterizo noreste.',
-    imagen: '',
+    imagen: '/destinos/brownsville.jpg',
     hub: false,
     esInternacional: true,
   },

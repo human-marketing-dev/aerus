@@ -12,7 +12,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'MTY',
     descripcion:
       'The industrial capital of northern Mexico and the main hub of the Aerus network. With frequent departures from Mariano Escobedo International Airport, it connects the northeast with domestic and international destinations.',
-    imagen: '',
+    imagen: '/destinos/monterrey.jpg',
     hub: true,
     esInternacional: false,
   },
@@ -22,7 +22,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'NLU',
     descripcion:
       'The network’s metropolitan hub connects Mexico’s capital with the highest-demand regional destinations. Operations from Felipe Ángeles International Airport (AIFA).',
-    imagen: '',
+    imagen: '/destinos/cdmx.jpg',
     hub: true,
     esInternacional: false,
   },
@@ -32,7 +32,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'VSA',
     descripcion:
       'The capital of Tabasco, an Aerus network hub and the gateway to Mexico’s south-southeast. Connected with Veracruz and Mérida along the Gulf corridor and the Yucatán Peninsula.',
-    imagen: '',
+    imagen: '/destinos/villahermosa.jpg',
     hub: true,
     esInternacional: false,
   },
@@ -44,7 +44,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'AGU',
     descripcion:
       'A city in the heart of the Bajío region with a growing manufacturing and automotive industry. Direct flight to Monterrey, connecting to Aerus’s northern network.',
-    imagen: '',
+    imagen: '/destinos/aguascalientes.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -54,7 +54,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'CVM',
     descripcion:
       'The capital of Tamaulipas, with an economy built on agribusiness and light manufacturing. Direct flights to Mexico City at the frequency the region demands.',
-    imagen: '',
+    imagen: '/destinos/ciudad-victoria.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -64,7 +64,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'DGO',
     descripcion:
       'A colonial city in the north with deep roots in mining and forestry. Direct connection with Monterrey for business and leisure travelers in the state of Durango.',
-    imagen: '',
+    imagen: '/destinos/durango.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -74,7 +74,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'MID',
     descripcion:
       'The capital of Yucatán and one of the fastest-growing economies in the southeast. Connected with Villahermosa to make regional travel across the Peninsula easier.',
-    imagen: '',
+    imagen: '/destinos/merida.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -84,7 +84,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'MFE',
     descripcion:
       'The retail and medical center of the Rio Grande Valley in Texas. Direct flight from Monterrey for passengers crossing into the southern United States.',
-    imagen: '',
+    imagen: '/destinos/mcallen.jpg',
     hub: false,
     esInternacional: true,
   },
@@ -94,7 +94,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'PDS',
     descripcion:
       'A border city in Coahuila across from Eagle Pass, Texas. Direct flight from Monterrey serving the region’s maquiladora industry.',
-    imagen: '',
+    imagen: '/destinos/piedras-negras.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -104,7 +104,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'SLP',
     descripcion:
       'An industrial hub of the Bajío with a strong automotive and logistics presence. Direct connection to Monterrey for frequent travelers on the north–central corridor.',
-    imagen: '',
+    imagen: '/destinos/san-luis-potosi.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -114,7 +114,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'TAM',
     descripcion:
       'A historic port at the mouth of the Pánuco River with a well-established oil economy. Direct flights to CDMX, Monterrey and Veracruz.',
-    imagen: '',
+    imagen: '/destinos/tampico.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -124,7 +124,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'VER',
     descripcion:
       'A strategic port on the Gulf of Mexico. Direct flights to Tampico and Villahermosa connect the Gulf coast from north to south.',
-    imagen: '',
+    imagen: '/destinos/veracruz.jpg',
     hub: false,
     esInternacional: false,
   },
@@ -136,7 +136,7 @@ export const DESTINOS_EN: DestinoData[] = [
     iata: 'BRO',
     descripcion:
       'A coastal city at the southern tip of Texas, across from Matamoros. Direct flight from Monterrey for passengers along the northeastern border corridor.',
-    imagen: '',
+    imagen: '/destinos/brownsville.jpg',
     hub: false,
     esInternacional: true,
   },

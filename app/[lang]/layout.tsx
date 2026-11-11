@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import '../globals.css'
 import ScrollAnimations from '@/components/ScrollAnimations'
 import { LANGS, isLang } from '@/lib/i18n'
+import { SITE_INDEXABLE } from '@/lib/indexing'
 
 // Solo /es y /en existen como rutas internas; cualquier otro valor es 404
 export const dynamicParams = false
@@ -28,6 +29,8 @@ export async function generateMetadata({ params }: LayoutProps<'/[lang]'>): Prom
   return {
     metadataBase: new URL('https://aerus.mx'),
     ...META[lang],
+    // Sitio aún no lanzado: no indexar (ver lib/indexing.ts)
+    ...(SITE_INDEXABLE ? {} : { robots: { index: false, follow: false } }),
   }
 }
 

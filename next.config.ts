@@ -1,9 +1,15 @@
 import type { NextConfig } from "next";
+import { SITE_INDEXABLE } from "./lib/indexing";
 
 const REMOVED_ROUTES = ['monterrey-laredo', 'cancun-cozumel', 'cancun-chetumal']
 const REMOVED_DESTINOS = ['laredo', 'morelia', 'uruapan', 'minatitlan', 'ciudad-ixtepec', 'ciudad-del-carmen']
 
 const nextConfig: NextConfig = {
+  // Sitio aún no lanzado: cabecera noindex en todas las respuestas (ver lib/indexing.ts)
+  async headers() {
+    if (SITE_INDEXABLE) return []
+    return [{ source: '/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }] }]
+  },
   async redirects() {
     return [
       // Rutas renombradas — mantener los enlaces viejos funcionando
