@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Buscador Aerus + Viva</title>
+<!-- Esta cabecera y el <body> son solo para poder abrir el archivo directo en un navegador.
+     Para el sitio se copia unicamente el bloque entre "Buscador Aerus + Viva - inicio" y "- fin". -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0;padding:32px 16px;background:#0c2626}</style>
+</head>
+<body>
+<!-- ===== Buscador Aerus + Viva - inicio ===== -->
+<div id="aerus-buscador" data-sync="page">
+<style>
+#aerus-buscador{--ab-ink:var(--aerus-deep-forest,#0c2626);--ab-accent:var(--aerus-spring-green,#aef821);--ab-bg:var(--forest-50,#f3f8f8);--ab-line:var(--forest-300,#9bc2c2);--ab-muted:var(--forest-500,#3e7e7e);--ab-h:54px;--ab-gap:12px;font-family:var(--font-body,"Space Grotesk",system-ui,sans-serif);color:var(--ab-ink);background:var(--ab-bg);border-radius:12px;padding:26px 28px 28px;box-shadow:0 18px 50px rgba(6,19,19,.28);box-sizing:border-box;text-align:left;width:100%;max-width:1040px;margin:0 auto;line-height:1.3}
+#aerus-buscador *{box-sizing:border-box;font-family:inherit}
+#aerus-buscador .ab-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+#aerus-buscador .ab-trip{display:flex;gap:24px}
+#aerus-buscador .ab-trip label{display:flex;align-items:center;gap:9px;font-size:15px;font-weight:500;cursor:pointer}
+#aerus-buscador .ab-trip input{appearance:none;-webkit-appearance:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--ab-ink);margin:0;cursor:pointer;background:#fff;flex:none}
+#aerus-buscador .ab-trip input:checked{border-width:6px}
+#aerus-buscador .ab-lang{display:inline-flex;border:1px solid var(--ab-line);border-radius:999px;padding:2px;background:#fff}
+#aerus-buscador .ab-lang button{border:0;background:transparent;color:var(--ab-muted);font-size:12px;font-weight:600;letter-spacing:.08em;padding:7px 13px;border-radius:999px;cursor:pointer}
+#aerus-buscador .ab-lang button[aria-pressed=true]{background:var(--ab-ink);color:#fff}
+#aerus-buscador .ab-grid{display:grid;grid-template-columns:2.7fr 1fr 1fr;gap:var(--ab-gap)}
+#aerus-buscador .ab-od{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:end;min-width:0}
+#aerus-buscador .ab-swap{width:42px;height:var(--ab-h);border:1px solid var(--ab-line);border-radius:10px;background:#fff;color:var(--ab-ink);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:none}
+#aerus-buscador .ab-swap:hover:not(:disabled){border-color:var(--ab-ink);background:var(--ab-accent)}
+#aerus-buscador .ab-swap:disabled{opacity:.35;cursor:default}
+#aerus-buscador .ab-row2{display:grid;grid-template-columns:1fr 1fr 1fr 1.3fr;gap:var(--ab-gap);margin-top:var(--ab-gap)}
+#aerus-buscador .ab-f{display:flex;flex-direction:column;gap:6px;min-width:0}
+#aerus-buscador .ab-f>span{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ab-muted)}
+#aerus-buscador select,#aerus-buscador input[type=date]{display:block;height:var(--ab-h);width:100%;min-width:0;max-width:100%;margin:0;border:1px solid var(--ab-line);border-radius:10px;background-color:#fff;color:var(--ab-ink);font-size:16px;font-weight:500;padding:0 14px;appearance:none;-webkit-appearance:none}
+#aerus-buscador select{padding-right:38px;text-overflow:ellipsis;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%230c2626' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+#aerus-buscador input[type=date]{line-height:calc(var(--ab-h) - 2px);padding-top:0;padding-bottom:0}
+#aerus-buscador input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0;line-height:inherit;min-height:0}
+#aerus-buscador input[type=date]::-webkit-datetime-edit{padding:0;line-height:inherit}
+#aerus-buscador input[type=date]::-webkit-datetime-edit-fields-wrapper{padding:0}
+#aerus-buscador input[type=date]::-webkit-calendar-picker-indicator{margin:0 0 0 8px;padding:0;cursor:pointer}
+#aerus-buscador input[type=date]:disabled{opacity:.45}
+#aerus-buscador select:hover,#aerus-buscador input[type=date]:hover:not(:disabled),#aerus-buscador .ab-step:hover{border-color:var(--ab-ink)}
+#aerus-buscador .ab-step{height:var(--ab-h);border:1px solid var(--ab-line);border-radius:10px;background:#fff;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 14px;gap:8px;min-width:0}
+#aerus-buscador .ab-step>span{font-size:15px;font-weight:500;color:var(--ab-ink);white-space:nowrap}
+#aerus-buscador .ab-step>div{display:flex;align-items:center;gap:8px;flex:none}
+#aerus-buscador .ab-step button{width:30px;height:30px;border-radius:50%;border:1px solid var(--ab-line);background:#fff;color:var(--ab-ink);font-size:17px;line-height:1;cursor:pointer;padding:0;flex:none}
+#aerus-buscador .ab-step button:hover:not(:disabled){border-color:var(--ab-ink);background:var(--ab-bg)}
+#aerus-buscador .ab-step button:disabled{opacity:.3;cursor:default}
+#aerus-buscador .ab-step output{font-size:17px;font-weight:600;min-width:1.2em;text-align:center;font-variant-numeric:tabular-nums}
+#aerus-buscador .ab-go{height:var(--ab-h);display:flex;align-items:center;justify-content:center;border-radius:10px;background:var(--ab-ink);color:#fff;font-size:16px;font-weight:600;letter-spacing:.04em;text-decoration:none;cursor:pointer;border:0;transition:background .15s,color .15s}
+#aerus-buscador .ab-go:hover{background:var(--ab-accent);color:var(--ab-ink)}
+#aerus-buscador .ab-go:disabled{opacity:.4;pointer-events:none}
+#aerus-buscador .ab-modal{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(6,19,19,.62)}
+#aerus-buscador .ab-modal[hidden]{display:none}
+#aerus-buscador .ab-dialog{width:100%;max-width:460px;background:#fff;border-radius:14px;padding:28px 28px 24px;box-shadow:0 24px 70px rgba(6,19,19,.45);border-top:6px solid var(--ab-accent)}
+#aerus-buscador .ab-tag{margin:0 0 10px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ab-muted)}
+#aerus-buscador .ab-dialog h3{margin:0 0 10px;font-size:24px;font-weight:600;line-height:1.15;color:var(--ab-ink)}
+#aerus-buscador .ab-msg{margin:0 0 22px;font-size:16px;line-height:1.5;color:var(--ab-ink)}
+#aerus-buscador .ab-actions{display:grid;grid-template-columns:1.4fr 1fr;gap:10px}
+#aerus-buscador .ab-ghost{height:var(--ab-h);border-radius:10px;border:1px solid var(--ab-line);background:#fff;color:var(--ab-ink);font-size:16px;font-weight:600;cursor:pointer}
+#aerus-buscador .ab-ghost:hover{border-color:var(--ab-ink)}
+#aerus-buscador :focus-visible{outline:2px solid var(--ab-ink);outline-offset:2px}
+/* Tablet: dos columnas */
+@media (max-width:960px){
+  #aerus-buscador{padding:24px 24px 26px}
+  #aerus-buscador .ab-grid{grid-template-columns:1fr 1fr}
+  #aerus-buscador .ab-od{grid-column:1/-1}
+  #aerus-buscador .ab-row2{grid-template-columns:1fr 1fr 1fr}
+  #aerus-buscador .ab-row2 .ab-go{grid-column:1/-1}
+}
+/* Telefono: origen y destino a todo el ancho, fechas en pareja, pasajeros compactos */
+@media (max-width:600px){
+  #aerus-buscador{--ab-h:50px;--ab-gap:10px;padding:18px 16px 18px;border-radius:10px}
+  #aerus-buscador .ab-top{margin-bottom:14px}
+  #aerus-buscador .ab-trip{gap:18px}
+  #aerus-buscador .ab-grid{grid-template-columns:1fr 1fr}
+  #aerus-buscador .ab-od{grid-template-columns:minmax(0,1fr) auto;gap:var(--ab-gap) 8px;align-items:stretch}
+  #aerus-buscador .ab-od .ab-f:first-child{grid-column:1;grid-row:1}
+  #aerus-buscador .ab-od .ab-f:last-child{grid-column:1;grid-row:2}
+  #aerus-buscador .ab-swap{grid-column:2;grid-row:1/3;align-self:center;height:46px;margin-top:16px}
+  #aerus-buscador .ab-swap svg{transform:rotate(90deg)}
+  #aerus-buscador input[type=date]{padding:0 10px;font-size:15px}
+  #aerus-buscador .ab-row2{grid-template-columns:1fr 1fr 1fr}
+  #aerus-buscador .ab-step{height:auto;flex-direction:column;align-items:stretch;justify-content:center;padding:8px 8px 9px;gap:6px}
+  #aerus-buscador .ab-step>span{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ab-muted);text-align:center}
+  #aerus-buscador .ab-step>div{justify-content:space-between;gap:4px}
+  #aerus-buscador .ab-step button{width:28px;height:28px}
+  #aerus-buscador .ab-go{height:54px;font-size:17px}
+  #aerus-buscador .ab-dialog{padding:24px 20px 20px}
+  #aerus-buscador .ab-dialog h3{font-size:21px}
+  #aerus-buscador .ab-actions{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){#aerus-buscador .ab-go{transition:none}}
+</style>
+<div class="ab-top">
+  <div class="ab-trip" role="radiogroup" aria-label="Tipo de viaje">
+    <label><input type="radio" name="ab-trip" id="ab-ow" value="ow"> <span data-t="ow">Sencillo</span></label>
+    <label><input type="radio" name="ab-trip" id="ab-rt" value="rt" checked> <span data-t="rt">Redondo</span></label>
+  </div>
+  <div class="ab-lang" role="group" aria-label="Idioma / Language">
+    <button type="button" id="ab-es" aria-pressed="true">ES</button>
+    <button type="button" id="ab-en" aria-pressed="false">EN</button>
+  </div>
+</div>
+<div class="ab-grid">
+  <div class="ab-od">
+    <label class="ab-f" for="ab-o"><span data-t="o">Origen</span><select id="ab-o"></select></label>
+    <button type="button" class="ab-swap" id="ab-swap" aria-label="Invertir origen y destino" title="Invertir origen y destino"><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 6h11m0 0l-3-3m3 3l-3 3M15 12H4m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <label class="ab-f" for="ab-d"><span data-t="d">Destino</span><select id="ab-d"></select></label>
+  </div>
+  <label class="ab-f" for="ab-d1"><span data-t="d1">Ida</span><input type="date" id="ab-d1"></label>
+  <label class="ab-f" for="ab-d2"><span data-t="d2">Vuelta</span><input type="date" id="ab-d2"></label>
+</div>
+<div class="ab-row2">
+  <div class="ab-step"><span data-t="a">Adultos</span><div><button type="button" data-k="a" data-s="-1" aria-label="Quitar adulto">&#8722;</button><output id="ab-n-a">1</output><button type="button" data-k="a" data-s="1" aria-label="Agregar adulto">+</button></div></div>
+  <div class="ab-step"><span data-t="c">Ni&#241;os</span><div><button type="button" data-k="c" data-s="-1" aria-label="Quitar ni&#241;o">&#8722;</button><output id="ab-n-c">0</output><button type="button" data-k="c" data-s="1" aria-label="Agregar ni&#241;o">+</button></div></div>
+  <div class="ab-step"><span data-t="i">Infantes</span><div><button type="button" data-k="i" data-s="-1" aria-label="Quitar infante">&#8722;</button><output id="ab-n-i">0</output><button type="button" data-k="i" data-s="1" aria-label="Agregar infante">+</button></div></div>
+  <button type="button" class="ab-go" id="ab-go">Buscar</button>
+</div>
+<div class="ab-modal" id="ab-modal" hidden>
+  <div class="ab-dialog" role="dialog" aria-modal="true" aria-labelledby="ab-mt">
+    <p class="ab-tag" id="ab-mk"></p>
+    <h3 id="ab-mt"></h3>
+    <p class="ab-msg" id="ab-mb"></p>
+    <div class="ab-actions">
+      <a class="ab-go" id="ab-cont" href="#">Continuar</a>
+      <button type="button" class="ab-ghost" id="ab-back">Regresar</button>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+(function(){
+var DATA={"N":{"ACA":"Acapulco","AGU":"Aguascalientes","AUS":"Austin","BJX":"Le\u00f3n/Baj\u00edo","BOG":"Bogot\u00e1","BRO":"Brownsville","CEN":"Ciudad Obreg\u00f3n","CJS":"Ciudad Ju\u00e1rez","CTG":"Cartagena","CUL":"Culiac\u00e1n","CUN":"Canc\u00fan","CUU":"Chihuahua","CVM":"Ciudad Victoria","CZM":"Cozumel","DEN":"Denver","DFW":"Dallas/Fort Worth","DGO":"Durango","GDL":"Guadalajara","HAV":"La Habana","HMO":"Hermosillo","HUX":"Huatulco","IAH":"Houston","IZT":"Ixtepec","JFK":"Nueva York","LAP":"La Paz","LAS":"Las Vegas","LAX":"Los \u00c1ngeles","LMM":"Los Mochis","LRD":"Laredo","MAM":"Matamoros","MCO":"Orlando","MDE":"Medell\u00edn","MEX":"Ciudad de M\u00e9xico (AICM)","MFE":"McAllen","MIA":"Miami","MID":"M\u00e9rida","MLM":"Morelia","MTT":"Minatitl\u00e1n","MTY":"Monterrey","MXL":"Mexicali","MZT":"Mazatl\u00e1n","NLD":"Nuevo Laredo","NLU":"Ciudad de M\u00e9xico (AIFA)","OAK":"Oakland","OAX":"Oaxaca","ORD":"Chicago","PBC":"Puebla","PDS":"Piedras Negras","PVR":"Puerto Vallarta","PXM":"Puerto Escondido","QRO":"Quer\u00e9taro","REX":"Reynosa","SAT":"San Antonio","SJD":"Los Cabos","SJO":"San Jos\u00e9 (Costa Rica)","SLP":"San Luis Potos\u00ed","SLW":"Saltillo","TAM":"Tampico","TAP":"Tapachula","TGZ":"Tuxtla Guti\u00e9rrez","TIJ":"Tijuana","TLC":"Toluca","TPQ":"Tepic","TQO":"Tulum","TRC":"Torre\u00f3n","UPN":"Uruapan","VER":"Veracruz","VSA":"Villahermosa","ZCL":"Zacatecas","ZIH":"Zihuatanejo","ZLO":"Manzanillo","CTM":"Chetumal"},"V":{"PDS":{"ACA":["MTY"],"AUS":["MTY"],"BOG":["MTY"],"CUN":["MTY"],"ORD":["MTY"],"CUU":["MTY"],"CJS":["MTY"],"CEN":["MTY"],"MEX":["MTY"],"CZM":["MTY"],"CUL":["MTY"],"DFW":["MTY"],"DEN":["MTY"],"GDL":["MTY"],"HMO":["MTY"],"IAH":["MTY"],"HUX":["MTY"],"HAV":["MTY"],"LAP":["MTY"],"LAS":["MTY"],"BJX":["MTY"],"SJD":["MTY"],"LMM":["MTY"],"LAX":["MTY"],"MZT":["MTY"],"MXL":["MTY"],"MIA":["MTY"],"MLM":["MTY"],"MID":["MTY"],"JFK":["MTY"],"OAK":["MTY"],"OAX":["MTY"],"MCO":["MTY"],"PBC":["MTY"],"PXM":["MTY"],"PVR":["MTY"],"QRO":["MTY"],"SAT":["MTY"],"SJO":["MTY"],"TAP":["MTY"],"TIJ":["MTY"],"TLC":["MTY"],"TQO":["MTY"],"TGZ":["MTY"],"NLU":["MTY"]},"ACA":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"AUS":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"BOG":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"CUN":{"PDS":["MTY"],"TAM":["MTY","NLU","VER"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"MTY":["TAM"],"NLU":["TAM"],"CVM":["NLU"],"VSA":["VER"],"MID":["VSA"],"VER":["TAM","VSA"]},"ORD":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"CUU":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"CJS":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"CEN":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"MEX":{"PDS":["MTY"],"TAM":["MTY","VER"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"VSA":["VER","MID"],"MID":["VSA"],"VER":["VSA"]},"CZM":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"CUL":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"DFW":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"DEN":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"GDL":{"PDS":["MTY"],"TAM":["MTY","NLU","VER"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"],"VSA":["VER","MID"],"MID":["VSA"],"VER":["VSA"]},"HMO":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"IAH":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"HUX":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"HAV":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"],"VSA":["MID"]},"LAP":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"LAS":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"BJX":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"],"VSA":["MID"]},"SJD":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"LMM":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"LAX":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"MZT":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"MXL":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"MIA":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"VSA":["MID"]},"MLM":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"MID":{"PDS":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"],"CUN":["VSA"],"MEX":["VSA"],"GDL":["VSA"]},"JFK":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"OAK":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"OAX":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"MCO":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"VSA":["MID"]},"PBC":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"VSA":["MID"]},"PXM":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"PVR":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"QRO":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"VSA":["MID"]},"SAT":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"SJO":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"TAP":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"]},"TIJ":{"PDS":["MTY"],"TAM":["MTY","NLU","VER"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"],"VSA":["VER"]},"TLC":{"PDS":["MTY"],"TAM":["MTY"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"VSA":["MID"]},"TQO":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"]},"TGZ":{"PDS":["MTY"],"TAM":["MTY","NLU"],"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"],"VSA":["MID"]},"TAM":{"ACA":["MTY","NLU"],"AUS":["MTY","NLU"],"BOG":["MTY","NLU"],"CUN":["MTY","NLU","VER"],"ORD":["MTY"],"CUU":["MTY","NLU"],"CJS":["MTY","NLU"],"CEN":["MTY","NLU"],"MEX":["MTY","VER"],"CZM":["MTY","NLU"],"CUL":["MTY","NLU"],"DFW":["MTY"],"DEN":["MTY"],"GDL":["MTY","NLU","VER"],"HMO":["MTY","NLU"],"IAH":["MTY"],"HUX":["MTY","NLU"],"HAV":["MTY","NLU"],"LAP":["MTY","NLU"],"LAS":["MTY"],"BJX":["MTY","NLU"],"SJD":["MTY","NLU"],"LMM":["MTY"],"LAX":["MTY"],"MZT":["MTY","NLU"],"MXL":["MTY"],"MIA":["MTY"],"MLM":["MTY"],"JFK":["MTY"],"OAK":["MTY"],"OAX":["MTY","NLU"],"MCO":["MTY"],"PBC":["MTY"],"PXM":["MTY","NLU"],"PVR":["MTY","NLU"],"QRO":["MTY"],"SAT":["MTY"],"SJO":["MTY"],"TAP":["MTY"],"TIJ":["MTY","NLU","VER"],"TLC":["MTY"],"TQO":["MTY","NLU"],"TGZ":["MTY","NLU"],"CTG":["NLU"],"ZLO":["NLU"],"MAM":["NLU"],"MDE":["NLU"],"NLD":["NLU"],"REX":["NLU","VER"],"SLW":["NLU"],"TPQ":["NLU"],"TRC":["NLU"],"ZIH":["NLU"]},"CTG":{"TAM":["NLU"],"CVM":["NLU"]},"ZLO":{"TAM":["NLU"],"CVM":["NLU"]},"MAM":{"TAM":["NLU"],"CVM":["NLU"]},"MDE":{"TAM":["NLU"],"CVM":["NLU"]},"NLD":{"TAM":["NLU"],"CVM":["NLU"]},"REX":{"TAM":["NLU","VER"],"CVM":["NLU"],"VSA":["VER"]},"SLW":{"TAM":["NLU"],"CVM":["NLU"]},"TPQ":{"TAM":["NLU"],"CVM":["NLU"]},"TRC":{"TAM":["NLU"],"CVM":["NLU"]},"ZIH":{"TAM":["NLU"],"CVM":["NLU"]},"SLP":{"ACA":["MTY"],"AUS":["MTY"],"BOG":["MTY"],"CUN":["MTY"],"ORD":["MTY"],"CUU":["MTY"],"CJS":["MTY"],"CEN":["MTY"],"MEX":["MTY"],"CZM":["MTY"],"CUL":["MTY"],"DFW":["MTY"],"DEN":["MTY"],"GDL":["MTY"],"HMO":["MTY"],"IAH":["MTY"],"HUX":["MTY"],"HAV":["MTY"],"LAP":["MTY"],"LAS":["MTY"],"BJX":["MTY"],"SJD":["MTY"],"LMM":["MTY"],"LAX":["MTY"],"MZT":["MTY"],"MXL":["MTY"],"MIA":["MTY"],"MLM":["MTY"],"MID":["MTY"],"JFK":["MTY"],"OAK":["MTY"],"OAX":["MTY"],"MCO":["MTY"],"PBC":["MTY"],"PXM":["MTY"],"PVR":["MTY"],"QRO":["MTY"],"SAT":["MTY"],"SJO":["MTY"],"TAP":["MTY"],"TIJ":["MTY"],"TLC":["MTY"],"TQO":["MTY"],"TGZ":["MTY"],"VER":["MTY"],"VSA":["MTY"],"CVM":["NLU"]},"VER":{"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"],"CUN":["TAM","VSA"],"MEX":["VSA"],"GDL":["VSA"]},"VSA":{"SLP":["MTY"],"AGU":["MTY"],"DGO":["MTY"],"BRO":["MTY"],"MFE":["MTY"],"CVM":["NLU"],"CUN":["VER"],"MEX":["VER","MID"],"GDL":["VER","MID"],"REX":["VER"],"TIJ":["VER"],"HAV":["MID"],"BJX":["MID"],"MIA":["MID"],"MCO":["MID"],"PBC":["MID"],"QRO":["MID"],"TLC":["MID"],"TGZ":["MID"]},"AGU":{"ACA":["MTY"],"AUS":["MTY"],"BOG":["MTY"],"CUN":["MTY"],"ORD":["MTY"],"CUU":["MTY"],"CJS":["MTY"],"CEN":["MTY"],"MEX":["MTY"],"CZM":["MTY"],"CUL":["MTY"],"DFW":["MTY"],"DEN":["MTY"],"GDL":["MTY"],"HMO":["MTY"],"IAH":["MTY"],"HUX":["MTY"],"HAV":["MTY"],"LAP":["MTY"],"LAS":["MTY"],"BJX":["MTY"],"SJD":["MTY"],"LMM":["MTY"],"LAX":["MTY"],"MZT":["MTY"],"MXL":["MTY"],"MIA":["MTY"],"MLM":["MTY"],"MID":["MTY"],"JFK":["MTY"],"OAK":["MTY"],"OAX":["MTY"],"MCO":["MTY"],"PBC":["MTY"],"PXM":["MTY"],"PVR":["MTY"],"QRO":["MTY"],"SAT":["MTY"],"SJO":["MTY"],"TAP":["MTY"],"TIJ":["MTY"],"TLC":["MTY"],"TQO":["MTY"],"TGZ":["MTY"],"VER":["MTY"],"VSA":["MTY"],"CVM":["NLU"]},"DGO":{"ACA":["MTY"],"AUS":["MTY"],"BOG":["MTY"],"CUN":["MTY"],"ORD":["MTY"],"CUU":["MTY"],"CJS":["MTY"],"CEN":["MTY"],"MEX":["MTY"],"CZM":["MTY"],"CUL":["MTY"],"DFW":["MTY"],"DEN":["MTY"],"GDL":["MTY"],"HMO":["MTY"],"IAH":["MTY"],"HUX":["MTY"],"HAV":["MTY"],"LAP":["MTY"],"LAS":["MTY"],"BJX":["MTY"],"SJD":["MTY"],"LMM":["MTY"],"LAX":["MTY"],"MZT":["MTY"],"MXL":["MTY"],"MIA":["MTY"],"MLM":["MTY"],"MID":["MTY"],"JFK":["MTY"],"OAK":["MTY"],"OAX":["MTY"],"MCO":["MTY"],"PBC":["MTY"],"PXM":["MTY"],"PVR":["MTY"],"QRO":["MTY"],"SAT":["MTY"],"SJO":["MTY"],"TAP":["MTY"],"TIJ":["MTY"],"TLC":["MTY"],"TQO":["MTY"],"TGZ":["MTY"],"VER":["MTY"],"VSA":["MTY"]},"BRO":{"ACA":["MTY"],"AUS":["MTY"],"BOG":["MTY"],"CUN":["MTY"],"ORD":["MTY"],"CUU":["MTY"],"CJS":["MTY"],"CEN":["MTY"],"MEX":["MTY"],"CZM":["MTY"],"CUL":["MTY"],"DFW":["MTY"],"DEN":["MTY"],"GDL":["MTY"],"HMO":["MTY"],"IAH":["MTY"],"HUX":["MTY"],"HAV":["MTY"],"LAP":["MTY"],"LAS":["MTY"],"BJX":["MTY"],"SJD":["MTY"],"LMM":["MTY"],"LAX":["MTY"],"MZT":["MTY"],"MXL":["MTY"],"MIA":["MTY"],"MLM":["MTY"],"MID":["MTY"],"JFK":["MTY"],"OAK":["MTY"],"OAX":["MTY"],"MCO":["MTY"],"PBC":["MTY"],"PXM":["MTY"],"PVR":["MTY"],"QRO":["MTY"],"SAT":["MTY"],"SJO":["MTY"],"TAP":["MTY"],"TIJ":["MTY"],"TLC":["MTY"],"TQO":["MTY"],"TGZ":["MTY"],"VER":["MTY"],"VSA":["MTY"]},"MFE":{"ACA":["MTY"],"AUS":["MTY"],"BOG":["MTY"],"CUN":["MTY"],"ORD":["MTY"],"CUU":["MTY"],"CJS":["MTY"],"CEN":["MTY"],"MEX":["MTY"],"NLU":["MTY"],"CZM":["MTY"],"CUL":["MTY"],"DFW":["MTY"],"DEN":["MTY"],"GDL":["MTY"],"HMO":["MTY"],"IAH":["MTY"],"HUX":["MTY"],"HAV":["MTY"],"LAP":["MTY"],"LAS":["MTY"],"BJX":["MTY"],"SJD":["MTY"],"LMM":["MTY"],"LAX":["MTY"],"MZT":["MTY"],"MXL":["MTY"],"MIA":["MTY"],"MLM":["MTY"],"MID":["MTY"],"JFK":["MTY"],"OAK":["MTY"],"OAX":["MTY"],"MCO":["MTY"],"PBC":["MTY"],"PXM":["MTY"],"PVR":["MTY"],"QRO":["MTY"],"SAT":["MTY"],"SJO":["MTY"],"TAP":["MTY"],"TIJ":["MTY"],"TLC":["MTY"],"TQO":["MTY"],"TGZ":["MTY"],"VER":["MTY"],"VSA":["MTY"]},"NLU":{"MFE":["MTY"],"CUN":["TAM"],"PDS":["MTY"]},"MTY":{"CUN":["TAM"]},"CVM":{"ACA":["NLU"],"AGU":["NLU"],"AUS":["NLU"],"BOG":["NLU"],"CUN":["NLU"],"CTG":["NLU"],"CUU":["NLU"],"CJS":["NLU"],"CEN":["NLU"],"CZM":["NLU"],"CUL":["NLU"],"GDL":["NLU"],"HMO":["NLU"],"HUX":["NLU"],"HAV":["NLU"],"LAP":["NLU"],"BJX":["NLU"],"SJD":["NLU"],"ZLO":["NLU"],"MAM":["NLU"],"MZT":["NLU"],"MDE":["NLU"],"MID":["NLU"],"NLD":["NLU"],"OAX":["NLU"],"PXM":["NLU"],"PVR":["NLU"],"REX":["NLU"],"SLW":["NLU"],"SLP":["NLU"],"TPQ":["NLU"],"TIJ":["NLU"],"TRC":["NLU"],"TQO":["NLU"],"TGZ":["NLU"],"VER":["NLU"],"VSA":["NLU"],"ZIH":["NLU"]}},"A":{"MTY":{"AGU":[1,"",1],"TAM":[1,"",1],"DGO":[1,"",1],"MFE":[1,"",1],"PDS":[1,"",1],"SLP":[1,"",1],"BRO":[1,"",1],"NLU":[0,"Tampico",1],"CVM":[0,"Por confirmar (2 escalas o espera larga)",1],"VER":[0,"Tampico",0],"VSA":[0,"Tampico y Veracruz",0]},"TAM":{"MTY":[1,"",1],"VER":[1,"",1],"NLU":[1,"",1],"PDS":[0,"Monterrey",1],"VSA":[0,"Veracruz",1],"DGO":[0,"Monterrey",1],"SLP":[0,"Monterrey",1],"AGU":[0,"Monterrey",1],"CVM":[0,"Ciudad de M\u00e9xico (AIFA)",1],"MFE":[0,"Monterrey",0],"BRO":[0,"Monterrey",0]},"NLU":{"CVM":[1,"",1],"TAM":[1,"",1],"MTY":[0,"Tampico",1],"AGU":[0,"Por confirmar (2 escalas o espera larga)",1],"SLP":[0,"Por confirmar (2 escalas o espera larga)",1],"VER":[0,"Tampico",0]},"VSA":{"VER":[1,"",1],"MID":[1,"",1],"TAM":[0,"Veracruz",1],"NLU":[0,"Por confirmar (2 escalas o espera larga)",1],"PDS":[0,"Por confirmar (2 escalas o espera larga)",1],"MTY":[0,"Tampico y Veracruz",0]},"VER":{"VSA":[1,"",1],"TAM":[1,"",1],"MTY":[0,"Tampico",1],"NLU":[0,"Tampico",1],"MID":[0,"Villahermosa",1],"PDS":[0,"Por confirmar (2 escalas o espera larga)",1]},"MID":{"VSA":[1,"",1],"VER":[0,"Villahermosa",1],"MTY":[0,"Por confirmar (2 escalas o espera larga)",1],"NLU":[0,"Por confirmar (2 escalas o espera larga)",1],"TAM":[0,"Por confirmar (2 escalas o espera larga)",1]},"PDS":{"MTY":[1,"",1],"TAM":[0,"Monterrey",1],"DGO":[0,"Monterrey",1],"SLP":[0,"Monterrey",1],"AGU":[0,"Monterrey",1],"BRO":[0,"Monterrey",1],"VER":[0,"Por confirmar (2 escalas o espera larga)",1],"VSA":[0,"Por confirmar (2 escalas o espera larga)",1],"MFE":[0,"Monterrey",0]},"SLP":{"MTY":[1,"",1],"PDS":[0,"Monterrey",1],"TAM":[0,"Monterrey",1],"DGO":[0,"Monterrey",1],"BRO":[0,"Monterrey",1],"AGU":[0,"Monterrey",1],"MFE":[0,"Monterrey",0]},"AGU":{"MTY":[1,"",1],"PDS":[0,"Monterrey",1],"DGO":[0,"Monterrey",1],"TAM":[0,"Monterrey",1],"SLP":[0,"Monterrey",1],"MFE":[0,"Monterrey",0],"BRO":[0,"Monterrey",0]},"DGO":{"MTY":[1,"",1],"PDS":[0,"Monterrey",1],"TAM":[0,"Monterrey",1],"BRO":[0,"Monterrey",1],"SLP":[0,"Monterrey",1],"AGU":[0,"Monterrey",1],"NLU":[0,"Por confirmar (2 escalas o espera larga)",1],"MFE":[0,"Monterrey",0]},"BRO":{"MTY":[1,"",1],"PDS":[0,"Monterrey",1],"TAM":[0,"Monterrey",1],"NLU":[0,"Por confirmar (2 escalas o espera larga)",1],"AGU":[0,"Monterrey",0],"SLP":[0,"Monterrey",0],"DGO":[0,"Monterrey",0]},"MFE":{"MTY":[1,"",1],"PDS":[0,"Monterrey",1],"SLP":[0,"Monterrey",1],"AGU":[0,"Monterrey",1],"DGO":[0,"Monterrey",0],"TAM":[0,"Monterrey",0]},"CVM":{"NLU":[1,"",1],"TAM":[0,"Ciudad de M\u00e9xico (AIFA)",1],"MTY":[0,"Por confirmar (2 escalas o espera larga)",1]}}};
+var N=DATA.N,V=DATA.V,A=DATA.A,root=document.getElementById('aerus-buscador');
+var $=function(id){return root.querySelector('#ab-'+id)};
+var cur={u:'',k:null};
+var st={rt:true,a:1,c:0,i:0,lang:(root.getAttribute('data-lang')||'es').toLowerCase()==='en'?'en':'es'},MAXPAX=9;
+var T={es:{ow:'Sencillo',rt:'Redondo',o:'Origen',d:'Destino',d1:'Ida',d2:'Vuelta',a:'Adultos',c:'Ni\u00f1os',i:'Infantes',search:'Buscar',book:'Reservar',cont:'Continuar',back:'Regresar',swap:'Invertir origen y destino',kA:'Reserva con Aerus',tA:'Te llevamos al buscador de Aerus',bArt:'Vas a continuar tu reserva en flyaerus.com. Es posible que ah\u00ed tengas que elegir de nuevo tus fechas de salida y de regreso, y el n\u00famero de pasajeros.',bAow:'Vas a continuar tu reserva en flyaerus.com. Es posible que ah\u00ed tengas que elegir de nuevo tu fecha de salida y el n\u00famero de pasajeros.',kV:'Alianza Viva + Aerus',tV:'Te llevamos a Viva Aerobus',bV:'Vas a completar tu reserva en vivaaerobus.com. Este viaje es un vuelo en conexi\u00f3n dentro de la alianza de Viva y Aerus.',gA:'Ciudades Aerus',gV:'Ciudades Viva',fA:'Vuelos Aerus',fV:'Conexi\u00f3n con Viva'},
+       en:{ow:'One way',rt:'Round trip',o:'Origin',d:'Destination',d1:'Departure',d2:'Return',a:'Adults',c:'Children',i:'Infants',search:'Search',book:'Book',cont:'Continue',back:'Go back',swap:'Swap origin and destination',kA:'Book with Aerus',tA:'We are taking you to the Aerus booking page',bArt:'You will continue your booking on flyaerus.com. You may need to select your departure and return dates and the number of passengers again there.',bAow:'You will continue your booking on flyaerus.com. You may need to select your departure date and the number of passengers again there.',kV:'Viva + Aerus alliance',tV:'We are taking you to Viva Aerobus',bV:'You will complete your booking on vivaaerobus.com. This trip is a connecting flight within the Viva and Aerus alliance.',gA:'Aerus cities',gV:'Viva cities',fA:'Aerus flights',fV:'Viva connection'}};
+var NEN={MEX:'Mexico City (AICM)',NLU:'Mexico City (AIFA)',HAV:'Havana',JFK:'New York',LAX:'Los Angeles'};
+function nm(c){return st.lang==='en'&&NEN[c]?NEN[c]:N[c]}
+function pad(n){return String(n).padStart(2,'0')}
+function iso(t){return t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate())}
+function today(){return iso(new Date())}
+function addDays(s,n){var p=s.split('-').map(Number);return iso(new Date(p[0],p[1]-1,p[2]+n))}
+function label(c){return nm(c)+' ('+c+')'}
+function byName(a,b){return nm(a).localeCompare(nm(b),st.lang)}
+function op(o,d){return A[o]&&A[o][d]?'aerus':(V[o]&&V[o][d]?'viva':null)}
+function pax(){var s='A'+st.a;if(st.c>0)s+='_C'+st.c;if(st.i>0)s+='_I'+st.i;return s}
+function url(o,d,d1,d2){var k=op(o,d);
+  if(k==='aerus')return 'https://booking.flyaerus.com/booking/?carrier=ZV&origin='+o+'&destination='+d+'&lang='+st.lang;
+  if(k==='viva'){var it=o+'_'+d+'_'+d1.replace(/-/g,'');if(st.rt)it+='.'+d+'_'+o+'_'+d2.replace(/-/g,'');
+    return 'https://www.vivaaerobus.com/'+(st.lang==='en'?'en-us':'es-mx')+'/book/options?itineraryCode='+it+'&passengers='+pax()+'&currency='+(st.lang==='en'?'USD':'MXN')}
+  return ''}
+function group(sel,name,list){if(!list.length)return;var g=document.createElement('optgroup');g.label=name;list.forEach(function(c){g.appendChild(new Option(label(c),c))});sel.appendChild(g)}
+function fillO(){var o=$('o');o.innerHTML='';group(o,T[st.lang].gA,Object.keys(A).sort(byName));group(o,T[st.lang].gV,Object.keys(V).filter(function(x){return !A[x]}).sort(byName))}
+function fillD(keep){var o=$('o').value,d=$('d');d.innerHTML='';
+  var a=Object.keys(A[o]||{}).sort(byName),v=Object.keys(V[o]||{}).filter(function(x){return !(A[o]&&A[o][x])}).sort(byName);
+  group(d,T[st.lang].fA,a);group(d,T[st.lang].fV,v);
+  if(keep&&(a.indexOf(keep)>=0||v.indexOf(keep)>=0))d.value=keep}
+function render(){var t=today(),d1=$('d1'),d2=$('d2');
+  d1.min=t;if(!d1.value||d1.value<t)d1.value=t;
+  d2.min=d1.value;if(!d2.value||d2.value<d1.value)d2.value=addDays(d1.value,3);
+  d2.disabled=!st.rt;
+  ['a','c','i'].forEach(function(k){$('n-'+k).textContent=st[k]});
+  root.querySelectorAll('.ab-step button').forEach(function(b){var k=b.dataset.k,s=+b.dataset.s,ok;
+    if(s<0)ok=k==='a'?(st.a>1&&st.i<=st.a-1):st[k]>0;else ok=k==='i'?st.i<st.a:(st.a+st.c)<MAXPAX;b.disabled=!ok});
+  var o=$('o').value,d=$('d').value,u=url(o,d,d1.value,d2.value),go=$('go');
+  go.textContent=op(o,d)==='aerus'?T[st.lang].book:T[st.lang].search;go.disabled=!u;cur={u:u,k:op(o,d)};$('swap').disabled=!op(d,o)}
+$('ow').onchange=$('rt').onchange=function(){st.rt=$('rt').checked;render()};
+$('o').onchange=function(){fillD($('d').value);render()};
+$('d').onchange=$('d1').onchange=$('d2').onchange=render;
+root.querySelectorAll('.ab-step button').forEach(function(b){b.onclick=function(){st[b.dataset.k]+=+b.dataset.s;render()}});
+function closeM(){$('modal').hidden=true}
+function openM(){if(!cur.u)return;var L=T[st.lang],a=cur.k==='aerus';
+  $('mk').textContent=a?L.kA:L.kV;$('mt').textContent=a?L.tA:L.tV;
+  $('mb').textContent=a?(st.rt?L.bArt:L.bAow):L.bV;
+  $('cont').textContent=L.cont;$('cont').href=cur.u;$('back').textContent=L.back;
+  $('modal').hidden=false;if($('cont').focus)$('cont').focus()}
+$('swap').onclick=function(){var o=$('o').value,d=$('d').value;if(!op(d,o))return;$('o').value=d;fillD(o);render()};
+$('go').onclick=openM;$('back').onclick=closeM;$('cont').onclick=function(){setTimeout(closeM,400)};
+$('modal').onclick=function(e){if(e.target===$('modal'))closeM()};
+root.addEventListener('keydown',function(e){if(e.key==='Escape')closeM()});
+function setLang(l){st.lang=l;var o=$('o').value,d=$('d').value;
+  root.querySelectorAll('[data-t]').forEach(function(e){e.textContent=T[l][e.getAttribute('data-t')]});
+  $('swap').setAttribute('aria-label',T[l].swap);$('swap').setAttribute('title',T[l].swap);$('es').setAttribute('aria-pressed',String(l==='es'));$('en').setAttribute('aria-pressed',String(l==='en'));
+  fillO();if(o)$('o').value=o;fillD(d);render()}
+$('es').onclick=function(){setLang('es')};$('en').onclick=function(){setLang('en')};
+fillO();$('o').value='MTY';fillD('PDS');
+if(root.getAttribute('data-sync')==='page'){
+  var pl=function(){return (document.documentElement.lang||'es').toLowerCase().indexOf('en')===0?'en':'es'};
+  root.querySelector('.ab-lang').style.display='none';st.lang=pl();
+  if(window.MutationObserver)new MutationObserver(function(){var l=pl();if(l!==st.lang)setLang(l)}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+}
+setLang(st.lang);
+})();
+</script>
+<!-- ===== Buscador Aerus + Viva - fin ===== -->
+</body>
+</html>

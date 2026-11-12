@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Icon } from './icons'
 import BookingWidget from './BookingWidget'
+import BookingSearch from './BookingSearch'
 import { lp, type Lang } from '@/lib/i18n'
 
 // Cada banner trae toda su información (ruta, precio, etc.) dentro de la imagen.
@@ -87,10 +88,12 @@ const T = {
   },
 }
 
-// Buscador de vuelos: iframe de Kiusys (ver components/BookingWidget.tsx).
-// Widget de reserva propio (maqueta anterior). Se conserva oculto por si se necesita de nuevo:
-// cambia a true para volver a mostrarlo en lugar del iframe.
-const SHOW_LEGACY_BOOKING_BAR = false
+// Buscador de vuelos del hero. Las versiones anteriores se conservan por si se necesitan:
+//   'search' → buscador Aerus + Viva (components/BookingSearch.tsx) — el actual
+//   'kiu'    → iframe del motor de KIU (components/BookingWidget.tsx)
+//   'legacy' → maqueta original del sitio (BookingBar, abajo)
+const BOOKING_MODE = 'search' as 'search' | 'kiu' | 'legacy'
+const SHOW_LEGACY_BOOKING_BAR = BOOKING_MODE === 'legacy'
 
 interface BookingBarProps {
   lang: Lang
@@ -242,8 +245,10 @@ export default function Hero({ lang }: { lang: Lang }) {
         <div className="booking-bridge">
           <BookingBar lang={lang} trip={trip} setTrip={setTrip}/>
         </div>
-      ) : (
+      ) : BOOKING_MODE === 'kiu' ? (
         <BookingWidget lang={lang}/>
+      ) : (
+        <BookingSearch/>
       )}
     </>
   )

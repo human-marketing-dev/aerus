@@ -463,6 +463,14 @@ img { display: block; }
   }
 }
 
+/* Buscador Aerus + Viva: su aviso de redirección es position: fixed dentro del bloque;
+   mientras está abierto, el bloque sube por encima del header (z 50) */
+.booking-bridge:has(#ab-modal:not([hidden])) { z-index: 1000; }
+/* En móvil el bloque va en flujo con fondo verde: el buscador trae su propia tarjeta */
+@media (max-width: 767px) {
+  .booking-bridge.booking-bridge--search { padding: 20px 16px; }
+}
+
 /* Modal del widget a pantalla completa: subir todo el bloque por encima del header (z 50) */
 .booking-bridge:has(.booking-iframe-wrap.is-overlay) { z-index: 1000; }
 .booking-iframe {
