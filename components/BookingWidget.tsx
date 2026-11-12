@@ -119,11 +119,6 @@ export default function BookingWidget({ lang }: { lang: Lang }) {
   // La tarjeta mide solo el contenido (flow); el iframe crece hacia abajo lo que necesiten
   // los popups (overhang) sin empujar el resto de la página.
   const cardStyle: CSSProperties | undefined = extent ? { height: extent.flow } : undefined
-  // El bloque se centra sobre la unión hero / siguiente sección sin ocupar espacio:
-  // margen negativo de la mitad del alto arriba y abajo (alto neto = 0).
-  const bridgeStyle = extent
-    ? ({ '--booking-bridge-offset': `${-extent.flow / 2}px` } as CSSProperties)
-    : undefined
   const iframeStyle: CSSProperties | undefined = overlay
     ? { position: 'fixed', inset: 0, width: '100vw', height: '100dvh', zIndex: 1000, borderRadius: 0 }
     : extent
@@ -131,7 +126,7 @@ export default function BookingWidget({ lang }: { lang: Lang }) {
       : undefined
 
   return (
-    <div className="booking-bridge booking-bridge--widget" style={bridgeStyle}>
+    <div className="booking-bridge booking-bridge--widget">
     <div
       className={`booking-iframe-wrap${extent ? ' is-measured' : ''}${overlay ? ' is-overlay' : ''}`}
       style={cardStyle}

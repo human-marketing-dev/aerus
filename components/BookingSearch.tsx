@@ -20,13 +20,11 @@ import { load, restore, save } from './aerus-buscador/persist'
 const INNER_HTML = { __html: BUSCADOR_HTML }
 
 export default function BookingSearch() {
-  const bridgeRef = useRef<HTMLDivElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const root = rootRef.current
-    const bridge = bridgeRef.current
-    if (!root || !bridge) return
+    if (!root) return
     // El script asigna handlers y un MutationObserver: se inicializa una sola vez por nodo
     // (en desarrollo React monta los efectos dos veces).
     if (!root.dataset.ready) {
@@ -42,12 +40,10 @@ export default function BookingSearch() {
     root.addEventListener('click', onInteract)
 
     const docStyle = document.documentElement.style
+    // El alto real se publica en --booking-widget-h: con él, el CSS coloca el buscador al
+    // final del hero y las flechas del slider por encima (ver globals.css).
     const apply = (h: number) => {
-      if (h <= 0) return
-      // Centrado sobre la unión hero / siguiente sección sin ocupar espacio (alto neto = 0)
-      bridge.style.setProperty('--booking-bridge-offset', `${-h / 2}px`)
-      // Para que el hero coloque sus flechas por encima del buscador
-      docStyle.setProperty('--booking-widget-h', `${h}px`)
+      if (h > 0) docStyle.setProperty('--booking-widget-h', `${h}px`)
     }
     const ro = new ResizeObserver(([entry]) => {
       apply(Math.ceil(entry.borderBoxSize?.[0]?.blockSize ?? root.offsetHeight))
@@ -63,7 +59,7 @@ export default function BookingSearch() {
   }, [])
 
   return (
-    <div ref={bridgeRef} className="booking-bridge booking-bridge--widget booking-bridge--search">
+    <div className="booking-bridge booking-bridge--widget booking-bridge--search">
       <div
         ref={rootRef}
         id="aerus-buscador"

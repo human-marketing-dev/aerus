@@ -111,7 +111,7 @@
 
   /* Layout del header / hero / buscador */
   --nav-h: 76px;
-  --booking-sticky-bottom: 32px;   /* separación del buscador con el borde inferior de la pantalla */
+  --booking-bottom-gap: 32px;   /* separación del buscador con el borde inferior del hero */
 }
 @media (max-width: 640px) { :root { --nav-h: 64px; } }
 
@@ -427,12 +427,14 @@ img { display: block; }
 }
 /* Ya medido: el calendario puede sobresalir de la tarjeta */
 .booking-iframe-wrap.is-measured { overflow: visible; }
-/* Escritorio: el widget queda centrado sobre la unión hero / "Por qué volar" sin ocupar
-   espacio (el offset = -alto/2 lo calcula BookingWidget; 75px es el valor inicial). */
+/* Tablet y escritorio: el buscador queda dentro del hero, a --booking-bottom-gap de su borde
+   inferior, y se mueve con la página desde el primer scroll. Alto neto en el flujo = 0:
+   sube su propio alto + la separación y devuelve la separación abajo.
+   --booking-widget-h lo publica el componente con el alto real (232px es el valor inicial). */
 .booking-bridge--widget,
 .booking-bridge.booking-bridge--widget {
-  margin-top: var(--booking-bridge-offset, -75px);
-  margin-bottom: var(--booking-bridge-offset, -75px);
+  margin-top: calc(-1 * var(--booking-widget-h, 232px) - var(--booking-bottom-gap));
+  margin-bottom: var(--booking-bottom-gap);
 }
 /* Móvil: el widget va en flujo entre las dos secciones, con su mismo fondo para que no haya corte */
 @media (max-width: 767px) {
@@ -444,22 +446,16 @@ img { display: block; }
     max-width: none;
   }
 }
-/* Hero a pantalla completa con el buscador pegado abajo: al cargar el buscador queda
-   visible en la parte baja de la pantalla y, al hacer scroll, se acomoda centrado sobre la
-   unión hero / siguiente sección (posición natural del bloque, ver offset arriba). */
+/* Hero a pantalla completa (tablet y escritorio) con el buscador al final del hero */
 @media (min-width: 768px) {
   .hero.hero--full {
     aspect-ratio: auto;
     height: calc(100svh - var(--nav-h));
     min-height: 520px;
   }
-  .booking-bridge.booking-bridge--widget {
-    position: sticky;
-    bottom: var(--booking-sticky-bottom);
-  }
-  /* Flechas y paginación siempre por encima del buscador (su alto lo publica BookingWidget) */
+  /* Flechas y paginación siempre por encima del buscador */
   .hero.hero--full .hero-controls {
-    bottom: calc(var(--booking-sticky-bottom) + var(--booking-widget-h, 150px) + 24px);
+    bottom: calc(var(--booking-bottom-gap) + var(--booking-widget-h, 232px) + 24px);
   }
 }
 
