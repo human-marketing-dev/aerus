@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react'
 import { BUSCADOR_HTML } from './aerus-buscador/markup'
 import { initBuscador } from './aerus-buscador/init'
+import { load, restore, save } from './aerus-buscador/persist'
 
 // Buscador Aerus + Viva (sustituye al iframe de KIU).
 //
@@ -31,7 +32,14 @@ export default function BookingSearch() {
     if (!root.dataset.ready) {
       root.dataset.ready = '1'
       initBuscador(root)
+      const saved = load()
+      if (saved) restore(root, saved)
     }
+
+    // Guardar después de que el script procese cada cambio (sus handlers corren primero)
+    const onInteract = () => setTimeout(() => save(root), 0)
+    root.addEventListener('change', onInteract)
+    root.addEventListener('click', onInteract)
 
     const docStyle = document.documentElement.style
     const apply = (h: number) => {
@@ -46,6 +54,9 @@ export default function BookingSearch() {
     })
     ro.observe(root)
     return () => {
+      save(root)
+      root.removeEventListener('change', onInteract)
+      root.removeEventListener('click', onInteract)
       ro.disconnect()
       docStyle.removeProperty('--booking-widget-h')
     }
