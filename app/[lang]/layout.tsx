@@ -9,8 +9,9 @@ import ScrollAnimations from '@/components/ScrollAnimations'
 import { LANGS, isLang } from '@/lib/i18n'
 import { SITE_INDEXABLE } from '@/lib/indexing'
 
-// Solo /es y /en existen como rutas internas; cualquier otro valor es 404
-export const dynamicParams = false
+// Solo /es y /en existen como rutas internas: cualquier otro valor responde 404 con el
+// notFound() de abajo. OJO: no usar `dynamicParams = false` aquí. Con eso Next se niega a
+// regenerar las páginas cuando el webhook de Sanity las invalida y responde 404 en todo el sitio.
 
 export function generateStaticParams() {
   return LANGS.map(lang => ({ lang }))
