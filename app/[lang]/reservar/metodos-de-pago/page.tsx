@@ -3,35 +3,24 @@ import Footer from '@/components/Footer'
 import Newsletter from '@/components/Newsletter'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { alternates, isLang, type Lang } from '@/lib/i18n'
+import { isLang } from '@/lib/i18n'
+import { getPage } from '@/lib/content'
+import { seoMetadata } from '@/lib/seo'
+import defaults from '@/content/pages/reservar-metodos-pago'
 
 const PATH = '/reservar/metodos-de-pago/'
-
-const T: Record<Lang, { metaTitle: string; eyebrow: string; title: string; wip: string }> = {
-  es: {
-    metaTitle: 'Métodos de pago | Aerus',
-    eyebrow: 'Reservar',
-    title: 'Métodos de pago',
-    wip: 'Esta página estará disponible próximamente.',
-  },
-  en: {
-    metaTitle: 'Payment Methods | Aerus',
-    eyebrow: 'Book',
-    title: 'Payment methods',
-    wip: 'This page will be available soon.',
-  },
-}
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/reservar/metodos-de-pago'>): Promise<Metadata> {
   const { lang } = await params
   if (!isLang(lang)) return {}
-  return { title: T[lang].metaTitle, alternates: alternates(lang, PATH) }
+  const t = await getPage('paginaMetodosPago', lang, defaults)
+  return seoMetadata(t.seo, lang, PATH)
 }
 
 export default async function MetodosDePagoPage({ params }: PageProps<'/[lang]/reservar/metodos-de-pago'>) {
   const { lang } = await params
   if (!isLang(lang)) notFound()
-  const t = T[lang]
+  const t = await getPage('paginaMetodosPago', lang, defaults)
 
   return (
     <>

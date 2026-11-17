@@ -3,35 +3,24 @@ import Footer from '@/components/Footer'
 import Newsletter from '@/components/Newsletter'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { alternates, isLang, type Lang } from '@/lib/i18n'
+import { isLang } from '@/lib/i18n'
+import { getPage } from '@/lib/content'
+import { seoMetadata } from '@/lib/seo'
+import defaults from '@/content/pages/reservar'
 
 const PATH = '/reservar/'
-
-const T: Record<Lang, { metaTitle: string; eyebrow: string; title: string; wip: string }> = {
-  es: {
-    metaTitle: 'Reservar | Aerus',
-    eyebrow: 'Compra tu boleto',
-    title: 'Reservar',
-    wip: 'Esta página estará disponible próximamente.',
-  },
-  en: {
-    metaTitle: 'Book a Flight | Aerus',
-    eyebrow: 'Buy your ticket',
-    title: 'Book a flight',
-    wip: 'This page will be available soon.',
-  },
-}
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/reservar'>): Promise<Metadata> {
   const { lang } = await params
   if (!isLang(lang)) return {}
-  return { title: T[lang].metaTitle, alternates: alternates(lang, PATH) }
+  const t = await getPage('paginaReservar', lang, defaults)
+  return seoMetadata(t.seo, lang, PATH)
 }
 
 export default async function ReservarPage({ params }: PageProps<'/[lang]/reservar'>) {
   const { lang } = await params
   if (!isLang(lang)) notFound()
-  const t = T[lang]
+  const t = await getPage('paginaReservar', lang, defaults)
 
   return (
     <>

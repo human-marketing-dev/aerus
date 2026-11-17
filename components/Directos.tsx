@@ -1,41 +1,17 @@
 import Link from 'next/link'
 import { Icon } from './icons'
 import { lp, type Lang } from '@/lib/i18n'
+import { getRoutes } from '@/lib/red'
+import type { InicioContent } from '@/content/pages/inicio'
 
-const DIRECT_ROUTES: [string, string][] = [
-  ['CDMX', 'Ciudad Victoria'],
-  ['CDMX', 'Tampico'],
-  ['Monterrey', 'Aguascalientes'],
-  ['Monterrey', 'Brownsville'],
-  ['Monterrey', 'Durango'],
-  ['Monterrey', 'McAllen'],
-  ['Monterrey', 'Piedras Negras'],
-  ['Monterrey', 'San Luis Potosí'],
-  ['Monterrey', 'Tampico'],
-  ['Veracruz', 'Tampico'],
-  ['Veracruz', 'Villahermosa'],
-  ['Villahermosa', 'Mérida'],
-]
-const N = DIRECT_ROUTES.length
-
-const T = {
-  es: {
-    a: 'Destinos', b: 'Directos',
-    blurb: `${N} conexiones directas, sin escalas innecesarias. Llega antes, descansa más y vive el destino — no la sala de espera.`,
-    active: 'Rutas directas activas',
-    cta: 'Encuentra tu vuelo directo',
-  },
-  en: {
-    a: 'Direct', b: 'Flights',
-    blurb: `${N} direct connections, no unnecessary layovers. Arrive sooner, rest more and enjoy your destination — not the departure lounge.`,
-    active: 'Active direct routes',
-    cta: 'Find your direct flight',
-  },
-}
+// Las rutas vienen de la red de rutas en Sanity (documentos "ruta")
 
 
-export default function Directos({ lang }: { lang: Lang }) {
-  const t = T[lang]
+
+// Sección "Destinos directos" del home. Textos: Sanity → Inicio; rutas: Red de rutas.
+export default async function Directos({ lang, t }: { lang: Lang; t: InicioContent['directos'] }) {
+  const DIRECT_ROUTES = await getRoutes(lang)
+  const N = DIRECT_ROUTES.length
   const half = Math.ceil(DIRECT_ROUTES.length / 2)
   const col1 = DIRECT_ROUTES.slice(0, half)
   const col2 = DIRECT_ROUTES.slice(half)
@@ -59,9 +35,9 @@ export default function Directos({ lang }: { lang: Lang }) {
               <span className="b">{t.b}</span>
             </div>
           </div>
-          <div className="blurb">{t.blurb}</div>
+          <div className="blurb">{t.blurb.replace('{n}', String(N))}</div>
           <div className="count">{N}</div>
-          <div>{t.active}</div>
+          <div>{t.activas}</div>
         </div>
         <div>
           <div className="routes-tables" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
@@ -85,7 +61,7 @@ export default function Directos({ lang }: { lang: Lang }) {
             </div>
           </div>
           <div style={{ marginTop: 40, display: 'flex', gap: 12 }}>
-            <Link href={lp(lang, '/rutas/')} className="btn" style={{ background: 'var(--aerus-deep-forest)', color: 'var(--aerus-spring-green)' }}>
+            <Link href={lp(lang, t.ctaHref)} className="btn" style={{ background: 'var(--aerus-deep-forest)', color: 'var(--aerus-spring-green)' }}>
               {t.cta} <span className="ar"></span>
             </Link>
           </div>

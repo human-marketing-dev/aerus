@@ -1,70 +1,33 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import Newsletter from '@/components/Newsletter'
-import { getAllDestinos } from '@/lib/destinos-mock'
+import { getAllDestinos } from '@/lib/red'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { alternates, isLang, lp } from '@/lib/i18n'
+import { isLang, lp } from '@/lib/i18n'
+import { getPage } from '@/lib/content'
+import { seoMetadata } from '@/lib/seo'
+import { plural } from '@/lib/plantillas'
+import defaults from '@/content/pages/destinos'
 
 const PATH = '/destinos/'
-
-const T = {
-  es: {
-    metaTitle: 'Destinos | Aerus',
-    metaDescription:
-      'Explora la red de rutas aéreas regionales de Aerus. Vuelos directos a los destinos más importantes de México.',
-    eyebrow: 'Red Aerus',
-    title: 'Destinos',
-    intro: 'Vuelos regionales directos a los destinos más importantes de México.',
-    statDestinations: 'destinos',
-    statHubs: 'hubs',
-    statIntl: { one: 'internacional', other: 'internacionales' },
-    hubsEyebrow: 'Nuestros hubs',
-    hubBadge: 'Hub',
-    directRoutes: (n: number) => `${n} ruta${n !== 1 ? 's' : ''} directa${n !== 1 ? 's' : ''}`,
-    seeFlights: 'Ver vuelos →',
-    allEyebrow: 'Toda la red',
-    destinationCount: (n: number) => `${n} destino${n !== 1 ? 's' : ''}`,
-    intlBadge: 'Internacional',
-  },
-  en: {
-    metaTitle: 'Destinations | Aerus',
-    metaDescription:
-      'Explore the Aerus regional route network. Direct flights to Mexico’s most important destinations.',
-    eyebrow: 'Aerus network',
-    title: 'Destinations',
-    intro: 'Direct regional flights to Mexico’s most important destinations.',
-    statDestinations: 'destinations',
-    statHubs: 'hubs',
-    statIntl: { one: 'international', other: 'international' },
-    hubsEyebrow: 'Our hubs',
-    hubBadge: 'Hub',
-    directRoutes: (n: number) => `${n} direct route${n !== 1 ? 's' : ''}`,
-    seeFlights: 'View flights →',
-    allEyebrow: 'The full network',
-    destinationCount: (n: number) => `${n} destination${n !== 1 ? 's' : ''}`,
-    intlBadge: 'International',
-  },
-}
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/destinos'>): Promise<Metadata> {
   const { lang } = await params
   if (!isLang(lang)) return {}
-  const t = T[lang]
-  return {
-    title: t.metaTitle,
-    description: t.metaDescription,
-    alternates: alternates(lang, PATH),
-  }
+  const t = await getPage('paginaDestinos', lang, defaults)
+  return seoMetadata(t.seo, lang, PATH)
 }
 
 export default async function DestinosPage({ params }: PageProps<'/[lang]/destinos'>) {
   const { lang } = await params
   if (!isLang(lang)) notFound()
-  const t = T[lang]
+  const t = await getPage('paginaDestinos', lang, defaults)
+  // Singular / plural: la página elige el texto (…One / …Other) según el número
+  const directRoutes = (n: number) => plural(n, t.directRoutesOne, t.directRoutesOther)
 
-  const todos = getAllDestinos(lang)
+  const todos = await getAllDestinos(lang)
   const hubs = todos.filter(d => d.hub)
   const resto = todos.filter(d => !d.hub)
 
@@ -100,7 +63,7 @@ export default async function DestinosPage({ params }: PageProps<'/[lang]/destin
                 <>
                   <span className="destinos-stat-sep" aria-hidden="true" />
                   <span className="destinos-stat">
-                    <strong>{totalIntl}</strong> {totalIntl !== 1 ? t.statIntl.other : t.statIntl.one}
+                    <strong>{totalIntl}</strong> {totalIntl !== 1 ? t.statIntlOther : t.statIntlOne}
                   </span>
                 </>
               )}
@@ -117,7 +80,7 @@ export default async function DestinosPage({ params }: PageProps<'/[lang]/destin
                 <Link key={d.slug} href={lp(lang, `/destinos/${d.slug}`)} className="dest-hub-card">
                   <div
                     className="dest-hub-card-visual"
-                    style={d.imagen ? { backgroundImage: `url(${d.imagen})` } : undefined}
+                    style={d.imagen ? { backgroundImage: `url(${d.imagen})`, backgroundPosition: d.imagenPosicion } : undefined}
                   >
                     <span className="dest-hub-card-iata" aria-hidden="true">{d.iata}</span>
                   </div>
@@ -125,7 +88,7 @@ export default async function DestinosPage({ params }: PageProps<'/[lang]/destin
                     <span className="dest-hub-badge">{t.hubBadge}</span>
                     <span className="dest-hub-card-name">{d.nombre}</span>
                     <span className="dest-hub-card-routes">
-                      {t.directRoutes(d.rutas.length)}
+                      {directRoutes(d.rutas.length)}
                     </span>
                     <span className="dest-hub-card-cta" aria-hidden="true">
                       {t.seeFlights}
@@ -144,7 +107,7 @@ export default async function DestinosPage({ params }: PageProps<'/[lang]/destin
               <div className="destinos-all-header">
                 <div className="eyebrow">{t.allEyebrow}</div>
                 <p className="destinos-all-count">
-                  {t.destinationCount(resto.length)}
+                  {plural(resto.length, t.destinationCountOne, t.destinationCountOther)}
                 </p>
               </div>
               <div className="destinos-grid">
@@ -152,7 +115,7 @@ export default async function DestinosPage({ params }: PageProps<'/[lang]/destin
                   <Link key={d.slug} href={lp(lang, `/destinos/${d.slug}`)} className="dest-card">
                     <div
                       className="dest-card-img"
-                      style={d.imagen ? { backgroundImage: `url(${d.imagen})` } : undefined}
+                      style={d.imagen ? { backgroundImage: `url(${d.imagen})`, backgroundPosition: d.imagenPosicion } : undefined}
                     >
                       <span className="dest-card-iata" aria-hidden="true">{d.iata}</span>
                       {d.esInternacional && (
@@ -162,7 +125,7 @@ export default async function DestinosPage({ params }: PageProps<'/[lang]/destin
                     <div className="dest-card-body">
                       <span className="dest-card-name">{d.nombre}</span>
                       <span className="dest-card-count">
-                        {t.directRoutes(d.rutas.length)}
+                        {directRoutes(d.rutas.length)}
                       </span>
                     </div>
                   </Link>

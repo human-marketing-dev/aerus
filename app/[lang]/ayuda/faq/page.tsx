@@ -4,55 +4,34 @@ import Newsletter from '@/components/Newsletter'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getFaqCategorias } from '@/lib/faq-mock'
 import FaqAccordion from '@/components/FaqAccordion'
-import { alternates, isLang, lp, LOCALE_TAG } from '@/lib/i18n'
+import { isLang, lp, LOCALE_TAG } from '@/lib/i18n'
+import { getPage } from '@/lib/content'
+import { seoMetadata } from '@/lib/seo'
+import defaults from '@/content/pages/ayuda-faq'
 
 const PATH = '/ayuda/faq/'
 const SITE = 'https://aerus.mx'
 
-const es = {
-  metaTitle: 'Preguntas Frecuentes | Aerus',
-  metaDescription:
-    'Respuestas a las preguntas más comunes sobre reservas, equipaje, cambios, abordaje y pagos con Aerus.',
-  breadcrumbLabel: 'Ruta de navegación',
-  home: 'Inicio',
-  help: 'Ayuda',
-  current: 'Preguntas frecuentes',
-  eyebrow: 'Ayuda',
-  titleA: 'Preguntas',
-  titleB: 'frecuentes',
-  intro: 'Encuentra respuestas a las dudas más comunes sobre vuelos, equipaje, pagos y más.',
+// Textos genéricos de interfaz (no se editan en Sanity)
+const UI = {
+  es: { breadcrumbLabel: 'Ruta de navegación', home: 'Inicio', help: 'Ayuda' },
+  en: { breadcrumbLabel: 'Breadcrumb', home: 'Home', help: 'Help' },
 }
-
-const en: typeof es = {
-  metaTitle: 'Frequently Asked Questions | Aerus',
-  metaDescription:
-    'Answers to the most common questions about bookings, baggage, changes, boarding and payments with Aerus.',
-  breadcrumbLabel: 'Breadcrumb',
-  home: 'Home',
-  help: 'Help',
-  current: 'Frequently asked questions',
-  eyebrow: 'Help',
-  titleA: 'Frequently asked',
-  titleB: 'questions',
-  intro: 'Find answers to the most common questions about flights, baggage, payments and more.',
-}
-
-const T = { es, en }
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/ayuda/faq'>): Promise<Metadata> {
   const { lang } = await params
   if (!isLang(lang)) return {}
-  const t = T[lang]
-  return { title: t.metaTitle, description: t.metaDescription, alternates: alternates(lang, PATH) }
+  const t = await getPage('paginaAyudaFaq', lang, defaults)
+  return seoMetadata(t.seo, lang, PATH)
 }
 
 export default async function FaqPage({ params }: PageProps<'/[lang]/ayuda/faq'>) {
   const { lang } = await params
   if (!isLang(lang)) notFound()
-  const t = T[lang]
-  const categorias = getFaqCategorias(lang)
+  const t = await getPage('paginaAyudaFaq', lang, defaults)
+  const ui = UI[lang]
+  const categorias = t.categorias
   const allItems = categorias.flatMap(cat => cat.items)
 
   const jsonLdFaq = {
@@ -70,9 +49,9 @@ export default async function FaqPage({ params }: PageProps<'/[lang]/ayuda/faq'>
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t.home, item: `${SITE}${lp(lang, '/')}` },
-      { '@type': 'ListItem', position: 2, name: t.help, item: `${SITE}${lp(lang, '/ayuda/')}` },
-      { '@type': 'ListItem', position: 3, name: t.current, item: `${SITE}${lp(lang, PATH)}` },
+      { '@type': 'ListItem', position: 1, name: ui.home, item: `${SITE}${lp(lang, '/')}` },
+      { '@type': 'ListItem', position: 2, name: ui.help, item: `${SITE}${lp(lang, '/ayuda/')}` },
+      { '@type': 'ListItem', position: 3, name: t.crumb, item: `${SITE}${lp(lang, PATH)}` },
     ],
   }
 
@@ -90,12 +69,12 @@ export default async function FaqPage({ params }: PageProps<'/[lang]/ayuda/faq'>
       <main>
         <section className="faq-hero">
           <div className="container faq-hero-inner">
-            <nav className="destino-breadcrumb" aria-label={t.breadcrumbLabel}>
-              <Link href={lp(lang, '/')}>{t.home}</Link>
+            <nav className="destino-breadcrumb" aria-label={ui.breadcrumbLabel}>
+              <Link href={lp(lang, '/')}>{ui.home}</Link>
               <span aria-hidden="true"> › </span>
-              <Link href={lp(lang, '/ayuda/')}>{t.help}</Link>
+              <Link href={lp(lang, '/ayuda/')}>{ui.help}</Link>
               <span aria-hidden="true"> › </span>
-              <span aria-current="page">{t.current}</span>
+              <span aria-current="page">{t.crumb}</span>
             </nav>
             <div className="eyebrow" style={{ color: 'var(--aerus-spring-green)' }}>
               {t.eyebrow}

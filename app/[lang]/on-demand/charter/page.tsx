@@ -5,180 +5,34 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Icon } from '@/components/icons'
-import { alternates, isLang, lp } from '@/lib/i18n'
+import { isLang, lp } from '@/lib/i18n'
+import { getPage } from '@/lib/content'
+import { seoMetadata } from '@/lib/seo'
+import defaults from '@/content/pages/on-demand-charter'
 
 const PATH = '/on-demand/charter/'
 
-const es = {
-  metaTitle: 'Aerus Charter | Aerus',
-  metaDescription:
-    'Chárter ejecutivo y grupal con Aerus. Avión exclusivo, horario a tu medida, hasta 12 pasajeros. Para eventos corporativos, delegaciones, equipos deportivos y traslados urgentes.',
-  breadcrumbLabel: 'Ruta de navegación',
-  inicio: 'Inicio',
-  intro:
-    'Avión exclusivo para tu grupo o evento. Tú defines el destino, la fecha y el horario. Hasta 12 pasajeros. Vuelo directo, sin escalas, sin horarios ajenos.',
-  usosSub: 'Para quién es',
-  usosTitulo: 'Usos frecuentes del chárter',
-  usos: [
-    {
-      icono: 'users',
-      titulo: 'Viajes ejecutivos',
-      desc: 'Directivos y equipos que necesitan llegar el mismo día a una reunión, sin depender de horarios comerciales.',
-    },
-    {
-      icono: 'plane',
-      titulo: 'Delegaciones y eventos',
-      desc: 'Traslado de grupos a convenciones, lanzamientos, inauguraciones o eventos corporativos en destinos regionales.',
-    },
-    {
-      icono: 'ticket',
-      titulo: 'Equipos deportivos',
-      desc: 'Vuelos coordinados para equipos, cuerpos técnicos y staff. Gestión de equipaje especial incluida en la coordinación.',
-    },
-    {
-      icono: 'clock',
-      titulo: 'Traslados urgentes',
-      desc: 'Cuando un vuelo comercial no existe o no llega a tiempo. Salida en el horario que necesitas hacia cualquier destino de la red.',
-    },
-  ],
-  incluyeSub: 'El servicio',
-  incluyeTitulo: 'Qué incluye el chárter',
-  incluye: [
-    'Uso exclusivo de la aeronave para tu grupo (hasta 12 pasajeros)',
-    'Horario de salida y llegada definido por ti',
-    'Salida desde cualquier aeropuerto dentro de la red Aerus',
-    'Flexibilidad de equipaje mayor a vuelos regulares',
-    'Factura a razón social de la empresa',
-    'Atención de un agente Aerus durante todo el proceso',
-    'Posibilidad de escala intermedia según la ruta',
-  ],
-  pasosTitulo: 'Cómo funciona',
-  pasos: [
-    {
-      titulo: 'Cuéntanos del vuelo',
-      desc: 'Origen, destino, fecha, horario tentativo y número de pasajeros. Mientras más detalle, más precisa será la propuesta.',
-    },
-    {
-      titulo: 'Recibe tu propuesta en 24h',
-      desc: 'Nuestro equipo revisa disponibilidad de aeronave y te envía una propuesta con precio, itinerario y condiciones de pago.',
-    },
-    {
-      titulo: 'Confirma y paga',
-      desc: 'Al confirmar la propuesta coordinamos todos los detalles operativos. El pago puede realizarse por transferencia o cargo a cuenta empresarial.',
-    },
-    {
-      titulo: 'Vuela',
-      desc: 'El día del vuelo, llega al aeropuerto 60 minutos antes. Tu avión está esperando — no hay filas de check-in ni espera en sala.',
-    },
-  ],
-  ctaTitulo: 'Solicita tu cotización',
-  ctaDesc: 'Envíanos los datos del vuelo y te respondemos con una propuesta en menos de 24 horas.',
-  ctaBtn: 'Cotizar chárter',
-  relacionadosTitulo: 'También puede interesarte',
-  relacionados: [
-    { label: 'Aerus Flight Pass',     href: '/on-demand/flight-pass/' },
-    { label: 'Cuenta empresarial',    href: '/on-demand/empresas/' },
-    { label: 'Vuelos para grupos',    href: '/experiencia/grupos/' },
-    { label: 'Red de rutas',          href: '/rutas/' },
-  ],
-  contactoTag: 'Contacto directo',
-  contactoTitulo: 'Equipo Charter',
-  horario: 'Lun–Vie · 08:00–18:00 h',
+// Textos genéricos de interfaz (no se editan en Sanity)
+const UI = {
+  es: { breadcrumbLabel: 'Ruta de navegación', home: 'Inicio', onDemand: 'On Demand' },
+  en: { breadcrumbLabel: 'Breadcrumb', home: 'Home', onDemand: 'On Demand' },
 }
 
-const en: typeof es = {
-  metaTitle: 'Aerus Charter | Aerus',
-  metaDescription:
-    'Executive and group charter flights with Aerus. A private aircraft on your schedule for up to 12 passengers. Ideal for corporate events, delegations, sports teams and urgent travel.',
-  breadcrumbLabel: 'Breadcrumb',
-  inicio: 'Home',
-  intro:
-    'A private aircraft for your group or event. You choose the destination, date and time. Up to 12 passengers. Nonstop, with no layovers and no one else’s schedule.',
-  usosSub: 'Who it’s for',
-  usosTitulo: 'Common charter uses',
-  usos: [
-    {
-      icono: 'users',
-      titulo: 'Executive travel',
-      desc: 'Executives and teams who need to make a same-day meeting without depending on commercial flight schedules.',
-    },
-    {
-      icono: 'plane',
-      titulo: 'Delegations and events',
-      desc: 'Group transportation to conventions, product launches, openings and corporate events in regional destinations.',
-    },
-    {
-      icono: 'ticket',
-      titulo: 'Sports teams',
-      desc: 'Coordinated flights for teams, coaching staff and support personnel. Special baggage handling is included in the planning.',
-    },
-    {
-      icono: 'clock',
-      titulo: 'Urgent travel',
-      desc: 'When there’s no commercial flight, or it won’t get you there in time. Depart when you need to, to any destination in our network.',
-    },
-  ],
-  incluyeSub: 'The service',
-  incluyeTitulo: 'What the charter includes',
-  incluye: [
-    'Exclusive use of the aircraft for your group (up to 12 passengers)',
-    'Departure and arrival times set by you',
-    'Departures from any airport in the Aerus network',
-    'More generous baggage allowance than scheduled flights',
-    'Invoice issued to your company’s legal entity',
-    'Support from an Aerus agent throughout the entire process',
-    'Optional intermediate stop depending on the route',
-  ],
-  pasosTitulo: 'How it works',
-  pasos: [
-    {
-      titulo: 'Tell us about your flight',
-      desc: 'Origin, destination, date, preferred departure time and number of passengers. The more detail you share, the more accurate your proposal will be.',
-    },
-    {
-      titulo: 'Get your proposal within 24 hours',
-      desc: 'Our team checks aircraft availability and sends you a proposal with pricing, itinerary and payment terms.',
-    },
-    {
-      titulo: 'Confirm and pay',
-      desc: 'Once you confirm the proposal, we coordinate all operational details. Payment can be made by bank transfer or charged to your business account.',
-    },
-    {
-      titulo: 'Fly',
-      desc: 'On the day of your flight, arrive at the airport 60 minutes before departure. Your aircraft is waiting — no check-in lines, no time in the lounge.',
-    },
-  ],
-  ctaTitulo: 'Request a quote',
-  ctaDesc: 'Send us your flight details and we’ll reply with a proposal in less than 24 hours.',
-  ctaBtn: 'Get a charter quote',
-  relacionadosTitulo: 'You may also be interested in',
-  relacionados: [
-    { label: 'Aerus Flight Pass',     href: '/on-demand/flight-pass/' },
-    { label: 'Business account',      href: '/on-demand/empresas/' },
-    { label: 'Group travel',          href: '/experiencia/grupos/' },
-    { label: 'Route network',         href: '/rutas/' },
-  ],
-  contactoTag: 'Direct contact',
-  contactoTitulo: 'Charter Team',
-  horario: 'Mon–Fri · 8:00 a.m.–6:00 p.m.',
-}
-
-const T = { es, en }
+/** Enlace para marcar a partir del teléfono tal como se muestra (+52 812 682 3501 → tel:+528126823501) */
+const tel = (telefono: string) => `tel:${telefono.replace(/[^\d+]/g, '')}`
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/on-demand/charter'>): Promise<Metadata> {
   const { lang } = await params
   if (!isLang(lang)) return {}
-  return {
-    title: T[lang].metaTitle,
-    description: T[lang].metaDescription,
-    alternates: alternates(lang, PATH),
-  }
+  const t = await getPage('paginaCharter', lang, defaults)
+  return seoMetadata(t.seo, lang, PATH)
 }
 
 export default async function CharterPage({ params }: PageProps<'/[lang]/on-demand/charter'>) {
   const { lang } = await params
   if (!isLang(lang)) notFound()
-  const t = T[lang]
+  const t = await getPage('paginaCharter', lang, defaults)
+  const ui = UI[lang]
 
   return (
     <>
@@ -187,16 +41,16 @@ export default async function CharterPage({ params }: PageProps<'/[lang]/on-dema
 
         <section className="corp-hero">
           <div className="container corp-hero-inner">
-            <nav className="destino-breadcrumb" aria-label={t.breadcrumbLabel}>
-              <Link href={lp(lang, '/')}>{t.inicio}</Link>
+            <nav className="destino-breadcrumb" aria-label={ui.breadcrumbLabel}>
+              <Link href={lp(lang, '/')}>{ui.home}</Link>
               <span aria-hidden="true"> › </span>
-              <Link href={lp(lang, '/on-demand/')}>On Demand</Link>
+              <Link href={lp(lang, '/on-demand/')}>{ui.onDemand}</Link>
               <span aria-hidden="true"> › </span>
-              <span aria-current="page">Aerus Charter</span>
+              <span aria-current="page">{t.crumb}</span>
             </nav>
-            <div className="eyebrow" style={{ color: 'var(--aerus-spring-green)' }}>On Demand</div>
+            <div className="eyebrow" style={{ color: 'var(--aerus-spring-green)' }}>{t.eyebrow}</div>
             <h1 className="section-headline" style={{ color: 'var(--aerus-white)' }}>
-              Aerus <span className="accent">Charter</span>
+              {t.titleA}<span className="accent">{t.titleAccent}</span>
             </h1>
             <p className="section-intro" style={{ color: 'rgba(255,255,255,0.60)' }}>
               {t.intro}
@@ -274,7 +128,7 @@ export default async function CharterPage({ params }: PageProps<'/[lang]/on-dema
                     {t.ctaDesc}
                   </p>
                   <Link
-                    href={lp(lang, '/on-demand/charter/cotizar/')}
+                    href={lp(lang, t.ctaHref)}
                     className="btn btn-primary"
                     style={{ width: '100%', justifyContent: 'center', display: 'flex' }}
                   >
@@ -301,11 +155,11 @@ export default async function CharterPage({ params }: PageProps<'/[lang]/on-dema
                   <p className="mro-contact-card-title">{t.contactoTitulo}</p>
                   <div className="mro-contact-row">
                     <Icon name="mail" size={14} stroke={1.5} />
-                    <a href="mailto:charter@aerus.mx">charter@aerus.mx</a>
+                    <a href={`mailto:${t.email}`}>{t.email}</a>
                   </div>
                   <div className="mro-contact-row">
                     <Icon name="phone" size={14} stroke={1.5} />
-                    <a href="tel:+528126823501">+52 812 682 3501</a>
+                    <a href={tel(t.telefono)}>{t.telefono}</a>
                   </div>
                   <p className="mro-contact-horario">{t.horario}</p>
                 </div>

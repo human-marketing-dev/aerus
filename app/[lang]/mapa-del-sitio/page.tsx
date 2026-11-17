@@ -1,17 +1,19 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import Newsletter from '@/components/Newsletter'
-import { getAllDestinos } from '@/lib/destinos-mock'
-import { getRoutes } from '@/lib/red-de-rutas'
-import { slugify } from '@/lib/route-utils'
+import { getAllDestinos, getRouteLinks } from '@/lib/red'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { alternates, isLang, lp, type Lang } from '@/lib/i18n'
+import { isLang, lp, type Lang } from '@/lib/i18n'
+import { getPage } from '@/lib/content'
+import { seoMetadata } from '@/lib/seo'
+import defaults, { type MapaSitioContent, type Status } from '@/content/pages/mapa-del-sitio'
 
 const PATH = '/mapa-del-sitio/'
 
-type Status = 'verde' | 'azul' | 'naranja' | 'amarillo' | 'gris'
+// Orden de la leyenda de estatus
+const STATUSES: Status[] = ['gris', 'amarillo', 'naranja', 'azul', 'verde']
 
 type SitemapEntry = {
   label: string
@@ -20,169 +22,19 @@ type SitemapEntry = {
   children?: SitemapEntry[]
 }
 
-const T = {
-  es: {
-    metaTitle: 'Mapa del sitio | Aerus',
-    title: 'Mapa del sitio',
-    legendLabel: 'Leyenda de estatus',
-    status: {
-      gris:     'Por definir',
-      amarillo: 'Info lista',
-      naranja:  'En construcción',
-      azul:     'Construida',
-      verde:    'Aprobada',
-    } satisfies Record<Status, string>,
-    secMain: 'Tareas principales',
-    home: 'Inicio',
-    book: 'Reservar',
-    fares: 'Tarifas y familias',
-    payment: 'Métodos de pago',
-    checkin: 'Check-in',
-    myBooking: 'Mi Reserva',
-    secDestinations: 'Destinos',
-    destinationsIndex: 'Destinos (índice)',
-    secRoutes: 'Rutas',
-    routesIndex: 'Rutas (índice)',
-    viva: 'Alianza con Viva',
-    secOnDemand: 'On Demand',
-    onDemand: 'On Demand',
-    charter: 'Aerus Charter',
-    charterQuote: 'Cotizar charter',
-    flightPass: 'Aerus Flight Pass',
-    flightPassContact: 'Contacto Flight Pass',
-    business: 'Soluciones para empresas',
-    secExperience: 'Experiencia',
-    experience: 'Experiencia Aerus',
-    fastProcess: 'Espera minutos, no horas',
-    fleet: 'La flota',
-    travelAssistance: 'Asistencia de viaje',
-    cancellationInsurance: 'Seguro de cancelación',
-    groups: 'Vuelos para grupos',
-    secBlog: 'Blog',
-    blog: 'Blog',
-    blogPosts: [
-      { label: '¡Con Aerus llega a los mejores lugares caribeños!', slug: 'grand-costa-maya' },
-      { label: '¡Aerus: Tu guía para unas vacaciones inolvidables!', slug: 'cancun-vacaciones-inolvidables' },
-      { label: 'El paraíso a solo un vuelo de distancia', slug: 'descubre-cozumel' },
-      { label: '¿Quiénes somos?', slug: 'quienes-somos' },
-      { label: 'Más cerca de ti', slug: 'nace-aerus' },
-    ],
-    secAbout: 'Nosotros',
-    about: 'Nosotros',
-    press: 'Sala de prensa',
-    secMro: 'MRO — Mantenimiento aeronáutico',
-    mro: 'MRO',
-    mroCapabilities: 'Capacidades y certificaciones',
-    mroPt6a: 'Motores PT6A',
-    mroPropellers: 'Hélices',
-    mroAccessories: 'Accesorios y planeadores',
-    mroRadios: 'Radios e instrumentos',
-    mroQuote: 'Solicitar cotización',
-    secLegal: 'Legal',
-    terms: 'Términos y condiciones',
-    privacy: 'Aviso de privacidad',
-    cookies: 'Política de cookies',
-    secHelp: 'Ayuda',
-    helpCenter: 'Centro de ayuda',
-    faq: 'Preguntas frecuentes',
-    travelDocs: 'Documentos para viajar',
-    baggage: 'Equipaje',
-    airportTimes: 'Tiempos de llegada al aeropuerto',
-    specialAssistance: 'Requerimientos especiales',
-    pets: 'Viajar con mascota',
-    invoicing: 'Facturación',
-    contact: 'Contacto',
-  },
-  en: {
-    metaTitle: 'Site map | Aerus',
-    title: 'Site map',
-    legendLabel: 'Status legend',
-    status: {
-      gris:     'To be defined',
-      amarillo: 'Content ready',
-      naranja:  'In progress',
-      azul:     'Built',
-      verde:    'Approved',
-    } satisfies Record<Status, string>,
-    secMain: 'Main tasks',
-    home: 'Home',
-    book: 'Book',
-    fares: 'Fares and fare families',
-    payment: 'Payment methods',
-    checkin: 'Check-in',
-    myBooking: 'My Booking',
-    secDestinations: 'Destinations',
-    destinationsIndex: 'Destinations (index)',
-    secRoutes: 'Routes',
-    routesIndex: 'Routes (index)',
-    viva: 'Viva alliance',
-    secOnDemand: 'On Demand',
-    onDemand: 'On Demand',
-    charter: 'Aerus Charter',
-    charterQuote: 'Request a charter quote',
-    flightPass: 'Aerus Flight Pass',
-    flightPassContact: 'Flight Pass contact',
-    business: 'Business solutions',
-    secExperience: 'Experience',
-    experience: 'The Aerus experience',
-    fastProcess: 'Wait minutes, not hours',
-    fleet: 'The fleet',
-    travelAssistance: 'Travel assistance',
-    cancellationInsurance: 'Cancellation insurance',
-    groups: 'Group flights',
-    secBlog: 'Blog',
-    blog: 'Blog',
-    blogPosts: [
-      { label: 'Reach the best Caribbean spots with Aerus!', slug: 'grand-costa-maya' },
-      { label: 'Aerus: your guide to an unforgettable vacation!', slug: 'cancun-vacaciones-inolvidables' },
-      { label: 'Paradise, just one flight away', slug: 'descubre-cozumel' },
-      { label: 'Who we are', slug: 'quienes-somos' },
-      { label: 'Closer to you', slug: 'nace-aerus' },
-    ],
-    secAbout: 'About us',
-    about: 'About us',
-    press: 'Press room',
-    secMro: 'MRO — Aircraft maintenance',
-    mro: 'MRO',
-    mroCapabilities: 'Capabilities and certifications',
-    mroPt6a: 'PT6A engines',
-    mroPropellers: 'Propellers',
-    mroAccessories: 'Accessories and airframes',
-    mroRadios: 'Radios and instruments',
-    mroQuote: 'Request a quote',
-    secLegal: 'Legal',
-    terms: 'Terms and conditions',
-    privacy: 'Privacy notice',
-    cookies: 'Cookie policy',
-    secHelp: 'Help',
-    helpCenter: 'Help center',
-    faq: 'Frequently asked questions',
-    travelDocs: 'Travel documents',
-    baggage: 'Baggage',
-    airportTimes: 'Airport arrival times',
-    specialAssistance: 'Special assistance',
-    pets: 'Traveling with pets',
-    invoicing: 'Invoicing',
-    contact: 'Contact',
-  },
-}
-
 export async function generateMetadata({ params }: PageProps<'/[lang]/mapa-del-sitio'>): Promise<Metadata> {
   const { lang } = await params
   if (!isLang(lang)) return {}
-  return {
-    title: T[lang].metaTitle,
-    robots: { index: false },
-    alternates: alternates(lang, PATH),
-  }
+  const t = await getPage('paginaMapaSitio', lang, defaults)
+  // Esta página nunca se indexa, sin importar lo que diga su SEO en Sanity
+  return { ...seoMetadata(t.seo, lang, PATH), robots: { index: false } }
 }
 
 /** Builds the tree with canonical (Spanish) hrefs; EntryItem localizes them with lp(). */
-function buildSections(lang: Lang): { title: string; entries: SitemapEntry[] }[] {
-  const t = T[lang]
-  const destinos = getAllDestinos(lang)
+async function buildSections(lang: Lang, t: MapaSitioContent): Promise<{ title: string; entries: SitemapEntry[] }[]> {
+  const destinos = await getAllDestinos(lang)
   // [etiqueta, slug] de cada ruta de la red
-  const rutas: [string, string][] = getRoutes().map(([a, b]) => [`${a} – ${b}`, `${slugify(a)}-${slugify(b)}`])
+  const rutas: [string, string][] = (await getRouteLinks(lang)).map(r => [`${r.origen} – ${r.destino}`, r.slug])
 
   return [
     {
@@ -353,8 +205,8 @@ function buildSections(lang: Lang): { title: string; entries: SitemapEntry[] }[]
 export default async function MapaDelSitioPage({ params }: PageProps<'/[lang]/mapa-del-sitio'>) {
   const { lang } = await params
   if (!isLang(lang)) notFound()
-  const t = T[lang]
-  const sections = buildSections(lang)
+  const t = await getPage('paginaMapaSitio', lang, defaults)
+  const sections = await buildSections(lang, t)
 
   return (
     <>
@@ -362,7 +214,7 @@ export default async function MapaDelSitioPage({ params }: PageProps<'/[lang]/ma
       <main>
         <section className="sitemap-hero">
           <div className="container">
-            <div className="eyebrow" style={{ color: 'var(--aerus-spring-green)' }}>Aerus</div>
+            <div className="eyebrow" style={{ color: 'var(--aerus-spring-green)' }}>{t.eyebrow}</div>
             <h1 className="section-headline" style={{ color: 'var(--aerus-white)' }}>
               {t.title}
             </h1>
@@ -373,10 +225,10 @@ export default async function MapaDelSitioPage({ params }: PageProps<'/[lang]/ma
           <div className="container sitemap-tree">
 
             <div className="sitemap-legend" role="note" aria-label={t.legendLabel}>
-              {(Object.entries(t.status) as [Status, string][]).map(([status, label]) => (
+              {STATUSES.map(status => (
                 <span key={status} className="sitemap-legend-item">
                   <span className={`sitemap-dot sitemap-dot--${status}`} aria-hidden="true" />
-                  {label}
+                  {t.status[status]}
                 </span>
               ))}
             </div>
@@ -386,7 +238,7 @@ export default async function MapaDelSitioPage({ params }: PageProps<'/[lang]/ma
                 <p className="sitemap-section-title">{sec.title}</p>
                 <ul className="sitemap-list">
                   {sec.entries.map(entry => (
-                    <EntryItem key={entry.href} entry={entry} lang={lang} />
+                    <EntryItem key={entry.href} entry={entry} lang={lang} statusLabels={t.status} />
                   ))}
                 </ul>
               </div>
@@ -400,9 +252,13 @@ export default async function MapaDelSitioPage({ params }: PageProps<'/[lang]/ma
   )
 }
 
-function EntryItem({ entry, lang, depth = 0 }: { entry: SitemapEntry; lang: Lang; depth?: number }) {
+function EntryItem({ entry, lang, statusLabels, depth = 0 }: {
+  entry: SitemapEntry
+  lang: Lang
+  statusLabels: Record<Status, string>
+  depth?: number
+}) {
   const href = lp(lang, entry.href)
-  const statusLabels = T[lang].status
   return (
     <li className="sitemap-item">
       <Link href={href} className="sitemap-link">
@@ -419,7 +275,7 @@ function EntryItem({ entry, lang, depth = 0 }: { entry: SitemapEntry; lang: Lang
       {entry.children && entry.children.length > 0 && (
         <ul className={depth === 0 ? 'sitemap-children' : 'sitemap-grandchildren'}>
           {entry.children.map(child => (
-            <EntryItem key={child.href} entry={child} lang={lang} depth={depth + 1} />
+            <EntryItem key={child.href} entry={child} lang={lang} statusLabels={statusLabels} depth={depth + 1} />
           ))}
         </ul>
       )}

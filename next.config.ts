@@ -5,6 +5,10 @@ const REMOVED_ROUTES = ['monterrey-laredo', 'cancun-cozumel', 'cancun-chetumal']
 const REMOVED_DESTINOS = ['laredo', 'morelia', 'uruapan', 'minatitlan', 'ciudad-ixtepec', 'ciudad-del-carmen']
 
 const nextConfig: NextConfig = {
+  // Imágenes administradas en Sanity (banners, logos, fotos)
+  images: {
+    remotePatterns: [{ protocol: 'https', hostname: 'cdn.sanity.io' }],
+  },
   // Sitio aún no lanzado: cabecera noindex en todas las respuestas (ver lib/indexing.ts)
   async headers() {
     if (SITE_INDEXABLE) return []

@@ -35,6 +35,7 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Todo excepto internos de Next, API y archivos estáticos (cualquier ruta con extensión)
-  matcher: ['/((?!_next|api|.*\\..*).*)'],
+  // Todo excepto internos de Next, API, el panel de contenido (/studio) y archivos estáticos
+  // (cualquier ruta con extensión)
+  matcher: ['/((?!_next|api|studio|.*\\..*).*)'],
 }

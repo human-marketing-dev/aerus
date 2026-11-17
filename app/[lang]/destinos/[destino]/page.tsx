@@ -1,127 +1,67 @@
 import Nav from '@/components/Nav'
 import Footer from '@/components/Footer'
 import Newsletter from '@/components/Newsletter'
-import { getAllDestinos, getDestino, type Destino } from '@/lib/destinos-mock'
+import { getAllDestinos, getDestino, getDestinoSlugs, type Destino } from '@/lib/red'
+import { seoMetadata } from '@/lib/seo'
+import { redirectIfConfigured } from '@/lib/redirects'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { alternates, isLang, lp } from '@/lib/i18n'
+import { isLang, lp } from '@/lib/i18n'
+import { fill, getPlantilla, plural } from '@/lib/plantillas'
+import defaults, { type PlantillaDestinoContent } from '@/content/pages/plantilla-destino'
 
 const SITE = 'https://aerus.mx'
 
-const T = {
-  es: {
-    metaTitle: (n: string) => `Vuelos a ${n} | Aerus`,
-    metaDescription: (n: string, c: number) =>
-      `Reserva vuelos directos a ${n} con Aerus. ${c} ruta${c !== 1 ? 's' : ''} directa${c !== 1 ? 's' : ''} disponible${c !== 1 ? 's' : ''}.`,
-    home: 'Inicio',
-    destinations: 'Destinos',
-    breadcrumbLabel: 'Ruta de navegación',
-    hubBadge: 'Hub',
-    intlBadge: 'Internacional',
-    h1: (n: string) => `Vuelos directos a ${n}`,
-    routeLabel: (c: number) => `${c} ruta${c !== 1 ? 's' : ''} directa${c !== 1 ? 's' : ''}`,
-    andMore: (c: number) => ` y ${c} más`,
-    routesFrom: (n: string) => `Rutas directas desde ${n}`,
-    faq: 'Preguntas frecuentes',
-    sidebarLabel: (n: string) => `Vuela directo a ${n} con Aerus`,
-    searchFlights: 'Buscar vuelos',
-    faqItems: (d: Destino) => {
-      const c = d.rutas.length
-      return [
-        {
-          q: `¿Aerus vuela directo a ${d.nombre}?`,
-          a: `Sí. Aerus opera ${c} ruta${c !== 1 ? 's' : ''} directa${c !== 1 ? 's' : ''} con ${d.nombre}.`,
-        },
-        {
-          q: `¿Desde qué ciudades puedo volar directo a ${d.nombre}?`,
-          a: `Puedes volar directo a ${d.nombre} desde: ${d.rutas.join(', ')}.`,
-        },
-        ...(d.esInternacional
-          ? [{
-              q: `¿${d.nombre} es un destino internacional?`,
-              a: `Sí, ${d.nombre} es un destino internacional dentro de la red de Aerus.`,
-            }]
-          : []),
-        ...(d.hub
-          ? [{
-              q: `¿${d.nombre} es un hub de Aerus?`,
-              a: `Sí, ${d.nombre} es uno de los hubs principales de la red Aerus. Desde este aeropuerto operamos conexiones directas a múltiples destinos de la red.`,
-            }]
-          : []),
-      ]
-    },
-  },
-  en: {
-    metaTitle: (n: string) => `Flights to ${n} | Aerus`,
-    metaDescription: (n: string, c: number) =>
-      `Book direct flights to ${n} with Aerus. ${c} direct route${c !== 1 ? 's' : ''} available.`,
-    home: 'Home',
-    destinations: 'Destinations',
-    breadcrumbLabel: 'Breadcrumb',
-    hubBadge: 'Hub',
-    intlBadge: 'International',
-    h1: (n: string) => `Direct flights to ${n}`,
-    routeLabel: (c: number) => `${c} direct route${c !== 1 ? 's' : ''}`,
-    andMore: (c: number) => ` and ${c} more`,
-    routesFrom: (n: string) => `Direct routes from ${n}`,
-    faq: 'Frequently asked questions',
-    sidebarLabel: (n: string) => `Fly direct to ${n} with Aerus`,
-    searchFlights: 'Search flights',
-    faqItems: (d: Destino) => {
-      const c = d.rutas.length
-      return [
-        {
-          q: `Does Aerus fly direct to ${d.nombre}?`,
-          a: `Yes. Aerus operates ${c} direct route${c !== 1 ? 's' : ''} to ${d.nombre}.`,
-        },
-        {
-          q: `Which cities can I fly direct to ${d.nombre} from?`,
-          a: `You can fly direct to ${d.nombre} from: ${d.rutas.join(', ')}.`,
-        },
-        ...(d.esInternacional
-          ? [{
-              q: `Is ${d.nombre} an international destination?`,
-              a: `Yes, ${d.nombre} is an international destination in the Aerus network.`,
-            }]
-          : []),
-        ...(d.hub
-          ? [{
-              q: `Is ${d.nombre} an Aerus hub?`,
-              a: `Yes, ${d.nombre} is one of the main hubs in the Aerus network. From this airport we operate direct flights to multiple destinations across the network.`,
-            }]
-          : []),
-      ]
-    },
-  },
+// Textos genéricos de interfaz (no se editan en Sanity)
+const UI = {
+  es: { breadcrumbLabel: 'Ruta de navegación', home: 'Inicio', destinations: 'Destinos' },
+  en: { breadcrumbLabel: 'Breadcrumb', home: 'Home', destinations: 'Destinations' },
 }
 
-export function generateStaticParams() {
-  return getAllDestinos().map(d => ({ destino: d.slug }))
+/**
+ * Preguntas frecuentes del destino a partir de la plantilla (Sanity). Qué preguntas aparecen
+ * (internacional / hub) y el singular/plural de la primera respuesta se deciden aquí.
+ */
+function faqItems(t: PlantillaDestinoContent, d: Destino): { q: string; a: string }[] {
+  const v = { nombre: d.nombre, ciudades: d.rutas.join(', ') }
+  const c = d.rutas.length
+  return [
+    { q: fill(t.faqDirecto.q, v), a: plural(c, t.faqDirecto.aOne, t.faqDirecto.aOther, v) },
+    { q: fill(t.faqCiudades.q, v), a: fill(t.faqCiudades.a, v) },
+    ...(d.esInternacional ? [{ q: fill(t.faqInternacional.q, v), a: fill(t.faqInternacional.a, v) }] : []),
+    ...(d.hub ? [{ q: fill(t.faqHub.q, v), a: fill(t.faqHub.a, v) }] : []),
+  ]
+}
+
+// Destinos nuevos publicados en Sanity se generan al primer visita (no hace falta rebuild)
+export const dynamicParams = true
+
+export async function generateStaticParams() {
+  return (await getDestinoSlugs()).map(destino => ({ destino }))
 }
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/destinos/[destino]'>): Promise<Metadata> {
   const { lang, destino: slug } = await params
   if (!isLang(lang)) return {}
-  const d = getDestino(slug, lang)
+  const d = await getDestino(slug, lang)
   if (!d) return {}
-  const t = T[lang]
-  return {
-    title: t.metaTitle(d.nombre),
-    description: t.metaDescription(d.nombre, d.rutas.length),
-    alternates: alternates(lang, `/destinos/${d.slug}`),
-  }
+  return seoMetadata(d.seo, lang, `/destinos/${d.slug}`)
 }
 
 export default async function DestinoPage({ params }: PageProps<'/[lang]/destinos/[destino]'>) {
   const { lang, destino: slug } = await params
   if (!isLang(lang)) notFound()
-  const t = T[lang]
-  const destino = getDestino(slug, lang)
-  if (!destino) notFound()
+  const ui = UI[lang]
+  const destino = await getDestino(slug, lang)
+  if (!destino) {
+    await redirectIfConfigured(lp(lang, `/destinos/${slug}`))
+    notFound()
+  }
+  const t = await getPlantilla('plantillaDestino', lang, defaults)
 
   // Build nombre → slug lookup for route interlinks
-  const slugByNombre = new Map(getAllDestinos(lang).map(d => [d.nombre, d.slug]))
+  const slugByNombre = new Map((await getAllDestinos(lang)).map(d => [d.nombre, d.slug]))
 
   const pageUrl = `${SITE}${lp(lang, `/destinos/${destino.slug}`)}`
 
@@ -137,22 +77,22 @@ export default async function DestinoPage({ params }: PageProps<'/[lang]/destino
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t.home, item: `${SITE}${lang === 'es' ? '' : lp(lang, '/')}` },
-      { '@type': 'ListItem', position: 2, name: t.destinations, item: `${SITE}${lp(lang, '/destinos')}` },
+      { '@type': 'ListItem', position: 1, name: ui.home, item: `${SITE}${lang === 'es' ? '' : lp(lang, '/')}` },
+      { '@type': 'ListItem', position: 2, name: ui.destinations, item: `${SITE}${lp(lang, '/destinos')}` },
       { '@type': 'ListItem', position: 3, name: destino.nombre, item: pageUrl },
     ],
   }
 
-  const rutaLabel = t.routeLabel(destino.rutas.length)
+  const rutaLabel = plural(destino.rutas.length, t.routeLabelOne, t.routeLabelOther)
 
   // FAQ items — single source of truth for both visible content and JSON-LD.
   // Adding a question here automatically adds it to the schema; removing it removes it from both.
-  const faqItems: { q: string; a: string }[] = t.faqItems(destino)
+  const faq = faqItems(t, destino)
 
   const jsonLdFaq = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: faqItems.map(({ q, a }) => ({
+    mainEntity: faq.map(({ q, a }) => ({
       '@type': 'Question',
       name: q,
       acceptedAnswer: { '@type': 'Answer', text: a },
@@ -182,17 +122,17 @@ export default async function DestinoPage({ params }: PageProps<'/[lang]/destino
           {destino.imagen && (
             <div
               className="destino-hero-bg"
-              style={{ backgroundImage: `url(${destino.imagen})` }}
+              style={{ backgroundImage: `url(${destino.imagen})`, backgroundPosition: destino.imagenPosicion }}
               aria-hidden="true"
             />
           )}
           <div className="destino-hero-overlay" aria-hidden="true" />
 
           <div className="container destino-hero-inner">
-            <nav className="destino-breadcrumb" aria-label={t.breadcrumbLabel}>
-              <Link href={lp(lang, '/')}>{t.home}</Link>
+            <nav className="destino-breadcrumb" aria-label={ui.breadcrumbLabel}>
+              <Link href={lp(lang, '/')}>{ui.home}</Link>
               <span aria-hidden="true"> › </span>
-              <Link href={lp(lang, '/destinos')}>{t.destinations}</Link>
+              <Link href={lp(lang, '/destinos')}>{ui.destinations}</Link>
               <span aria-hidden="true"> › </span>
               <span aria-current="page">{destino.nombre}</span>
             </nav>
@@ -205,7 +145,7 @@ export default async function DestinoPage({ params }: PageProps<'/[lang]/destino
             </div>
 
             <h1 className="destino-h1">
-              {t.h1(destino.nombre)}
+              {fill(t.h1, { nombre: destino.nombre })}
             </h1>
 
             <p className="destino-hero-sub">
@@ -214,7 +154,7 @@ export default async function DestinoPage({ params }: PageProps<'/[lang]/destino
                 <>
                   {' · '}
                   {destino.rutas.slice(0, 3).join(', ')}
-                  {destino.rutas.length > 3 && t.andMore(destino.rutas.length - 3)}
+                  {destino.rutas.length > 3 && ` ${fill(t.andMore, { n: destino.rutas.length - 3 })}`}
                 </>
               )}
             </p>
@@ -236,7 +176,7 @@ export default async function DestinoPage({ params }: PageProps<'/[lang]/destino
               {/* 2 — Rutas directas (interlinked) */}
               <div className="destino-section">
                 <h2 className="destino-section-heading">
-                  {t.routesFrom(destino.nombre)}
+                  {fill(t.routesFrom, { nombre: destino.nombre })}
                 </h2>
                 <ul className="destino-routes-chips" role="list">
                   {destino.rutas.map(nombre => {
@@ -267,7 +207,7 @@ export default async function DestinoPage({ params }: PageProps<'/[lang]/destino
               <div className="destino-section">
                 <h2 className="destino-section-heading">{t.faq}</h2>
                 <dl className="destino-faq">
-                  {faqItems.map(({ q, a }) => (
+                  {faq.map(({ q, a }) => (
                     <div key={q} className="destino-faq-item">
                       <dt className="destino-faq-q">{q}</dt>
                       <dd className="destino-faq-a">{a}</dd>
@@ -285,7 +225,7 @@ export default async function DestinoPage({ params }: PageProps<'/[lang]/destino
               <div className="destino-routes-card">
                 <p className="destino-sidebar-stat">{rutaLabel}</p>
                 <p className="destino-sidebar-label">
-                  {t.sidebarLabel(destino.nombre)}
+                  {fill(t.sidebarLabel, { nombre: destino.nombre })}
                 </p>
                 <div className="destino-cta">
                   <button className="btn btn-primary">

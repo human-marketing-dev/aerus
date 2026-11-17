@@ -5,156 +5,31 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Icon } from '@/components/icons'
-import { alternates, isLang, lp, type Lang } from '@/lib/i18n'
+import { isLang, lp } from '@/lib/i18n'
+import { getPage } from '@/lib/content'
+import { seoMetadata } from '@/lib/seo'
+import defaults from '@/content/pages/ayuda-tiempos'
 
 const PATH = '/ayuda/tiempos-aeropuerto/'
 
-/* ── Data ───────────────────────────────────────────────────────────────── */
-
-type Fase = { label: string; valor: string; minutos: number }
-
-type TiempoCard = {
-  id: string
-  tipo: string
-  subtitulo: string
-  destacado: boolean
-  llegada: { texto: string; minutos: number }
-  fases: Fase[]
-  nota?: string
+// Textos genéricos de interfaz (no se editan en Sanity)
+const UI = {
+  es: { breadcrumbLabel: 'Ruta de navegación', home: 'Inicio', help: 'Ayuda' },
+  en: { breadcrumbLabel: 'Breadcrumb', home: 'Home', help: 'Help' },
 }
-
-const TIEMPOS: Record<Lang, TiempoCard[]> = {
-  es: [
-    {
-      id: 'nacional',
-      tipo: 'Nacional',
-      subtitulo: 'Vuelos dentro de México',
-      destacado: false,
-      llegada: { texto: '1h 30 min', minutos: 90 },
-      fases: [
-        { label: 'Cierre de mostrador', valor: '45 min antes', minutos: 45 },
-        { label: 'Cierre de puerta', valor: '20 min antes', minutos: 20 },
-      ],
-    },
-    {
-      id: 'internacional',
-      tipo: 'Internacional',
-      subtitulo: 'Vuelos a EE. UU. (Texas)',
-      destacado: true,
-      llegada: { texto: '2h 30 min', minutos: 150 },
-      fases: [
-        { label: 'Cierre de mostrador', valor: '60 min antes', minutos: 60 },
-        { label: 'Cierre de puerta', valor: '20 min antes', minutos: 20 },
-      ],
-      nota: 'Los vuelos internacionales requieren trámites migratorios y de aduana. Llegar con suficiente anticipación es especialmente importante.',
-    },
-  ],
-  en: [
-    {
-      id: 'nacional',
-      tipo: 'Domestic',
-      subtitulo: 'Flights within Mexico',
-      destacado: false,
-      llegada: { texto: '1h 30 min', minutos: 90 },
-      fases: [
-        { label: 'Check-in counter closes', valor: '45 min before', minutos: 45 },
-        { label: 'Gate closes', valor: '20 min before', minutos: 20 },
-      ],
-    },
-    {
-      id: 'internacional',
-      tipo: 'International',
-      subtitulo: 'Flights to the U.S. (Texas)',
-      destacado: true,
-      llegada: { texto: '2h 30 min', minutos: 150 },
-      fases: [
-        { label: 'Check-in counter closes', valor: '60 min before', minutos: 60 },
-        { label: 'Gate closes', valor: '20 min before', minutos: 20 },
-      ],
-      nota: 'International flights require immigration and customs procedures, so arriving with plenty of time to spare is especially important.',
-    },
-  ],
-}
-
-/** Una recomendación es texto plano o texto seguido de un enlace interno (ruta canónica). */
-type Recomendacion = string | { texto: string; link: { label: string; href: string } }
-
-const RECOMENDACIONES: Record<Lang, Recomendacion[]> = {
-  es: [
-    'En temporada alta (Semana Santa, verano y diciembre) agrega al menos 30 minutos adicionales a los tiempos indicados.',
-    'Considera el tiempo de traslado hasta el aeropuerto, tráfico, estacionamiento y llegada con transporte público.',
-    'Haz tu check-in en línea desde 24 horas antes para reducir el tiempo en mostrador y poder ir directo a controles de seguridad.',
-    {
-      texto: 'Ten tu identificación y documentos de viaje listos antes de llegar a los filtros de seguridad.',
-      link: { label: 'Ver documentos requeridos →', href: '/ayuda/documentos-para-viajar/' },
-    },
-    'Si viajas con mascota, equipaje especial o requerimientos de asistencia, presenta 30 minutos adicionales a los tiempos indicados.',
-  ],
-  en: [
-    'During peak season (Easter week, summer and December), add at least 30 extra minutes to the times shown.',
-    'Allow time to get to the airport, including traffic, parking or arriving by public transportation.',
-    'Check in online starting 24 hours before your flight to spend less time at the counter and go straight to security screening.',
-    {
-      texto: 'Have your ID and travel documents ready before you reach the security checkpoint.',
-      link: { label: 'See required documents →', href: '/ayuda/documentos-para-viajar/' },
-    },
-    'If you’re traveling with a pet, special baggage or assistance needs, arrive 30 minutes earlier than the times shown.',
-  ],
-}
-
-const es = {
-  metaTitle: 'Tiempos de llegada al aeropuerto | Aerus',
-  metaDescription:
-    'Entérate con cuánta anticipación debes llegar al aeropuerto para tu vuelo Aerus. Tiempos recomendados para vuelos nacionales e internacionales.',
-  breadcrumbLabel: 'Ruta de navegación',
-  home: 'Inicio',
-  help: 'Ayuda',
-  current: 'Tiempos de llegada al aeropuerto',
-  eyebrow: 'Ayuda',
-  titleA: 'Tiempos de llegada al',
-  titleB: 'aeropuerto',
-  intro: 'Llegar a tiempo es parte del vuelo. Aquí los tiempos recomendados para que no se te vaya el avión.',
-  beforeFlight: 'antes de tu vuelo',
-  departure: 'Salida del vuelo',
-  generalNote: 'Los tiempos son contados hacia atrás desde la hora de salida programada del vuelo.',
-  tipsEyebrow: 'Recomendaciones',
-  tipsTitle: 'Llega con margen de tiempo',
-}
-
-const en: typeof es = {
-  metaTitle: 'Airport Arrival Times | Aerus',
-  metaDescription:
-    'Find out how early you should arrive at the airport for your Aerus flight. Recommended times for domestic and international flights.',
-  breadcrumbLabel: 'Breadcrumb',
-  home: 'Home',
-  help: 'Help',
-  current: 'Airport arrival times',
-  eyebrow: 'Help',
-  titleA: 'Airport arrival',
-  titleB: 'times',
-  intro: 'Getting there on time is part of the trip. Here are our recommended times so you don’t miss your flight.',
-  beforeFlight: 'before your flight',
-  departure: 'Flight departure',
-  generalNote: 'Times are counted back from the flight’s scheduled departure time.',
-  tipsEyebrow: 'Recommendations',
-  tipsTitle: 'Leave yourself extra time',
-}
-
-const T = { es, en }
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/ayuda/tiempos-aeropuerto'>): Promise<Metadata> {
   const { lang } = await params
   if (!isLang(lang)) return {}
-  const t = T[lang]
-  return { title: t.metaTitle, description: t.metaDescription, alternates: alternates(lang, PATH) }
+  const t = await getPage('paginaAyudaTiempos', lang, defaults)
+  return seoMetadata(t.seo, lang, PATH)
 }
-
-/* ── Component ──────────────────────────────────────────────────────────── */
 
 export default async function TiemposAeropuertoPage({ params }: PageProps<'/[lang]/ayuda/tiempos-aeropuerto'>) {
   const { lang } = await params
   if (!isLang(lang)) notFound()
-  const tx = T[lang]
+  const tx = await getPage('paginaAyudaTiempos', lang, defaults)
+  const ui = UI[lang]
 
   return (
     <>
@@ -162,12 +37,12 @@ export default async function TiemposAeropuertoPage({ params }: PageProps<'/[lan
       <main>
         <section className="tiempos-hero">
           <div className="container tiempos-hero-inner">
-            <nav className="destino-breadcrumb" aria-label={tx.breadcrumbLabel}>
-              <Link href={lp(lang, '/')}>{tx.home}</Link>
+            <nav className="destino-breadcrumb" aria-label={ui.breadcrumbLabel}>
+              <Link href={lp(lang, '/')}>{ui.home}</Link>
               <span aria-hidden="true"> › </span>
-              <Link href={lp(lang, '/ayuda/')}>{tx.help}</Link>
+              <Link href={lp(lang, '/ayuda/')}>{ui.help}</Link>
               <span aria-hidden="true"> › </span>
-              <span aria-current="page">{tx.current}</span>
+              <span aria-current="page">{tx.crumb}</span>
             </nav>
             <div className="eyebrow" style={{ color: 'var(--aerus-spring-green)' }}>{tx.eyebrow}</div>
             <h1 className="section-headline" style={{ color: 'var(--aerus-white)' }}>
@@ -183,9 +58,9 @@ export default async function TiemposAeropuertoPage({ params }: PageProps<'/[lan
         <section className="tiempos-cards-section">
           <div className="container">
             <div className="tiempos-cards-grid">
-              {TIEMPOS[lang].map((t) => (
+              {tx.tarjetas.map((t, i) => (
                 <div
-                  key={t.id}
+                  key={i}
                   className={`tiempos-card${t.destacado ? ' tiempos-card--featured' : ''}`}
                 >
                   <div className="tiempos-card-top">
@@ -194,7 +69,7 @@ export default async function TiemposAeropuertoPage({ params }: PageProps<'/[lan
                   </div>
 
                   <div className="tiempos-card-llegada">
-                    <span className="tiempos-llegada-big">{t.llegada.texto}</span>
+                    <span className="tiempos-llegada-big">{t.llegada}</span>
                     <span className="tiempos-llegada-label">{tx.beforeFlight}</span>
                   </div>
 
@@ -241,13 +116,13 @@ export default async function TiemposAeropuertoPage({ params }: PageProps<'/[lan
                 </div>
               </div>
               <ul className="docs-list">
-                {RECOMENDACIONES[lang].map((item, i) => (
+                {tx.recomendaciones.map((item, i) => (
                   <li key={i}>
-                    {typeof item === 'string' ? item : (
+                    {!(item.linkLabel && item.linkHref) ? item.texto : (
                       <>
                         {item.texto}{' '}
-                        <Link href={lp(lang, item.link.href)} style={{ color: 'inherit', fontWeight: 500, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
-                          {item.link.label}
+                        <Link href={lp(lang, item.linkHref)} style={{ color: 'inherit', fontWeight: 500, textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+                          {item.linkLabel}
                         </Link>
                       </>
                     )}

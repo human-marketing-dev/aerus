@@ -5,195 +5,35 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { Icon } from '@/components/icons'
-import { SOCIAL_LINKS } from '@/lib/social'
-import { alternates, isLang, lp, type Lang } from '@/lib/i18n'
+import { getConfig } from '@/lib/config'
+import { isLang, lp } from '@/lib/i18n'
+import { getPage } from '@/lib/content'
+import { seoMetadata } from '@/lib/seo'
+import defaults from '@/content/pages/ayuda-contacto'
 
 const PATH = '/ayuda/contacto/'
 
-/* ── Data — replace with real values when available ─────────────────────── */
 
-type Canal = {
-  id: string
-  icono: string
-  label: string
-  valor: string
-  detalle: string
-  href: string
-  cta: string
-  externo: boolean
-  destacado: boolean
+// Textos genéricos de interfaz (no se editan en Sanity)
+const UI = {
+  es: { breadcrumbLabel: 'Ruta de navegación', home: 'Inicio', help: 'Ayuda' },
+  en: { breadcrumbLabel: 'Breadcrumb', home: 'Home', help: 'Help' },
 }
-
-const CANALES: Record<Lang, Canal[]> = {
-  es: [
-    {
-      id: 'telefono-mx',
-      icono: 'phone',
-      label: 'México',
-      valor: '+52 (812) 682·3501',
-      detalle: 'Lun–Dom · 06:00 – 22:00 hrs',
-      href: 'tel:+528126823501',
-      cta: 'Llamar',
-      externo: false,
-      destacado: false,
-    },
-    {
-      id: 'telefono-us',
-      icono: 'phone',
-      label: 'Estados Unidos',
-      valor: '+1 (866) 691·0179',
-      detalle: 'Llamada gratuita · Lun–Dom · 06:00 – 22:00 hrs',
-      href: 'tel:+18666910179',
-      cta: 'Llamar',
-      externo: false,
-      destacado: false,
-    },
-    {
-      id: 'whatsapp',
-      icono: 'bot',
-      label: 'Asistente IA · WhatsApp',
-      valor: '+52 (814) 170·1702',
-      detalle: 'Disponible 24 hrs · todos los días',
-      href: 'https://wa.me/528141701702',
-      cta: 'Abrir WhatsApp',
-      externo: true,
-      destacado: true,
-    },
-    {
-      id: 'email',
-      icono: 'mail',
-      label: 'Correo electrónico',
-      valor: 'contacto@aerus.mx',
-      detalle: 'Respuesta en 24–48 horas hábiles',
-      href: 'mailto:contacto@aerus.mx',
-      cta: 'Enviar correo',
-      externo: false,
-      destacado: false,
-    },
-  ],
-  en: [
-    {
-      id: 'telefono-mx',
-      icono: 'phone',
-      label: 'Mexico',
-      valor: '+52 (812) 682·3501',
-      detalle: 'Mon–Sun · 6:00 am – 10:00 pm',
-      href: 'tel:+528126823501',
-      cta: 'Call',
-      externo: false,
-      destacado: false,
-    },
-    {
-      id: 'telefono-us',
-      icono: 'phone',
-      label: 'United States',
-      valor: '+1 (866) 691·0179',
-      detalle: 'Toll-free · Mon–Sun · 6:00 am – 10:00 pm',
-      href: 'tel:+18666910179',
-      cta: 'Call',
-      externo: false,
-      destacado: false,
-    },
-    {
-      id: 'whatsapp',
-      icono: 'bot',
-      label: 'AI assistant · WhatsApp',
-      valor: '+52 (814) 170·1702',
-      detalle: 'Available 24/7 · every day',
-      href: 'https://wa.me/528141701702',
-      cta: 'Open WhatsApp',
-      externo: true,
-      destacado: true,
-    },
-    {
-      id: 'email',
-      icono: 'mail',
-      label: 'Email',
-      valor: 'contacto@aerus.mx',
-      detalle: 'Reply within 24–48 business hours',
-      href: 'mailto:contacto@aerus.mx',
-      cta: 'Send email',
-      externo: false,
-      destacado: false,
-    },
-  ],
-}
-
-// Redes oficiales (lib/social.ts)
-const REDES = SOCIAL_LINKS.map(r => ({ nombre: r.name, icono: r.icon, href: r.href }))
-
-type HorarioFila = { dias: string; horas: string }
-
-const HORARIOS: Record<Lang, HorarioFila[]> = {
-  es: [
-    { dias: 'Lunes – Domingo', horas: '06:00 – 22:00 hrs' },
-    { dias: 'Asistente IA · WhatsApp', horas: '24 hrs · todos los días' },
-    { dias: 'Correo electrónico', horas: 'Respuesta en 24–48 hrs hábiles' },
-  ],
-  en: [
-    { dias: 'Monday – Sunday', horas: '6:00 am – 10:00 pm' },
-    { dias: 'AI assistant · WhatsApp', horas: '24/7 · every day' },
-    { dias: 'Email', horas: 'Reply within 24–48 business hours' },
-  ],
-}
-
-const es = {
-  metaTitle: 'Contacto | Aerus',
-  metaDescription:
-    'Comunícate con Aerus por teléfono, WhatsApp, correo electrónico o redes sociales. Estamos disponibles para ayudarte.',
-  breadcrumbLabel: 'Ruta de navegación',
-  home: 'Inicio',
-  help: 'Ayuda',
-  current: 'Contacto',
-  eyebrow: 'Atención a clientes',
-  titleA: '¿En qué podemos',
-  titleB: 'ayudarte?',
-  intro: 'Elige el canal que prefieras. Nuestro equipo está listo para atenderte.',
-  socialEyebrow: 'Redes sociales',
-  socialTitle: 'Síguenos',
-  socialDesc: 'También puedes escribirnos por mensaje directo en nuestras redes sociales.',
-  hoursEyebrow: 'Horarios',
-  hoursTitle: 'Disponibilidad',
-  specialNote:
-    'Para requerimientos especiales (menores no acompañados, movilidad reducida, animales de servicio) contacta con al menos 48 horas de anticipación a tu vuelo.',
-}
-
-const en: typeof es = {
-  metaTitle: 'Contact Us | Aerus',
-  metaDescription:
-    'Reach Aerus by phone, WhatsApp, email or social media. We’re here to help.',
-  breadcrumbLabel: 'Breadcrumb',
-  home: 'Home',
-  help: 'Help',
-  current: 'Contact',
-  eyebrow: 'Customer service',
-  titleA: 'How can we',
-  titleB: 'help you?',
-  intro: 'Choose the channel you prefer. Our team is ready to assist you.',
-  socialEyebrow: 'Social media',
-  socialTitle: 'Follow us',
-  socialDesc: 'You can also send us a direct message on our social media channels.',
-  hoursEyebrow: 'Hours',
-  hoursTitle: 'Availability',
-  specialNote:
-    'For special assistance (unaccompanied minors, reduced mobility, service animals), please contact us at least 48 hours before your flight.',
-}
-
-const T = { es, en }
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/ayuda/contacto'>): Promise<Metadata> {
   const { lang } = await params
   if (!isLang(lang)) return {}
-  const t = T[lang]
-  return { title: t.metaTitle, description: t.metaDescription, alternates: alternates(lang, PATH) }
+  const t = await getPage('paginaAyudaContacto', lang, defaults)
+  return seoMetadata(t.seo, lang, PATH)
 }
-
-/* ── Component ──────────────────────────────────────────────────────────── */
 
 export default async function ContactoPage({ params }: PageProps<'/[lang]/ayuda/contacto'>) {
   const { lang } = await params
   if (!isLang(lang)) notFound()
-  const t = T[lang]
+  const t = await getPage('paginaAyudaContacto', lang, defaults)
+  // Redes oficiales: Sanity → Configuración general → Redes sociales (las mismas del footer)
+  const REDES = (await getConfig(lang)).redes
+  const ui = UI[lang]
 
   return (
     <>
@@ -201,12 +41,12 @@ export default async function ContactoPage({ params }: PageProps<'/[lang]/ayuda/
       <main>
         <section className="contact-hero">
           <div className="container contact-hero-inner">
-            <nav className="destino-breadcrumb" aria-label={t.breadcrumbLabel}>
-              <Link href={lp(lang, '/')}>{t.home}</Link>
+            <nav className="destino-breadcrumb" aria-label={ui.breadcrumbLabel}>
+              <Link href={lp(lang, '/')}>{ui.home}</Link>
               <span aria-hidden="true"> › </span>
-              <Link href={lp(lang, '/ayuda/')}>{t.help}</Link>
+              <Link href={lp(lang, '/ayuda/')}>{ui.help}</Link>
               <span aria-hidden="true"> › </span>
-              <span aria-current="page">{t.current}</span>
+              <span aria-current="page">{t.crumb}</span>
             </nav>
             <div className="eyebrow" style={{ color: 'var(--aerus-spring-green)' }}>
               {t.eyebrow}
@@ -224,31 +64,35 @@ export default async function ContactoPage({ params }: PageProps<'/[lang]/ayuda/
         <section className="section-pad contact-channels-section">
           <div className="container">
             <div className="contact-channels-grid">
-              {CANALES[lang].map((canal) => (
-                <div
-                  key={canal.id}
-                  className={`contact-card${canal.destacado ? ' contact-card--destacado' : ''}`}
-                >
-                  <div className="contact-card-icon">
-                    <Icon name={canal.icono} size={22} stroke={1.5} />
-                  </div>
-                  <p className="contact-card-label">{canal.label}</p>
-                  <p className="contact-card-valor">{canal.valor}</p>
-                  <p className="contact-card-detalle">{canal.detalle}</p>
-                  <a
-                    href={canal.href}
-                    className={`btn ${canal.destacado ? 'btn-primary' : 'btn-outline'} contact-card-cta`}
-                    {...(canal.externo
-                      ? { target: '_blank', rel: 'noopener noreferrer' }
-                      : {})}
+              {t.canales.map((canal) => {
+                // Los enlaces web (WhatsApp) se abren en otra pestaña; tel: y mailto: no
+                const externo = /^https?:\/\//.test(canal.href)
+                return (
+                  <div
+                    key={canal.href}
+                    className={`contact-card${canal.destacado ? ' contact-card--destacado' : ''}`}
                   >
-                    {canal.cta}
-                    {canal.externo && (
-                      <span aria-hidden="true" style={{ fontSize: 14 }}> ↗</span>
-                    )}
-                  </a>
-                </div>
-              ))}
+                    <div className="contact-card-icon">
+                      <Icon name={canal.icono} size={22} stroke={1.5} />
+                    </div>
+                    <p className="contact-card-label">{canal.label}</p>
+                    <p className="contact-card-valor">{canal.valor}</p>
+                    <p className="contact-card-detalle">{canal.detalle}</p>
+                    <a
+                      href={canal.href}
+                      className={`btn ${canal.destacado ? 'btn-primary' : 'btn-outline'} contact-card-cta`}
+                      {...(externo
+                        ? { target: '_blank', rel: 'noopener noreferrer' }
+                        : {})}
+                    >
+                      {canal.cta}
+                      {externo && (
+                        <span aria-hidden="true" style={{ fontSize: 14 }}> ↗</span>
+                      )}
+                    </a>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </section>
@@ -288,7 +132,7 @@ export default async function ContactoPage({ params }: PageProps<'/[lang]/ayuda/
                 <h2 className="contact-lower-title">{t.hoursTitle}</h2>
                 <table className="contact-hours-table">
                   <tbody>
-                    {HORARIOS[lang].map((h) => (
+                    {t.horarios.map((h) => (
                       <tr key={h.dias} className="contact-hours-row">
                         <td className="contact-hours-dias">{h.dias}</td>
                         <td className="contact-hours-horas">{h.horas}</td>

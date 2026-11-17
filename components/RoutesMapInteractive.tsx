@@ -1,43 +1,18 @@
 'use client'
 import { useState } from 'react'
 import { ComposableMap, Geographies, Geography, useMapContext } from 'react-simple-maps'
-import type { City } from '@/lib/red-de-rutas'
+import type { City } from '@/lib/red'
 import Link from 'next/link'
 import { lp, LOCALE_TAG, type Lang } from '@/lib/i18n'
+import type { InicioContent } from '@/content/pages/inicio'
 
-const T = {
-  es: {
-    byCity: 'Vuelos directos por ciudad',
-    others: 'Otras rutas',
-    eyebrow: 'Red Interactiva',
-    headline: ['Explora tu próxima ', 'conexión.'],
-    intro: 'Toca cualquier destino para ver todas sus rutas directas.',
-    statRoutes: 'Rutas directas',
-    statDest: 'Destinos',
-    statIntl: 'Internacionales',
-    legendViva: 'Codeshare Viva + Aerus',
-    legendExclusive: 'Destino exclusivo Aerus',
-    allRoutes: 'Ver todas las rutas',
-    direct: 'Vuelos directos',
-  },
-  en: {
-    byCity: 'Direct flights by city',
-    others: 'Other routes',
-    eyebrow: 'Interactive network',
-    headline: ['Explore your next ', 'connection.'],
-    intro: 'Tap any destination to see all of its direct routes.',
-    statRoutes: 'Direct routes',
-    statDest: 'Destinations',
-    statIntl: 'International',
-    legendViva: 'Viva + Aerus codeshare',
-    legendExclusive: 'Aerus-exclusive destination',
-    allRoutes: 'See all routes',
-    direct: 'Direct flights',
-  },
-}
+// Textos: Sanity → Inicio → Secciones → Mapa interactivo. Ciudades y rutas: Red de rutas.
+type MapaTexts = InicioContent['mapa']
+
 
 // TODO: move to a 'codeshare' column in the ciudades sheet if needed later
-const VIVA = new Set(['Monterrey', 'CDMX', 'Veracruz', 'Villahermosa'])
+// Ciudades con conexión Viva: campo "Conexión con Viva" de cada destino en Sanity
+const isViva = (cities: Record<string, City>, name: string) => !!cities[name]?.viva
 
 // ── Map viewport ─────────────────────────────────────────────────────────────
 // Adjust MAP_CENTER and MAP_SCALE to reframe the viewport.
@@ -124,14 +99,14 @@ function CitiesLayer({ cities, nodeState, toggleCity, setHoveredCity }: CitiesLa
         if (!p) return null
         const [cx, cy] = [R(p[0]), R(p[1])]
         const r = city.hub ? 7 : 5
-        const isViva = VIVA.has(name)
+        const vivaNode = isViva(cities, name)
         const state = nodeState(name)
         return (
-          <g key={name} className={`rmi-node ${state}${isViva ? ' rmi-node--viva' : ''}`}>
+          <g key={name} className={`rmi-node ${state}${vivaNode ? ' rmi-node--viva' : ''}`}>
             {city.hub && (
               <circle cx={cx} cy={cy} r={r + 8} className="rmi-pulse" pointerEvents="none" />
             )}
-            {isViva && (
+            {vivaNode && (
               <circle cx={cx} cy={cy} r={r + 5} className="rmi-viva-ring" pointerEvents="none" />
             )}
             <circle cx={cx} cy={cy} r={r + 4} className="rmi-halo" pointerEvents="none" />
@@ -167,12 +142,12 @@ function CitiesLayer({ cities, nodeState, toggleCity, setHoveredCity }: CitiesLa
 
 interface DestinationListProps {
   lang: Lang
+  t: MapaTexts
   cities: Record<string, City>
   routes: [string, string][]
 }
 
-function DestinationList({ lang, cities, routes }: DestinationListProps) {
-  const t = T[lang]
+function DestinationList({ lang, t, cities, routes }: DestinationListProps) {
   const [open, setOpen] = useState<Set<string>>(new Set())
 
   function toggle(id: string) {
@@ -197,7 +172,7 @@ function DestinationList({ lang, cities, routes }: DestinationListProps) {
 
   return (
     <div className="rmi-destinations">
-      <p className="rmi-destinations-label">{t.byCity}</p>
+      <p className="rmi-destinations-label">{t.porCiudad}</p>
 
       {hubKeys.map(hub => {
         const conns = getConnections(hub, routes)
@@ -209,7 +184,7 @@ function DestinationList({ lang, cities, routes }: DestinationListProps) {
               <span className="rmi-dest-trigger-left">
                 <span className="rmi-dest-hub-dot" aria-hidden="true" />
                 <span className="rmi-dest-name">{cities[hub].label}</span>
-                {VIVA.has(hub) && <span className="rmi-viva-tag" aria-label="Codeshare Viva">V</span>}
+                {isViva(cities, hub) && <span className="rmi-viva-tag" aria-label="Codeshare Viva">V</span>}
               </span>
               <span className="rmi-dest-meta" aria-hidden="true">
                 <span className="rmi-dest-count">{conns.length}</span>
@@ -219,9 +194,9 @@ function DestinationList({ lang, cities, routes }: DestinationListProps) {
             {isOpen && (
               <div className="rmi-dest-chips">
                 {conns.map(c => (
-                  <span key={c} className={`rmi-dest-chip${VIVA.has(c) ? ' rmi-dest-chip--viva' : ''}`}>
+                  <span key={c} className={`rmi-dest-chip${isViva(cities, c) ? ' rmi-dest-chip--viva' : ''}`}>
                     {cities[c]?.label ?? c}
-                    {VIVA.has(c) && <span className="rmi-viva-tag" aria-label="Codeshare Viva">V</span>}
+                    {isViva(cities, c) && <span className="rmi-viva-tag" aria-label="Codeshare Viva">V</span>}
                   </span>
                 ))}
               </div>
@@ -234,7 +209,7 @@ function DestinationList({ lang, cities, routes }: DestinationListProps) {
         <div className="rmi-dest-row">
           <button className="rmi-dest-trigger" aria-expanded={otrasOpen} onClick={() => toggle('__otras__')}>
             <span className="rmi-dest-trigger-left">
-              <span className="rmi-dest-name rmi-dest-name--otras">{t.others}</span>
+              <span className="rmi-dest-name rmi-dest-name--otras">{t.otrasRutas}</span>
             </span>
             <span className="rmi-dest-meta" aria-hidden="true">
               <span className="rmi-dest-count">{otrasRoutes.length}</span>
@@ -244,11 +219,11 @@ function DestinationList({ lang, cities, routes }: DestinationListProps) {
           {otrasOpen && (
             <div className="rmi-dest-chips">
               {otrasRoutes.map(([a, b], i) => {
-                const isViva = VIVA.has(a) || VIVA.has(b)
+                const vivaRoute = isViva(cities, a) || isViva(cities, b)
                 return (
-                  <span key={i} className={`rmi-dest-chip${isViva ? ' rmi-dest-chip--viva' : ''}`}>
+                  <span key={i} className={`rmi-dest-chip${vivaRoute ? ' rmi-dest-chip--viva' : ''}`}>
                     {cities[a]?.label ?? a} – {cities[b]?.label ?? b}
-                    {isViva && <span className="rmi-viva-tag" aria-label="Codeshare Viva">V</span>}
+                    {vivaRoute && <span className="rmi-viva-tag" aria-label="Codeshare Viva">V</span>}
                   </span>
                 )
               })}
@@ -264,12 +239,12 @@ function DestinationList({ lang, cities, routes }: DestinationListProps) {
 
 interface Props {
   lang: Lang
+  t: MapaTexts
   cities: Record<string, City>
   routes: [string, string][]
 }
 
-export default function RoutesMapInteractive({ lang, cities, routes }: Props) {
-  const t = T[lang]
+export default function RoutesMapInteractive({ lang, t, cities, routes }: Props) {
   const [activeCity, setActiveCity] = useState<string | null>(null)
   const [hoveredCity, setHoveredCity] = useState<string | null>(null)
 
@@ -303,15 +278,15 @@ export default function RoutesMapInteractive({ lang, cities, routes }: Props) {
         <div className="rmi-copy">
           <div className="eyebrow" style={{ color: 'var(--aerus-spring-green)' }}>{t.eyebrow}</div>
           <h2 className="section-headline rmi-headline">
-            {t.headline[0]}<span className="em">{t.headline[1]}</span>
+            {t.titulo}<span className="em">{t.tituloAcento}</span>
           </h2>
           <p className="section-intro rmi-intro">
             {t.intro}
           </p>
 
           <div className="rmi-stats">
-            <div><span className="rmi-n">{totalRoutes}</span><span className="rmi-l">{t.statRoutes}</span></div>
-            <div><span className="rmi-n">{totalDestinos}</span><span className="rmi-l">{t.statDest}</span></div>
+            <div><span className="rmi-n">{totalRoutes}</span><span className="rmi-l">{t.statRutas}</span></div>
+            <div><span className="rmi-n">{totalDestinos}</span><span className="rmi-l">{t.statDestinos}</span></div>
             <div><span className="rmi-n">{totalInternacionales}</span><span className="rmi-l">{t.statIntl}</span></div>
           </div>
 
@@ -321,19 +296,19 @@ export default function RoutesMapInteractive({ lang, cities, routes }: Props) {
                 <circle cx="8" cy="8" r="4" fill="var(--aerus-spring-green)" />
                 <circle cx="8" cy="8" r="7" fill="none" stroke="#FF7A40" strokeWidth="1.5" />
               </svg>
-              {t.legendViva}
+              {t.leyendaViva}
             </div>
             <div className="rmi-legend-item">
               <svg width="16" height="16" viewBox="0 0 16 16" style={{ flexShrink: 0 }}>
                 <circle cx="8" cy="8" r="4" fill="var(--aerus-spring-green)" />
               </svg>
-              {t.legendExclusive}
+              {t.leyendaExclusivo}
             </div>
           </div>
 
           <div className="rmi-cta">
-            <Link href={lp(lang, '/rutas/')} className="btn btn-primary">
-              {t.allRoutes} <span className="ar"></span>
+            <Link href={lp(lang, t.verTodasHref)} className="btn btn-primary">
+              {t.verTodas} <span className="ar"></span>
             </Link>
           </div>
         </div>
@@ -343,21 +318,21 @@ export default function RoutesMapInteractive({ lang, cities, routes }: Props) {
             <div className="rmi-overlay">
               <div className="rmi-overlay-city">
                 {cities[focusCity]?.label ?? focusCity}
-                {VIVA.has(focusCity) && <span className="rmi-viva-badge">+ Viva</span>}
+                {isViva(cities, focusCity) && <span className="rmi-viva-badge">+ Viva</span>}
               </div>
-              <div className="rmi-overlay-label">{t.direct}</div>
+              <div className="rmi-overlay-label">{t.vuelosDirectos}</div>
               <ul className="rmi-overlay-list">
                 {connections.map(c => (
                   <li key={c}>
                     <span className="rmi-arr">→</span>
                     {cities[c]?.label ?? c}
-                    {VIVA.has(c) && <span className="rmi-viva-tag">V</span>}
+                    {isViva(cities, c) && <span className="rmi-viva-tag">V</span>}
                   </li>
                 ))}
               </ul>
               {activeCity && (
                 <button className="rmi-reset" onClick={() => setActiveCity(null)}>
-                  {t.allRoutes}
+                  {t.verTodas}
                 </button>
               )}
             </div>
@@ -426,7 +401,7 @@ export default function RoutesMapInteractive({ lang, cities, routes }: Props) {
           </ComposableMap>
         </div>
 
-        <DestinationList lang={lang} cities={cities} routes={routes} />
+        <DestinationList lang={lang} t={t} cities={cities} routes={routes} />
       </div>
     </section>
   )

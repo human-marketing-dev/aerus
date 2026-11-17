@@ -3,35 +3,24 @@ import Footer from '@/components/Footer'
 import Newsletter from '@/components/Newsletter'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { alternates, isLang, type Lang } from '@/lib/i18n'
+import { isLang } from '@/lib/i18n'
+import { getPage } from '@/lib/content'
+import { seoMetadata } from '@/lib/seo'
+import defaults from '@/content/pages/check-in'
 
 const PATH = '/check-in/'
-
-const T: Record<Lang, { metaTitle: string; eyebrow: string; title: string; wip: string }> = {
-  es: {
-    metaTitle: 'Check-in | Aerus',
-    eyebrow: 'Viaja con Aerus',
-    title: 'Check-in',
-    wip: 'Esta página estará disponible próximamente.',
-  },
-  en: {
-    metaTitle: 'Check-in | Aerus',
-    eyebrow: 'Fly with Aerus',
-    title: 'Check-in',
-    wip: 'This page will be available soon.',
-  },
-}
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/check-in'>): Promise<Metadata> {
   const { lang } = await params
   if (!isLang(lang)) return {}
-  return { title: T[lang].metaTitle, alternates: alternates(lang, PATH) }
+  const t = await getPage('paginaCheckIn', lang, defaults)
+  return seoMetadata(t.seo, lang, PATH)
 }
 
 export default async function CheckInPage({ params }: PageProps<'/[lang]/check-in'>) {
   const { lang } = await params
   if (!isLang(lang)) notFound()
-  const t = T[lang]
+  const t = await getPage('paginaCheckIn', lang, defaults)
 
   return (
     <>

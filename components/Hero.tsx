@@ -6,66 +6,13 @@ import { Icon } from './icons'
 import BookingWidget from './BookingWidget'
 import BookingSearch from './BookingSearch'
 import { lp, type Lang } from '@/lib/i18n'
+import type { InicioContent } from '@/content/pages/inicio'
 
-// Cada banner trae toda su información (ruta, precio, etc.) dentro de la imagen.
-// Medidas sugeridas: escritorio 1920 × 750 px, móvil 1080 × 1350 px.
-// Deja libre la franja inferior: la barra de reservas se monta encima.
-// Si llegan en 16:9 (1920 × 1080) también funcionan: se recortan ~165 px arriba y abajo,
-// así que el texto debe quedar en la franja central. Sin imageMobile, en móvil el banner
-// se muestra completo en 16:9 en lugar del formato vertical.
-interface HeroSlide {
-  id: string
-  alt: Record<Lang, string>  // describe el texto del banner (lectores de pantalla y SEO)
-  image?: string        // p. ej. '/hero/nlu-izt.webp'
-  imageMobile?: string  // p. ej. '/hero/nlu-izt-movil.webp'
-  href?: string         // ruta canónica (español) a la que lleva el banner al hacer clic
-}
-
-// TODO: banners de prueba — reemplazar por los definitivos (idealmente 1920 × 750 + versión móvil)
-const HERO_SLIDES: HeroSlide[] = [
-  {
-    id: 'aerus-viva-piedras-negras',
-    image: '/hero/aerus-viva-piedras-negras.jpg',
-    href: '/destinos/piedras-negras/',
-    alt: {
-      es: 'Conectamos con todo México: Aerus + Viva. Da clic en Piedras Negras para consultar todas las combinaciones y rutas disponibles.',
-      en: 'Connecting you with all of Mexico: Aerus + Viva. Click Piedras Negras to see all available routes and connections.',
-    },
-  },
-  {
-    id: 'mty-agu',
-    image: '/hero/mty-agu.jpg',
-    href: '/destinos/aguascalientes/',
-    alt: { es: 'Ruta Monterrey (MTY) – Aguascalientes (AGU)', en: 'Route Monterrey (MTY) – Aguascalientes (AGU)' },
-  },
-  {
-    id: 'pago-american-express',
-    image: '/hero/pago-american-express.jpg',
-    href: '/reservar/metodos-de-pago/',
-    alt: {
-      es: '¡Ahora puedes comprar tus boletos de manera fácil y segura pagando con American Express!',
-      en: 'You can now buy your tickets easily and securely with American Express!',
-    },
-  },
-  {
-    id: 'mty-mfe',
-    image: '/hero/mty-mfe.jpg',
-    href: '/rutas/monterrey-mcallen/',
-    alt: {
-      es: 'Ruta Monterrey (MTY) – McAllen (MFE). Cruza la frontera más fácil, más rápido y sin complicaciones.',
-      en: 'Route Monterrey (MTY) – McAllen (MFE). Cross the border easier, faster and hassle-free.',
-    },
-  },
-  {
-    id: 'nlu-cvm',
-    image: '/hero/nlu-cvm.jpg',
-    href: '/destinos/ciudad-victoria/',
-    alt: {
-      es: 'Ruta Ciudad de México (NLU) – Ciudad Victoria (CVM)',
-      en: 'Route Mexico City (NLU) – Ciudad Victoria (CVM)',
-    },
-  },
-]
+// Banners del hero: Sanity → Inicio → Banners (imagen de escritorio, imagen de celular
+// opcional, imagen en inglés opcional, enlace). Cada banner trae su información dentro de la
+// imagen. Medidas sugeridas: escritorio 1920 × 1080 (texto en la franja central) y celular
+// 1080 × 1350. Sin imagen de celular, en celular el banner se muestra completo en 16:9.
+export type HeroBanner = InicioContent['banners'][number]
 
 const T = {
   es: {
@@ -75,7 +22,7 @@ const T = {
     oneWay: 'Sólo ida', ret: 'Regreso', returnDate: 'Dom 15 jun',
     pax: 'Pasajeros & Clase', paxValue: '1 adulto · Light', search: 'Buscar vuelos',
     carousel: 'carrusel', highlights: 'Destacados', slide: 'diapositiva', of: 'de',
-    sizes: 'Escritorio 1920 × 750 · Móvil 1080 × 1350', prev: 'Anterior', next: 'Siguiente',
+    prev: 'Anterior', next: 'Siguiente',
   },
   en: {
     rt: 'Round trip', ow: 'One way', md: 'Multi-city', points: '0 Aerus points',
@@ -84,7 +31,7 @@ const T = {
     oneWay: 'One way only', ret: 'Return', returnDate: 'Sun, Jun 15',
     pax: 'Passengers & Class', paxValue: '1 adult · Light', search: 'Search flights',
     carousel: 'carousel', highlights: 'Highlights', slide: 'slide', of: 'of',
-    sizes: 'Desktop 1920 × 750 · Mobile 1080 × 1350', prev: 'Previous', next: 'Next',
+    prev: 'Previous', next: 'Next',
   },
 }
 
@@ -164,11 +111,17 @@ function BookingBar({ lang, trip, setTrip }: BookingBarProps) {
   )
 }
 
-export default function Hero({ lang }: { lang: Lang }) {
+export default function Hero({ lang, banners }: { lang: Lang; banners: HeroBanner[] }) {
   const t = T[lang]
   const [idx, setIdx] = useState(0)
   const [trip, setTrip] = useState('rt')
-  const total = HERO_SLIDES.length
+  // En inglés se usa la imagen en inglés si la hay
+  const slides = banners.map(b => ({
+    imagen: (lang === 'en' && b.imagenEn) || b.imagen,
+    movil: b.imagenMovil,
+    href: b.href,
+  }))
+  const total = slides.length
   const next = () => setIdx((idx + 1) % total)
   const prev = () => setIdx((idx - 1 + total) % total)
 
@@ -178,39 +131,40 @@ export default function Hero({ lang }: { lang: Lang }) {
         className={
           'hero'
           + (SHOW_LEGACY_BOOKING_BAR ? '' : ' hero--full')
-          + (HERO_SLIDES[idx].imageMobile ? '' : ' hero--wide-mobile')
+          + (slides[idx]?.movil ? '' : ' hero--wide-mobile')
         }
         id="vuelos"
         aria-roledescription={t.carousel}
         aria-label={t.highlights}
       >
-        {HERO_SLIDES.map((s, i) => (
+        {slides.map((s, i) => (
           <div
-            key={s.id}
+            key={s.imagen.src + i}
             className={'hero-slide' + (i === idx ? ' active' : '')}
             aria-hidden={i !== idx}
             aria-roledescription={t.slide}
             aria-label={`${i + 1} ${t.of} ${total}`}
           >
-            {s.image && s.imageMobile ? (
+            {s.movil ? (
               <picture>
-                <source media="(max-width: 640px)" srcSet={s.imageMobile}/>
-                <img src={s.image} alt={s.alt[lang]}/>
+                <source media="(max-width: 640px)" srcSet={s.movil.src}/>
+                <img src={s.imagen.src} alt={s.imagen.alt} style={{ objectPosition: s.imagen.position }}/>
               </picture>
-            ) : s.image ? (
-              <Image src={s.image} alt={s.alt[lang]} fill sizes="100vw" preload={i === 0}/>
             ) : (
-              <div className="hero-placeholder" role="img" aria-label={s.alt[lang]}>
-                <Icon name="camera" size={22}/>
-                <div className="hero-placeholder-title">Banner {String(i + 1).padStart(2, '0')} · {s.alt[lang]}</div>
-                <div className="hero-placeholder-size">{t.sizes}</div>
-              </div>
+              <Image
+                src={s.imagen.src}
+                alt={s.imagen.alt}
+                fill
+                sizes="100vw"
+                preload={i === 0}
+                style={s.imagen.position ? { objectPosition: s.imagen.position } : undefined}
+              />
             )}
             {s.href && (
               <Link
                 href={lp(lang, s.href)}
                 className="hero-slide-link"
-                aria-label={s.alt[lang]}
+                aria-label={s.imagen.alt}
                 tabIndex={i === idx ? 0 : -1}
               />
             )}
@@ -220,7 +174,7 @@ export default function Hero({ lang }: { lang: Lang }) {
         <div className="hero-controls">
           <div className="slider-controls">
             <div className="pagination">
-              {HERO_SLIDES.map((_, i) => (
+              {slides.map((_, i) => (
                 <button
                   key={i}
                   className={'dot' + (i === idx ? ' active' : '')}

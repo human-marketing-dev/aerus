@@ -4,62 +4,25 @@ import Newsletter from '@/components/Newsletter'
 import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { getAyudaCategorias } from '@/lib/ayuda-mock'
 import { Icon } from '@/components/icons'
-import { alternates, isLang, lp } from '@/lib/i18n'
+import { isLang, lp } from '@/lib/i18n'
+import { getPage } from '@/lib/content'
+import { seoMetadata } from '@/lib/seo'
+import defaults from '@/content/pages/ayuda'
 
 const PATH = '/ayuda/'
-
-const es = {
-  metaTitle: 'Centro de Ayuda | Aerus',
-  metaDescription:
-    'Encuentra respuestas sobre reservas, equipaje, documentos, check-in y más. Centro de ayuda oficial de Aerus.',
-  eyebrow: 'Soporte',
-  titleA: '¿Cómo podemos',
-  titleB: 'ayudarte?',
-  intro: 'Encuentra respuestas, políticas y formas de contacto para tu viaje con Aerus.',
-  searchPlaceholder: 'Busca una pregunta o tema…',
-  searchBadge: 'Próximamente',
-  catsEyebrow: 'Temas',
-  catsTitle: 'Explora por categoría',
-  contactEyebrow: '¿No encontraste lo que buscabas?',
-  contactText: 'Nuestro equipo está disponible de lunes a domingo de 06:00 a 22:00 hrs.',
-  contactCta: 'Contactar a Aerus',
-  faqCta: 'Preguntas frecuentes',
-}
-
-const en: typeof es = {
-  metaTitle: 'Help Center | Aerus',
-  metaDescription:
-    'Find answers about bookings, baggage, travel documents, check-in and more. The official Aerus help center.',
-  eyebrow: 'Support',
-  titleA: 'How can we',
-  titleB: 'help you?',
-  intro: 'Find answers, policies and ways to reach us for your trip with Aerus.',
-  searchPlaceholder: 'Search for a question or topic…',
-  searchBadge: 'Coming soon',
-  catsEyebrow: 'Topics',
-  catsTitle: 'Browse by category',
-  contactEyebrow: 'Didn’t find what you were looking for?',
-  contactText: 'Our team is available Monday through Sunday, 6:00 am to 10:00 pm.',
-  contactCta: 'Contact Aerus',
-  faqCta: 'FAQ',
-}
-
-const T = { es, en }
 
 export async function generateMetadata({ params }: PageProps<'/[lang]/ayuda'>): Promise<Metadata> {
   const { lang } = await params
   if (!isLang(lang)) return {}
-  const t = T[lang]
-  return { title: t.metaTitle, description: t.metaDescription, alternates: alternates(lang, PATH) }
+  const t = await getPage('paginaAyuda', lang, defaults)
+  return seoMetadata(t.seo, lang, PATH)
 }
 
 export default async function AyudaPage({ params }: PageProps<'/[lang]/ayuda'>) {
   const { lang } = await params
   if (!isLang(lang)) notFound()
-  const t = T[lang]
-  const categorias = getAyudaCategorias(lang)
+  const t = await getPage('paginaAyuda', lang, defaults)
 
   return (
     <>
@@ -94,10 +57,10 @@ export default async function AyudaPage({ params }: PageProps<'/[lang]/ayuda'>) 
               </h2>
             </div>
             <div className="ayuda-cat-grid">
-              {categorias.map(cat => (
+              {t.categorias.map(cat => (
                 <Link
-                  key={cat.slug}
-                  href={lp(lang, `/ayuda/${cat.slug}/`)}
+                  key={cat.href}
+                  href={lp(lang, cat.href)}
                   className="ayuda-cat-card"
                 >
                   <div className="ayuda-cat-icon">
@@ -121,10 +84,10 @@ export default async function AyudaPage({ params }: PageProps<'/[lang]/ayuda'>) 
               </p>
             </div>
             <div className="ayuda-contact-actions">
-              <Link href={lp(lang, '/ayuda/contacto/')} className="btn btn-primary">
+              <Link href={lp(lang, t.contactHref)} className="btn btn-primary">
                 {t.contactCta}
               </Link>
-              <Link href={lp(lang, '/ayuda/faq/')} className="btn btn-on-dark">
+              <Link href={lp(lang, t.faqHref)} className="btn btn-on-dark">
                 {t.faqCta}
               </Link>
             </div>

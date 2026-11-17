@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import type { FaqCategoria } from '@/lib/faq-mock'
+import type { FaqCategoria } from '@/content/pages/ayuda-faq'
 
 export default function FaqAccordion({ categorias }: { categorias: FaqCategoria[] }) {
   const [open, setOpen] = useState<string | null>(null)
